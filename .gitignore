@@ -1,0 +1,15 @@
+# Gradle
+.gradle/
+build/
+
+# WPILib
+.wpilib/
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
