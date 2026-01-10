@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Mentor;
 
@@ -25,7 +26,7 @@ public class OverthrowMentorCommand extends Command {
   @Override
   public void initialize() {
     mentor.overthrow();
-    System.out.println(mentor.getStatus());
+    DataLogManager.log(mentor.getStatus());
   }
 
   @Override
