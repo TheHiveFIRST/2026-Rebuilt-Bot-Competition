@@ -26,7 +26,7 @@ public class ShooterConfig {
         .idleMode(IdleMode.kCoast)
         .smartCurrentLimit(20);
 
-        shooterRightLeaderConfig.follow(Constants.ShooterConstants.SHOOTER_RIGHT_LEADER_CANID);
-        shooterLeftLeaderConfig.follow(Constants.ShooterConstants.SHOOTER_LEFT_LEADER_CANID);
+        shooterRightFollowerConfig.follow(Constants.ShooterConstants.SHOOTER_RIGHT_LEADER_CANID);
+        shooterLeftFollowerConfig.follow(Constants.ShooterConstants.SHOOTER_LEFT_LEADER_CANID);
     }
 }
