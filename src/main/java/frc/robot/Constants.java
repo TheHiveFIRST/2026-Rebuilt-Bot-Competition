@@ -16,4 +16,15 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+  public static class ShooterConstants {
+    public static final int SHOOTER_RIGHT_LEADER_CANID = 1; 
+    public static final int SHOOTER_RIGHT_FOLLOWER_CANID = 2; 
+    public static final int SHOOTER_LEFT_LEADER_CANID = 3; 
+    public static final int SHOOTER_LEFT_FOLLOWER_CANID = 4;
+    public static final double SHOOT_FORWARDS = 0;
+    public static final double SHOOT_BACKWARDS = 0; 
+  }
+
+
 }
