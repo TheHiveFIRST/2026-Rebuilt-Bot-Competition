@@ -22,6 +22,7 @@ private SparkMax mIntakeLeader;
 private SparkMax mIntakeFollower; 
 private SparkMax mIntakePivotLeader; 
 private SparkMax mIntakePivotFollower; 
+private SparkMax mShooterFeeder;
     
 //constructor
 public IntakeSubsystem(){
@@ -29,14 +30,17 @@ public IntakeSubsystem(){
     //create intake motors + pivotmotors 
     mIntakeLeader = new SparkMax(Constants.IntakeConstants.INTAKE_LEADER, MotorType.kBrushless);
     mIntakeFollower = new SparkMax(Constants.IntakeConstants.INTAKE_FOLLOWER, MotorType.kBrushless);
-    mIntakePivotLeader = new SparkMax(Constants.IntakeConstants.INTAKE_LEADER, MotorType.kBrushless);
-    mIntakePivotFollower = new SparkMax(Constants.IntakeConstants.INTAKE_FOLLOWER, MotorType.kBrushless);
+    mIntakePivotLeader = new SparkMax(Constants.IntakeConstants.INTAKE_PIVOT_LEADER, MotorType.kBrushless);
+    mIntakePivotFollower = new SparkMax(Constants.IntakeConstants.INTAKE_PIVOT_FOLLOWER, MotorType.kBrushless);
+    mShooterFeeder = new SparkMax(Constants.IntakeConstants.SHOOTER_FEEDER, MotorType.kBrushless);
 
     //apply configuration to motors 
     mIntakeLeader.configure(IntakeConfig.intakeLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     mIntakeFollower.configure(IntakeConfig.intakeFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     mIntakePivotLeader.configure(IntakeConfig.intakePivotLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     mIntakePivotFollower.configure(IntakeConfig.intakePivotFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    mShooterFeeder.configure(IntakeConfig.ShooterFeederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
 }
 
 
@@ -47,6 +51,10 @@ public void runIntake(double speed) {
 
 public void runPivot(double speed) {
     mIntakePivotLeader.set(speed);
+}
+ 
+public void feedShooter(double speed) {
+    mShooterFeeder.set(speed);
 }
 
 
@@ -81,5 +89,21 @@ public Command runPivotRetract(){
         runPivot(Constants.IntakeConstants.INTAKE_RETRACT);
     });
 }
+//command to feed fuel into the shooter
+public Command feedShooterForward(){
+    return run(
+    () -> {
+        feedShooter(Constants.IntakeConstants.FEEDER_FEED);
+    });
+}
+
+//command to run feeder backwards to unjam it or smth
+public Command evacuateShooter(){
+    return run(
+    () -> {
+        feedShooter(Constants.IntakeConstants.FEEDER_EVACUATE);
+    });
 
 }
+}
+// hi.

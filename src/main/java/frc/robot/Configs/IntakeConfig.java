@@ -9,6 +9,7 @@ public class IntakeConfig {
     public static final SparkMaxConfig intakeFollowerConfig = new SparkMaxConfig();
     public static final SparkMaxConfig intakePivotLeaderConfig = new SparkMaxConfig();
     public static final SparkMaxConfig intakePivotFollowerConfig = new SparkMaxConfig();
+    public static final SparkMaxConfig ShooterFeederConfig = new SparkMaxConfig();
 
     static {
          //set current limits for flywheels 
@@ -17,7 +18,8 @@ public class IntakeConfig {
         .smartCurrentLimit(20);
         intakeFollowerConfig
         .idleMode(IdleMode.kCoast)
-        .smartCurrentLimit(20);
+        .smartCurrentLimit(20)
+        .inverted(true);
         intakePivotLeaderConfig
         .idleMode(IdleMode.kCoast)
         .smartCurrentLimit(20);
@@ -25,6 +27,9 @@ public class IntakeConfig {
         .idleMode(IdleMode.kCoast)
         .smartCurrentLimit(20)
         .inverted(true);
+        ShooterFeederConfig
+        .idleMode(IdleMode.kCoast)
+        .smartCurrentLimit(20);
        
         
         intakeFollowerConfig.follow(Constants.IntakeConstants.INTAKE_LEADER);
