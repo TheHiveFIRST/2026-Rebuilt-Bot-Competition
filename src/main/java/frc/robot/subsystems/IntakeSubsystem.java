@@ -70,7 +70,7 @@ public Command runIntakeBackwards(){
 public Command runPivotDeploy(){
     return run(
     () -> {
-        runIntake(Constants.IntakeConstants.INTAKE_DEPLOY);
+        runPivot(Constants.IntakeConstants.INTAKE_DEPLOY);
     });
 }
 
@@ -78,7 +78,7 @@ public Command runPivotDeploy(){
 public Command runPivotRetract(){
     return run(
     () -> {
-        runIntake(Constants.IntakeConstants.INTAKE_RETRACT);
+        runPivot(Constants.IntakeConstants.INTAKE_RETRACT);
     });
 }
 
