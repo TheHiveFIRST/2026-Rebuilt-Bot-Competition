@@ -22,7 +22,22 @@ public final class Constants {
     public static final int SHOOTER_RIGHT_FOLLOWER_CANID = 2;
     public static final int SHOOTER_LEFT_LEADER_CANID = 3;
     public static final int SHOOTER_LEFT_FOLLOWER_CANID = 4;
-    public static final double SHOOT_FORWARDS = 0;
-    public static final double SHOOT_BACKWARDS = 0;
+    public static final double SHOOT_FORWARDS = 1000;
+    public static final double SHOOT_BACKWARDS = -1000;
+
+    // PIDF values
+    public static final double RIGHT_Kp = 0.5;
+    public static final double RIGHT_Ki = 0;
+    public static final double RIGHT_Kd = 0.1;
+
+    public static final double LEFT_Kp = 0.5;
+    public static final double LEFT_Ki = 0;
+    public static final double LEFT_Kd = 0.1;
+
+    public static final double RIGHT_FF_kS = 1.0 / 5700.0;
+    public static final double RIGHT_FF_kV = 1.0 / 5700.0;
+
+    public static final double LEFT_FF_kS = 1.0 / 5700.0;
+    public static final double LEFT_FF_kV = 1.0 / 5700.0;
   }
 }
