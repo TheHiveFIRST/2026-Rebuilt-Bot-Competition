@@ -27,5 +27,16 @@ public final class Constants {
     public static final double INTAKE_BACKWARDS = 5; 
     public static final double INTAKE_DEPLOY = 5; 
     public static final double INTAKE_RETRACT = 5; 
+
+    public static final double PIVOT_GEARBOX_REDUCTION = 25;
+    public static final double PIVOT_REDUCTION = PIVOT_GEARBOX_REDUCTION * (22/38);
+
+    // PIDF Constants
+    public static final double PIVOT_Kp = 0.01;
+    public static final double PIVOT_Ki = 0;
+    public static final double PIVOT_Kd = 0;
+
+    public static final double PIVOT_FF_kS = 1.787;
+    public static final double PIVOT_FF_kV = 0.4;
   }
 }
