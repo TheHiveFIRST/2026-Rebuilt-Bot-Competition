@@ -30,7 +30,6 @@ public class IntakeSubsystem extends SubsystemBase {
     // Encoders and PID controllers
     private AbsoluteEncoder pivotEncoder;
     private PIDController pivotPID;
-    private SimpleMotorFeedforward PivotFF;
 
     public IntakeSubsystem() {
         // Initialize motors
@@ -106,5 +105,4 @@ public Command runPivotRetract(){
         runPivot(Constants.IntakeConstants.INTAKE_RETRACT);
     });
 }
-
 }
