@@ -77,8 +77,10 @@ public void runShooterVelocity(double targetRPM) {
 }
 
 public void runShooter(double rspeed, double lspeed) {
-    mShooterRightLeader.set(rspeed);
-    mShooterLeftLeader.set(-lspeed);
+    // mShooterRightLeader.set(rspeed);
+    // mShooterLeftLeader.set(lspeed);
+    System.out.println("rspeed: " + rspeed);
+    System.out.println("lspeed: " + lspeed);
 }
 
 //command to run shooter forwards
