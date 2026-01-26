@@ -8,8 +8,8 @@ import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.configs.ShooterConfig;
 import frc.robot.Constants;
+import frc.robot.Configs.ShooterConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -19,68 +19,60 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //constructor 
 public class ShooterSubsystem extends SubsystemBase {
 
-    private SparkMax mShooterRightLeader;
-    private SparkMax mShooterRightFollower;
-    private SparkMax mShooterLeftLeader;
-    private SparkMax mShooterLeftFollower;
+    private SparkMax mShooterLeader;
+    private SparkMax mShooterFollower;
+    private SparkMax mShooterFeeder;
 
     // Encoders and PIDF controllers
-    private RelativeEncoder rightEncoder;
-    private RelativeEncoder leftEncoder;
-    private PIDController rightPID;
-    private PIDController leftPID;
-    private SimpleMotorFeedforward RightFF;
-    private SimpleMotorFeedforward LeftFF;
+    private RelativeEncoder leaderEncoder;
+    private PIDController leaderPID;
+    private SimpleMotorFeedforward leaderFF;
 
     public ShooterSubsystem() {
         // Initialize motors
-        mShooterRightLeader = new SparkMax(Constants.ShooterConstants.SHOOTER_RIGHT_LEADER_CANID, MotorType.kBrushless);
-        mShooterLeftLeader = new SparkMax(Constants.ShooterConstants.SHOOTER_LEFT_LEADER_CANID, MotorType.kBrushless);
-        mShooterRightFollower = new SparkMax(Constants.ShooterConstants.SHOOTER_RIGHT_FOLLOWER_CANID, MotorType.kBrushless);
-        mShooterLeftFollower = new SparkMax(Constants.ShooterConstants.SHOOTER_LEFT_FOLLOWER_CANID, MotorType.kBrushless);
+        mShooterLeader = new SparkMax(Constants.ShooterConstants.SHOOTER_LEADER_CANID, MotorType.kBrushless);
+        mShooterLeader = new SparkMax(Constants.ShooterConstants.SHOOTER_FOLLOWER_CANID, MotorType.kBrushless);
+        mShooterFeeder = new SparkMax(Constants.ShooterConstants.SHOOTER_FEEDER, MotorType.kBrushless);
 
         // Configure motors
-        mShooterRightLeader.configure(ShooterConfig.shooterRightLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        mShooterRightFollower.configure(ShooterConfig.shooterRightFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        mShooterLeftLeader.configure(ShooterConfig.shooterLeftLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        mShooterLeftFollower.configure(ShooterConfig.shooterLeftFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        mShooterLeader.configure(ShooterConfig.shooterLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        mShooterFollower.configure(ShooterConfig.shooterFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        mShooterFeeder.configure(ShooterConfig.shooterFeederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // Initialize encoders and PID controllers
-        rightEncoder = mShooterRightLeader.getEncoder();
-        leftEncoder = mShooterLeftLeader.getEncoder();
-        rightPID = new PIDController(Constants.ShooterConstants.RIGHT_Kp, Constants.ShooterConstants.RIGHT_Ki, Constants.ShooterConstants.RIGHT_Kd);
-        leftPID = new PIDController(Constants.ShooterConstants.LEFT_Kp, Constants.ShooterConstants.LEFT_Ki, Constants.ShooterConstants.LEFT_Kd);
+        leaderEncoder = mShooterLeader.getEncoder();
+        leaderPID = new PIDController(Constants.ShooterConstants.LEADER_Kp, Constants.ShooterConstants.LEADER_Ki, Constants.ShooterConstants.LEADER_Kd);
 
         // Initialize feedforward (assign to class-level fields)
-        RightFF = new SimpleMotorFeedforward(Constants.ShooterConstants.RIGHT_FF_kS, Constants.ShooterConstants.RIGHT_FF_kV, 0);
-        LeftFF = new SimpleMotorFeedforward(Constants.ShooterConstants.LEFT_FF_kS, Constants.ShooterConstants.LEFT_FF_kV, 0);
+        leaderFF = new SimpleMotorFeedforward(Constants.ShooterConstants.LEADER_FF_kS, Constants.ShooterConstants.LEADER_FF_kV, 0);
     }
 
 //methods 
 public void runShooterVelocity(double targetRPM) {
     // Calculate PID for speed
-    double RightPIDOutput = rightPID.calculate(rightEncoder.getVelocity(), targetRPM);
-    double LeftPIDOutput = leftPID.calculate(leftEncoder.getVelocity(), targetRPM);
+    double LeaderPIDOutput = leaderPID.calculate(leaderEncoder.getVelocity(), targetRPM);
+  
 
     // Calculate feedforward
     double targetRPS = targetRPM / 60.0;
-    double RightFFOutput = RightFF.calculate(targetRPS);
-    double LeftFFOutput = LeftFF.calculate(targetRPS);
+    double leaderFFOutput = leaderFF.calculate(targetRPS);
+    
 
-    double rspeed = MathUtil.clamp(RightPIDOutput + RightFFOutput, -1.0, 1.0);
-    double lspeed = MathUtil.clamp(LeftPIDOutput + LeftFFOutput, -1.0, 1.0);
+    double leaderspeed = MathUtil.clamp(LeaderPIDOutput + leaderFFOutput, -1.0, 1.0);
 
 
-    SmartDashboard.putNumber("Right Shooter RPM", rightEncoder.getVelocity());
-    SmartDashboard.putNumber("Left Shooter RPM", leftEncoder.getVelocity());
-    runShooter(rspeed, lspeed);
+    SmartDashboard.putNumber("Leader Shooter RPM", leaderEncoder.getVelocity());
+    runShooter(leaderspeed);
 }
 
-public void runShooter(double rspeed, double lspeed) {
-    // mShooterRightLeader.set(rspeed);
-    // mShooterLeftLeader.set(lspeed);
-    System.out.println("rspeed: " + rspeed);
-    System.out.println("lspeed: " + lspeed);
+public void runShooter(double leaderspeed) {
+    // mShooterLeader.set(rspeed);
+    System.out.println("leaderspeed: " + leaderspeed);
+}
+
+// for the feeder shooter
+public void feedShooter(double speed) {
+    mShooterFeeder.set(speed);
 }
 
 //command to run shooter forwards
@@ -92,13 +84,21 @@ public Command runShooterForwards()
     });
 }
 
-//command to run shooter backwards
 
-public Command runShooterBackwards()
-{
+//command to feed fuel into the shooter
+public Command feedShooterForward(){
     return run(
     () -> {
-        runShooterVelocity(Constants.ShooterConstants.SHOOT_BACKWARDS);
+        feedShooter(Constants.ShooterConstants.FEEDER_FEED);
     });
 }
+
+//command to run feeder backwards to unjam it or smth
+public Command evacuateShooter(){
+    return run(
+    () -> {
+        feedShooter(Constants.ShooterConstants.FEEDER_EVACUATE);
+    });
+}
+
 }
