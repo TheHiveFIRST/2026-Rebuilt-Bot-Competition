@@ -24,7 +24,11 @@ public final class Constants {
     public static final double SHOOT_FORWARDS = 5600;
     public static final double FEEDER_FEED = 1; //these are all placeholders
     public static final double FEEDER_EVACUATE = 1;
-   
+    public static final double REGRESSION_COEFFICIENT_4 = 0; // more placeholders
+    public static final double REGRESSION_COEFFICIENT_3 = 0;
+    public static final double REGRESSION_COEFFICIENT_2 = 0;
+    public static final double REGRESSION_COEFFICIENT_1 = 0;
+    public static final double REGRESSION_COEFFICIENT_0 = 0;
 
     // PIDF values
     public static final double LEADER_Kp = 0.01;

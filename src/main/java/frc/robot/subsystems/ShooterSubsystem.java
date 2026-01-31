@@ -74,6 +74,15 @@ public void runShooter(double leaderspeed) {
 public void feedShooter(double speed) {
     mShooterFeeder.set(speed);
 }
+public void runShooterForDistance(double distancetohub){
+    double shooterregresiontarget = (Math.pow(distancetohub, 4) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_4)
+    + (Math.pow(distancetohub, 3) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_3)
+    + (Math.pow(distancetohub, 2) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_2)
+    + (Math.pow(distancetohub, 1) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_1)
+    +(Constants.ShooterConstants.REGRESSION_COEFFICIENT_0);
+    runShooterVelocity(shooterregresiontarget);
+
+}
 
 //command to run shooter forwards
 public Command runShooterForwards() 
@@ -98,6 +107,12 @@ public Command evacuateShooter(){
     return run(
     () -> {
         feedShooter(Constants.ShooterConstants.FEEDER_EVACUATE);
+    });
+}
+public Command runshooterwithregression(){
+    return run(
+    () -> {
+        runShooterForDistance(0);// the 0 is a placeholder. the real value needs to come from the limelight stuff
     });
 }
 
