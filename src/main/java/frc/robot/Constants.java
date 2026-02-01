@@ -52,4 +52,28 @@ public final class Constants {
     public static final double INTAKE_DEPLOY = .5; 
     public static final double INTAKE_RETRACT = .5; 
   }
+
+  public static class IntakeConstants {
+    public static final int INTAKE_LEADER = 0;
+    public static final int INTAKE_FOLLOWER = 1; 
+    public static final int INTAKE_PIVOT_LEADER = 2; 
+    public static final int INTAKE_PIVOT_FOLLOWER = 3; 
+    public static final int SHOOTER_FEEDER = 4; 
+
+    public static final double INTAKE_FORWARDS = 5; 
+    public static final double INTAKE_BACKWARDS = 5; 
+    public static final double INTAKE_DEPLOY = 5; 
+    public static final double INTAKE_RETRACT = 5; 
+
+    public static final double PIVOT_GEARBOX_REDUCTION = 25;
+    public static final double PIVOT_REDUCTION = PIVOT_GEARBOX_REDUCTION * (22/38);
+
+    // PIDF Constants
+    public static final double PIVOT_Kp = 0.01;
+    public static final double PIVOT_Ki = 0;
+    public static final double PIVOT_Kd = 0;
+
+    public static final double PIVOT_FF_kS = 1.787;
+    public static final double PIVOT_FF_kV = 0.4;
+  }
 }
