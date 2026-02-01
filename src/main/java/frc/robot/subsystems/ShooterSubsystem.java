@@ -66,8 +66,7 @@ public void runShooterVelocity(double targetRPM) {
 }
 
 public void runShooter(double leaderspeed) {
-    // mShooterLeader.set(rspeed);
-    System.out.println("leaderspeed: " + leaderspeed);
+    mShooterLeader.set(leaderspeed);
 }
 
 // for the feeder shooter

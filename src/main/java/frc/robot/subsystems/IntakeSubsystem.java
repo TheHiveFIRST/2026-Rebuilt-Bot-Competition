@@ -20,7 +20,6 @@ import frc.robot.Configs.IntakeConfig;
 
 //constructor
 public class IntakeSubsystem extends SubsystemBase {
-
     // Motors
     private SparkMax mIntakeLeader;
     private SparkMax mIntakeFollower;
@@ -30,6 +29,7 @@ public class IntakeSubsystem extends SubsystemBase {
     // Encoders and PID controllers
     private AbsoluteEncoder pivotEncoder;
     private PIDController pivotPID;
+    private SimpleMotorFeedforward PivotFF;
 
     public IntakeSubsystem() {
         // Initialize motors
