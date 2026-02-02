@@ -90,6 +90,14 @@ public Command runIntakeBackwards(){
     });
 }
 
+public Command stopIntake()
+{
+    return run(
+    () -> {
+        runIntake(0);
+    });
+}
+
 //command to run pivot and deploy the intake PID ONLY
 public Command runPivotDeploy(){
     return run(

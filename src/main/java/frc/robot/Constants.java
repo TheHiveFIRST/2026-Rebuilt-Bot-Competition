@@ -18,12 +18,12 @@ public final class Constants {
   }
 
   public static class ShooterConstants {
-    public static final int SHOOTER_LEADER_CANID = 1;
-    public static final int SHOOTER_FOLLOWER_CANID = 2;
-    public static final int SHOOTER_FEEDER = 5; 
-    public static final double SHOOT_FORWARDS = 5600;
-    public static final double FEEDER_FEED = 1; //these are all placeholders
-    public static final double FEEDER_EVACUATE = 1;
+    public static final int SHOOTER_LEADER_CANID = 14;
+    public static final int SHOOTER_FOLLOWER_CANID = 15;
+    public static final int SHOOTER_FEEDER = 16; 
+    public static final double SHOOT_FORWARDS = 560;// MAX RPM 5600;
+    public static final double FEEDER_FEED = 5; //these are all placeholders
+    public static final double FEEDER_EVACUATE = 5;
     public static final double REGRESSION_COEFFICIENT_4 = 0; // more placeholders
     public static final double REGRESSION_COEFFICIENT_3 = 0;
     public static final double REGRESSION_COEFFICIENT_2 = 0;
@@ -35,27 +35,27 @@ public final class Constants {
     public static final double LEADER_Ki = 0;
     public static final double LEADER_Kd = 0;
 
-    public static final double LEADER_FF_kS = 1.787;
+    public static final double LEADER_FF_kS = 0.1; //1.787;
     public static final double LEADER_FF_kV = 0.4;
   }
 
   public static class IntakeConstants {
-    public static final int INTAKE_LEADER = 0;
-    public static final int INTAKE_FOLLOWER = 1; 
-    public static final int INTAKE_PIVOT_LEADER = 2; 
-    public static final int INTAKE_PIVOT_FOLLOWER = 3; 
+    public static final int INTAKE_LEADER = 10;
+    public static final int INTAKE_FOLLOWER = 11; 
+    public static final int INTAKE_PIVOT_LEADER = 12; 
+    public static final int INTAKE_PIVOT_FOLLOWER = 13; 
     public static final int SHOOTER_FEEDER = 4; 
 
-    public static final double INTAKE_FORWARDS = 5; 
-    public static final double INTAKE_BACKWARDS = 5; 
-    public static final double INTAKE_DEPLOY = 5; 
-    public static final double INTAKE_RETRACT = 5; 
+    public static final double INTAKE_FORWARDS = 1; 
+    public static final double INTAKE_BACKWARDS = 1; 
+    public static final double INTAKE_DEPLOY = 0.6; 
+    public static final double INTAKE_RETRACT = 0.6;  
 
     public static final double PIVOT_GEARBOX_REDUCTION = 25;
     public static final double PIVOT_REDUCTION = PIVOT_GEARBOX_REDUCTION * (22/38);
 
     // PIDF Constants
-    public static final double PIVOT_Kp = 0.01;
+    public static final double PIVOT_Kp = 0.02;
     public static final double PIVOT_Ki = 0;
     public static final double PIVOT_Kd = 0;
 

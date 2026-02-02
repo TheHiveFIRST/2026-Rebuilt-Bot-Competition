@@ -13,6 +13,7 @@ import frc.robot.Configs.ShooterConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -25,13 +26,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
     // Encoders and PIDF controllers
     private RelativeEncoder leaderEncoder;
+
     private PIDController leaderPID;
     private SimpleMotorFeedforward leaderFF;
 
     public ShooterSubsystem() {
         // Initialize motors
         mShooterLeader = new SparkMax(Constants.ShooterConstants.SHOOTER_LEADER_CANID, MotorType.kBrushless);
-        mShooterLeader = new SparkMax(Constants.ShooterConstants.SHOOTER_FOLLOWER_CANID, MotorType.kBrushless);
+        mShooterFollower = new SparkMax(Constants.ShooterConstants.SHOOTER_FOLLOWER_CANID, MotorType.kBrushless);
         mShooterFeeder = new SparkMax(Constants.ShooterConstants.SHOOTER_FEEDER, MotorType.kBrushless);
 
         // Configure motors
@@ -40,6 +42,7 @@ public class ShooterSubsystem extends SubsystemBase {
         mShooterFeeder.configure(ShooterConfig.shooterFeederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // Initialize encoders and PID controllers
+
         leaderEncoder = mShooterLeader.getEncoder();
         leaderPID = new PIDController(Constants.ShooterConstants.LEADER_Kp, Constants.ShooterConstants.LEADER_Ki, Constants.ShooterConstants.LEADER_Kd);
 
@@ -56,7 +59,7 @@ public void runShooterVelocity(double targetRPM) {
     // Calculate feedforward
     double targetRPS = targetRPM / 60.0;
     double leaderFFOutput = leaderFF.calculate(targetRPS);
-    
+
 
     double leaderspeed = MathUtil.clamp(LeaderPIDOutput + leaderFFOutput, -1.0, 1.0);
 
@@ -66,13 +69,15 @@ public void runShooterVelocity(double targetRPM) {
 }
 
 public void runShooter(double leaderspeed) {
-    mShooterLeader.set(leaderspeed);
+    // mShooterLeader.set(leaderspeed);
+    System.out.println(leaderspeed);
 }
 
 // for the feeder shooter
 public void feedShooter(double speed) {
     mShooterFeeder.set(speed);
 }
+
 public void runShooterForDistance(double distancetohub){
     double shooterregresiontarget = (Math.pow(distancetohub, 4) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_4)
     + (Math.pow(distancetohub, 3) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_3)
@@ -92,9 +97,17 @@ public Command runShooterForwards()
     });
 }
 
+public Command stopShooter()
+{
+    return run(
+    () -> {
+        runShooterVelocity(0);
+    });
+}
+
 
 //command to feed fuel into the shooter
-public Command feedShooterForward(){
+public Command feedShooterForwards(){
     return run(
     () -> {
         feedShooter(Constants.ShooterConstants.FEEDER_FEED);
