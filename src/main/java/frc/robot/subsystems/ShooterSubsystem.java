@@ -16,17 +16,17 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+//stop all, only motor .set, change naming, button to run shooter forwards, from pid to shooter power. 
 
 //constructor 
 public class ShooterSubsystem extends SubsystemBase {
 
     private SparkMax mShooterLeader;
     private SparkMax mShooterFollower;
-    private SparkMax mShooterFeeder;
+    private SparkMax mKicker;
 
     // Encoders and PIDF controllers
     private RelativeEncoder leaderEncoder;
-
     private PIDController leaderPID;
     private SimpleMotorFeedforward leaderFF;
 
@@ -34,12 +34,12 @@ public class ShooterSubsystem extends SubsystemBase {
         // Initialize motors
         mShooterLeader = new SparkMax(Constants.ShooterConstants.SHOOTER_LEADER_CANID, MotorType.kBrushless);
         mShooterFollower = new SparkMax(Constants.ShooterConstants.SHOOTER_FOLLOWER_CANID, MotorType.kBrushless);
-        mShooterFeeder = new SparkMax(Constants.ShooterConstants.SHOOTER_FEEDER, MotorType.kBrushless);
+        mKicker = new SparkMax(Constants.ShooterConstants.SHOOTER_FEEDER, MotorType.kBrushless);
 
         // Configure motors
         mShooterLeader.configure(ShooterConfig.shooterLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         mShooterFollower.configure(ShooterConfig.shooterFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        mShooterFeeder.configure(ShooterConfig.shooterFeederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        mKicker.configure(ShooterConfig.shooterFeederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // Initialize encoders and PID controllers
 
@@ -50,32 +50,38 @@ public class ShooterSubsystem extends SubsystemBase {
         leaderFF = new SimpleMotorFeedforward(Constants.ShooterConstants.LEADER_FF_kS, Constants.ShooterConstants.LEADER_FF_kV, 0);
     }
 
+
+
+
 //methods 
+public void stopAll() {
+    mShooterLeader.set(0);
+    mKicker.set(0);
+}
+
+public void runShooter(double leaderspeed) {
+    mShooterLeader.set(leaderspeed);
+    //System.out.println(leaderspeed);
+}
+
+
+
+//methods in the works: 
 public void runShooterVelocity(double targetRPM) {
     // Calculate PID for speed
     double LeaderPIDOutput = leaderPID.calculate(leaderEncoder.getVelocity(), targetRPM);
-  
-
     // Calculate feedforward
     double targetRPS = targetRPM / 60.0;
     double leaderFFOutput = leaderFF.calculate(targetRPS);
 
-
-    double leaderspeed = MathUtil.clamp(LeaderPIDOutput + leaderFFOutput, -1.0, 1.0);
-
+    double leaderSpeed = MathUtil.clamp(LeaderPIDOutput + leaderFFOutput, -1.0, 1.0);
 
     SmartDashboard.putNumber("Leader Shooter RPM", leaderEncoder.getVelocity());
-    runShooter(leaderspeed);
+    runShooter(leaderSpeed);
 }
-
-public void runShooter(double leaderspeed) {
-    // mShooterLeader.set(leaderspeed);
-    System.out.println(leaderspeed);
-}
-
 // for the feeder shooter
 public void feedShooter(double speed) {
-    mShooterFeeder.set(speed);
+    mKicker.set(speed);
 }
 
 public void runShooterForDistance(double distancetohub){
@@ -85,15 +91,14 @@ public void runShooterForDistance(double distancetohub){
     + (Math.pow(distancetohub, 1) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_1)
     +(Constants.ShooterConstants.REGRESSION_COEFFICIENT_0);
     runShooterVelocity(shooterregresiontarget);
-
 }
 
 //command to run shooter forwards
-public Command runShooterForwards() 
+public Command runKicker() 
 {
     return run(
     () -> {
-        runShooterVelocity(Constants.ShooterConstants.SHOOT_FORWARDS);
+        feedShooter(Constants.ShooterConstants.SHOOT_FORWARDS);
     });
 }
 
@@ -107,21 +112,21 @@ public Command stopShooter()
 
 
 //command to feed fuel into the shooter
-public Command feedShooterForwards(){
+public Command shoot(){
     return run(
     () -> {
-        feedShooter(Constants.ShooterConstants.FEEDER_FEED);
+        runShooter(Constants.ShooterConstants.FEEDER_FEED);
     });
 }
 
-//command to run feeder backwards to unjam it or smth
+//command to run feeder backwards to unjam it 
 public Command evacuateShooter(){
     return run(
     () -> {
         feedShooter(Constants.ShooterConstants.FEEDER_EVACUATE);
     });
 }
-public Command runshooterwithregression(){
+public Command runShooterWithRegression(){
     return run(
     () -> {
         runShooterForDistance(0);// the 0 is a placeholder. the real value needs to come from the limelight stuff

@@ -19,7 +19,7 @@ import frc.robot.Constants;
 import frc.robot.Configs.IntakeConfig; 
 
 //constructor
-public class IntakeSubsystem extends SubsystemBase {
+public class IntakeSubsystemextends extends SubsystemBase {
     // Motors
     private SparkMax mIntakeLeader;
     private SparkMax mIntakeFollower;
@@ -31,7 +31,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private PIDController pivotPID;
     private SimpleMotorFeedforward PivotFF;
 
-    public IntakeSubsystem() {
+    public IntakeSubsystemextends() {
         // Initialize motors
         mIntakeLeader = new SparkMax(Constants.IntakeConstants.INTAKE_LEADER, MotorType.kBrushless);
         mIntakeFollower = new SparkMax(Constants.IntakeConstants.INTAKE_FOLLOWER, MotorType.kBrushless);

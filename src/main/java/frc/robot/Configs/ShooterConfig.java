@@ -20,10 +20,12 @@ public class ShooterConfig {
         shooterFollowerConfig
         .idleMode(IdleMode.kCoast)
         .smartCurrentLimit(40)
-        .inverted(true);
+        .follow(Constants.ShooterConstants.SHOOTER_LEADER_CANID);
+        
         shooterFeederConfig
         .idleMode(IdleMode.kCoast)
-        .smartCurrentLimit(40);
+        .smartCurrentLimit(40)
+        .inverted(true);
 
         shooterFollowerConfig.follow(Constants.ShooterConstants.SHOOTER_LEADER_CANID);
 
