@@ -6,11 +6,25 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import Constants.ClimbConstants;
 
-public class ExampleSubsystem extends SubsystemBase {
+public class ClimbSubsystem extends SubsystemBase {
+
+  private SparkMax climbLeaderMotor;
+  private SparkMax climbFollowerMotor;
+  private SparkMaxConfig climbConfig = new SparkMaxConfig();
+
   /** Creates a new ExampleSubsystem. */
-  public ExampleSubsystem() {}
+  public ClimbSubsystem() {
+    climbLeaderMotor = new SparkMax(ClimbConstants.climbLeaderCanID, MotorType.kBrushless);
+    climbFollowerMotor = new SparkMax(ClimbConstants.climbFollowerCanID, MotorType.kBrushless);
 
+    climbConfig
+      .smartCurrentLimit(50)
+      .idleMode(IdleMode.kBrake);
+
+    spark.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+  }
   /**
    * Example command factory method.
    *
