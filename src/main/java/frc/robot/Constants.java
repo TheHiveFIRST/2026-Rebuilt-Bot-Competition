@@ -6,7 +6,7 @@ package frc.robot;
  */
 public final class Constants {
     public static class OperatorConstants {
-        public static final int kDriverControllerPort = 1;
+        public static final int kDriverControllerPort = 0;
     }
 
     public static class ShooterConstants {
@@ -16,19 +16,22 @@ public final class Constants {
         public static final int SHOOTER_FEEDER = 16; 
 
         // PIDF Values (Tuned for your shooter)
-        public static final double LEADER_Kp = 0.00001;
+        public static final double LEADER_Kp = 0.00047;
+        public static final double LEADER_Kd = 0.00003;
+        public static final double LEADER_Ki = 0.00001;
         public static final double LEADER_FF_kS = 0.0;
-        public static final double LEADER_FF_kV = 0.0104999999;
-        
+        public static final double LEADER_FF_kV = 0.0110;
+    
         // Manual Control Settings
         public static final double RPM_INCREMENT = 50.0;
-        public static final double KV_INCREMENT = 0.001;
+        public static final double KD_INCREMENT = 0.00001;
         public static final double KP_INCREMENT = 0.00001;
+        public static final double KI_INCREMENT = 0.00001;
 
 
-        public static final double DEFAULT_TARGET_RPM = 5000.0;
-        public static final double VELOCITY_TOLERANCE = 50; 
-        public static final double KICKER_SPEED = 0.5;
+        public static final double DEFAULT_TARGET_RPM = 5400.0;
+        public static final double VELOCITY_TOLERANCE = 100; 
+        public static final double KICKER_SPEED = 1.0;
     }
 
     public static class IntakeConstants {

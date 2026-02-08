@@ -11,6 +11,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -37,6 +38,11 @@ public class TestingSubsystem extends SubsystemBase {
     private double m_targetRPM = ShooterConstants.DEFAULT_TARGET_RPM;
     private double m_currentKV = ShooterConstants.LEADER_FF_kV;
     private double m_currentKP = ShooterConstants.LEADER_Kp;
+    private double m_currentKI = ShooterConstants.LEADER_Ki;
+    private double m_currentKD = ShooterConstants.LEADER_Kd;
+
+    private final SlewRateLimiter ffSlewRateLimiter;
+
 
 
     public TestingSubsystem() {
@@ -53,10 +59,12 @@ public class TestingSubsystem extends SubsystemBase {
         m_kicker.configure(ShooterConfig.shooterFeederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         m_shooterEncoder = m_shooterLeader.getEncoder();
-        m_shooterPID = new PIDController(m_currentKP, 0, 0);
+        m_shooterPID = new PIDController(m_currentKP, m_currentKI, m_currentKD);
     
         m_shooterBangBang = new BangBangController();
         m_shooterBangBang.setTolerance(30); //TODO: must test if tolerance needed/works for PID and bang bang
+
+        ffSlewRateLimiter = new SlewRateLimiter(20);
         
     }
 
@@ -66,8 +74,12 @@ public class TestingSubsystem extends SubsystemBase {
 
             
         m_shooterPID.setP(m_currentKP);
+        m_shooterPID.setI(m_currentKI);
+        m_shooterPID.setD(m_currentKD);
+        
         double pidOutput = m_shooterPID.calculate(m_shooterEncoder.getVelocity(), m_targetRPM);
         double ffOutput = tempFF.calculate(m_targetRPM / 60.0); 
+
         
         m_shooterLeader.set(MathUtil.clamp(pidOutput + ffOutput, 0.0, 1.0));
 
@@ -81,7 +93,7 @@ public class TestingSubsystem extends SubsystemBase {
         double bbOutput = m_shooterBangBang.calculate(m_shooterEncoder.getVelocity(), m_targetRPM);
         double ffOutput = tempFF.calculate(m_targetRPM / 60.0); 
         
-        m_shooterLeader.set(MathUtil.clamp(bbOutput + 0.9*ffOutput, 0.0, 1.0));
+        m_shooterLeader.set(MathUtil.clamp(bbOutput*60 + ffOutput, 0.0, 1.0));
 
     }
 
@@ -89,8 +101,11 @@ public class TestingSubsystem extends SubsystemBase {
     public void incrementRPM() { m_targetRPM += ShooterConstants.RPM_INCREMENT; }
     public void decrementRPM() { m_targetRPM -= ShooterConstants.RPM_INCREMENT; }
 
-    public void incrementKV() { m_currentKV += ShooterConstants.KV_INCREMENT; } // Increments by 0.01 for fine tuning
-    public void decrementKV() { m_currentKV -= ShooterConstants.KV_INCREMENT; }
+    public void incrementKD() { m_currentKD += ShooterConstants.KD_INCREMENT; } // Increments by 0.01 for fine tuning
+    public void decrementKD() { m_currentKD -= ShooterConstants.KD_INCREMENT; }
+
+    public void incrementKI() { m_currentKI += ShooterConstants.KI_INCREMENT; } // Increments by 0.01 for fine tuning
+    public void decrementKI() { m_currentKI -= ShooterConstants.KI_INCREMENT; }
 
     public void incrementKP() { m_currentKP += ShooterConstants.KP_INCREMENT; } // Increments by 0.01 for fine tuning
     public void decrementKP() { m_currentKP -= ShooterConstants.KP_INCREMENT; }
@@ -113,6 +128,9 @@ public class TestingSubsystem extends SubsystemBase {
 
     // --- Command Factories ---
     public Command runShooterCommand() { return run(this::runShooterAtTarget); }
+    public Command runBangBangShooterCommand() { return run(this::runShooterBangBang); }
+
+    
    
     public Command runIntakeForwardCommand() {
          return run(
@@ -128,10 +146,10 @@ public class TestingSubsystem extends SubsystemBase {
               });
     }
 
-    public Command runKickerCommand () {
+    public Command runKickerCommand() {
          return run(
         () -> {
-            runKicker(ShooterConstants.KICKER_SPEED);
+            runKicker(-ShooterConstants.KICKER_SPEED);
               });
     }
 
@@ -141,9 +159,14 @@ public class TestingSubsystem extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("Testing/Target RPM", m_targetRPM);
         SmartDashboard.putNumber("Testing/Actual RPM", m_shooterEncoder.getVelocity());
-        SmartDashboard.putNumber("Testing/Current kV Tuning", m_currentKV);
+        SmartDashboard.putNumber("Testing/Current kD Tuning", m_currentKD);
         SmartDashboard.putNumber("Testing/Current kP Tuning", m_currentKP);
+        SmartDashboard.putNumber("Testing/Current kI Tuning", m_currentKI);
         SmartDashboard.putNumber("Testing/intake bus voltage", m_intakeLeader.getBusVoltage());
+        SmartDashboard.putNumber("Testing/shooter current", m_shooterLeader.getOutputCurrent());
+        SmartDashboard.putNumber("Testing/shooter motor 2 current", m_shooterFollower.getOutputCurrent());
+
+
         
         boolean atSpeed = Math.abs(m_shooterEncoder.getVelocity() - m_targetRPM) < ShooterConstants.VELOCITY_TOLERANCE;
         SmartDashboard.putBoolean("Testing/Shooter Ready", atSpeed);
