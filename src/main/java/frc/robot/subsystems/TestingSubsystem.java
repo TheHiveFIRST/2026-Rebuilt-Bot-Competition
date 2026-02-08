@@ -4,10 +4,11 @@ import com.fasterxml.jackson.databind.RuntimeJsonMappingException;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -29,6 +30,8 @@ public class TestingSubsystem extends SubsystemBase {
 
     private final RelativeEncoder m_shooterEncoder;
     private final PIDController m_shooterPID;
+    private final BangBangController m_shooterBangBang;
+
     
     // --- State Variables ---
     private double m_targetRPM = ShooterConstants.DEFAULT_TARGET_RPM;
@@ -51,19 +54,35 @@ public class TestingSubsystem extends SubsystemBase {
 
         m_shooterEncoder = m_shooterLeader.getEncoder();
         m_shooterPID = new PIDController(m_currentKP, 0, 0);
+    
+        m_shooterBangBang = new BangBangController();
+        m_shooterBangBang.setTolerance(30); //TODO: must test if tolerance needed/works for PID and bang bang
+        
     }
 
     public void runShooterAtTarget() {
         // We create a temporary FF object using the live m_currentKV variable
         SimpleMotorFeedforward tempFF = new SimpleMotorFeedforward(ShooterConstants.LEADER_FF_kS, ShooterConstants.LEADER_FF_kV);
 
+            
         m_shooterPID.setP(m_currentKP);
         double pidOutput = m_shooterPID.calculate(m_shooterEncoder.getVelocity(), m_targetRPM);
         double ffOutput = tempFF.calculate(m_targetRPM / 60.0); 
         
-        m_shooterLeader.set(MathUtil.clamp(pidOutput + ffOutput, -1.0, 1.0));
+        m_shooterLeader.set(MathUtil.clamp(pidOutput + ffOutput, 0.0, 1.0));
 
         SmartDashboard.putNumber("current KP", m_currentKP);
+    }
+
+    public void runShooterBangBang() {
+        // We create a temporary FF object using the live m_currentKV variable
+        SimpleMotorFeedforward tempFF = new SimpleMotorFeedforward(ShooterConstants.LEADER_FF_kS, ShooterConstants.LEADER_FF_kV);
+
+        double bbOutput = m_shooterBangBang.calculate(m_shooterEncoder.getVelocity(), m_targetRPM);
+        double ffOutput = tempFF.calculate(m_targetRPM / 60.0); 
+        
+        m_shooterLeader.set(MathUtil.clamp(bbOutput + 0.9*ffOutput, 0.0, 1.0));
+
     }
 
     // --- Tuning Methods ---
@@ -82,21 +101,41 @@ public class TestingSubsystem extends SubsystemBase {
         m_kicker.set(0);
     }
 
-    public void runIntakeForward(){
-        m_intakeLeader.set(IntakeConstants.INTAKE_SPEED);
+    public void runIntake(double speed){
+        m_intakeLeader.set(speed);
     }
 
-    public void runIntakeBackward(){
-        m_intakeLeader.set(-IntakeConstants.INTAKE_SPEED);
+    public void runKicker(double speed){
+        m_kicker.set(speed);
     }
+
 
 
     // --- Command Factories ---
     public Command runShooterCommand() { return run(this::runShooterAtTarget); }
-    public Command runIntakeCommand() { return  run(this::runIntakeForward); }
-    public Command runBackwardIntakeCommand() { return run(this::runIntakeBackward); }
+   
+    public Command runIntakeForwardCommand() {
+         return run(
+        () -> {
+            runIntake(IntakeConstants.INTAKE_SPEED);
+              });
+    }
+    
+    public Command runIntakeBackwardCommand() {
+         return run(
+        () -> {
+            runIntake(-IntakeConstants.INTAKE_SPEED);
+              });
+    }
 
-    public Command runKickerCommand(double speed) { return run((); }
+    public Command runKickerCommand () {
+         return run(
+        () -> {
+            runKicker(ShooterConstants.KICKER_SPEED);
+              });
+    }
+
+
 
     @Override
     public void periodic() {
@@ -104,9 +143,9 @@ public class TestingSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Testing/Actual RPM", m_shooterEncoder.getVelocity());
         SmartDashboard.putNumber("Testing/Current kV Tuning", m_currentKV);
         SmartDashboard.putNumber("Testing/Current kP Tuning", m_currentKP);
-        SmartDashboard.putNumber("intake bus voltage", m_intakeLeader.getBusVoltage());
+        SmartDashboard.putNumber("Testing/intake bus voltage", m_intakeLeader.getBusVoltage());
         
-        boolean atSpeed = Math.abs(m_shooterEncoder.getVelocity() - m_targetRPM) < 50;
+        boolean atSpeed = Math.abs(m_shooterEncoder.getVelocity() - m_targetRPM) < ShooterConstants.VELOCITY_TOLERANCE;
         SmartDashboard.putBoolean("Testing/Shooter Ready", atSpeed);
     }
 }

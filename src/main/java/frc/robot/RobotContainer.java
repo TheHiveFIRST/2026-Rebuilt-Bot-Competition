@@ -37,9 +37,9 @@ public class RobotContainer {
         m_driverController.povLeft().onTrue(m_testingSubsystem.runOnce(m_testingSubsystem::decrementKP));
 
         // Bumpers: Kicker and Intake
-        m_driverController.rightBumper().whileTrue(m_testingSubsystem.runKickerCommand(-ShooterConstants.KICKER_SPEED));
-        m_driverController.leftBumper().whileTrue(m_testingSubsystem.runIntakeCommand());
-        m_driverController.leftTrigger().whileTrue(m_testingSubsystem.runBackwardIntakeCommand());
+        m_driverController.rightBumper().whileTrue(m_testingSubsystem.runKickerCommand());
+        m_driverController.leftBumper().whileTrue(m_testingSubsystem.runIntakeForwardCommand());
+        m_driverController.leftTrigger().whileTrue(m_testingSubsystem.runIntakeBackwardCommand());
 
     }
 

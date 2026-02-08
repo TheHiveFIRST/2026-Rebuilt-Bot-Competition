@@ -27,6 +27,7 @@ public final class Constants {
 
 
         public static final double DEFAULT_TARGET_RPM = 5000.0;
+        public static final double VELOCITY_TOLERANCE = 50; 
         public static final double KICKER_SPEED = 0.5;
     }
 
