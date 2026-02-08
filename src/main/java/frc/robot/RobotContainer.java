@@ -1,32 +1,54 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.TestingSubsystem;
 
 public class RobotContainer {
-    private final CommandXboxController m_driverController = 
-        new CommandXboxController(OperatorConstants.kDriverControllerPort);
-
+    // --- Subsystems ---
     private final TestingSubsystem m_testingSubsystem = new TestingSubsystem();
 
+    // --- Controller ---
+    private final CommandXboxController m_driverController =
+        new CommandXboxController(OperatorConstants.kDriverControllerPort);
+
     public RobotContainer() {
+        // Configure the button bindings
         configureBindings();
     }
 
     private void configureBindings() {
-        // Y Button: Runs Shooter at the target RPM defined in the subsystem
-        m_driverController.y().whileTrue(m_testingSubsystem.runShooterCommand())
-                             .onFalse(m_testingSubsystem.runOnce(m_testingSubsystem::stopAll));
+      
+        // Y Button: Run Shooter
+       m_driverController.y().toggleOnTrue(m_testingSubsystem.runShooterCommand());
+          //                   .toggleOnFalse(m_testingSubsystem.runOnce(m_testingSubsystem::stopAll));
+       m_driverController.x().toggleOnFalse(m_testingSubsystem.runOnce(m_testingSubsystem::stopAll));
 
-        // D-Pad Up/Down: Increments/Decrements target RPM by 10
+        // D-Pad Up/Down: Target RPM
         m_driverController.povUp().onTrue(m_testingSubsystem.runOnce(m_testingSubsystem::incrementRPM));
         m_driverController.povDown().onTrue(m_testingSubsystem.runOnce(m_testingSubsystem::decrementRPM));
 
-        // Right Bumper: Run Kicker (Feeder)
-        m_driverController.rightBumper().whileTrue(m_testingSubsystem.runKickerCommand(0.5));
+        // D-Pad Left/Right: kV Tuning
+        m_driverController.povRight().onTrue(m_testingSubsystem.runOnce(m_testingSubsystem::incrementKP));
+        m_driverController.povLeft().onTrue(m_testingSubsystem.runOnce(m_testingSubsystem::decrementKP));
 
-        // Left Bumper: Run Intake
+        // Bumpers: Kicker and Intake
+        m_driverController.rightBumper().whileTrue(m_testingSubsystem.runKickerCommand(-ShooterConstants.KICKER_SPEED));
         m_driverController.leftBumper().whileTrue(m_testingSubsystem.runIntakeCommand());
+        m_driverController.leftTrigger().whileTrue(m_testingSubsystem.runBackwardIntakeCommand());
+
+    }
+
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
+        // Returns a simple command to do nothing for now
+        return Commands.none();
     }
 }

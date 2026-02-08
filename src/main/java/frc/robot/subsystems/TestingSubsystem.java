@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.fasterxml.jackson.databind.RuntimeJsonMappingException;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -12,55 +13,68 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.Configs.ShooterConfig; // Assuming ShooterConfig handles the 14/15/16 setup
-import frc.robot.Configs.IntakeConfigs;  // Assuming IntakeConfigs handles the 10/11 setup
+import frc.robot.Configs.ShooterConfig;
+import frc.robot.Configs.IntakeConfigs;
 
 public class TestingSubsystem extends SubsystemBase {
-    // Hardware
-    private final SparkMax m_intakeLeader = new SparkMax(IntakeConstants.INTAKE_LEADER_ID, MotorType.kBrushless);
-    private final SparkMax m_intakeFollower = new SparkMax(IntakeConstants.INTAKE_FOLLOWER_ID, MotorType.kBrushless);
-    private final SparkMax m_shooterLeader = new SparkMax(ShooterConstants.SHOOTER_LEADER_CANID, MotorType.kBrushless);
-    private final SparkMax m_shooterFollower = new SparkMax(ShooterConstants.SHOOTER_FOLLOWER_CANID, MotorType.kBrushless);
-    private final SparkMax m_kicker = new SparkMax(ShooterConstants.KICKER_CANID, MotorType.kBrushless);
 
-    // Control Objects
+    private final SparkMax m_intakeLeader;
+    private final SparkMax m_intakeFollower;
+    private final SparkMax m_shooterLeader;
+    private final SparkMax m_shooterFollower;
+    private final SparkMax m_kicker;
+
     private final RelativeEncoder m_shooterEncoder;
     private final PIDController m_shooterPID;
-    private final SimpleMotorFeedforward m_shooterFF;
-
-    // State Variables
+    
+    // --- State Variables ---
     private double m_targetRPM = ShooterConstants.DEFAULT_TARGET_RPM;
+    private double m_currentKV = ShooterConstants.LEADER_FF_kV;
+    private double m_currentKP = ShooterConstants.LEADER_Kp;
+
 
     public TestingSubsystem() {
-        // Configure Intake
+        m_intakeLeader = new SparkMax(IntakeConstants.INTAKE_LEADER_ID, MotorType.kBrushless);
+        m_intakeFollower = new SparkMax(IntakeConstants.INTAKE_FOLLOWER_ID, MotorType.kBrushless);
+        m_shooterLeader = new SparkMax(ShooterConstants.SHOOTER_LEADER_CANID, MotorType.kBrushless);
+        m_shooterFollower = new SparkMax(ShooterConstants.SHOOTER_FOLLOWER_CANID, MotorType.kBrushless);
+        m_kicker = new SparkMax(ShooterConstants.SHOOTER_FEEDER, MotorType.kBrushless);
+
         m_intakeLeader.configure(IntakeConfigs.intakeLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         m_intakeFollower.configure(IntakeConfigs.intakeFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        
-        // Configure Shooter/Kicker
         m_shooterLeader.configure(ShooterConfig.shooterLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         m_shooterFollower.configure(ShooterConfig.shooterFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         m_kicker.configure(ShooterConfig.shooterFeederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         m_shooterEncoder = m_shooterLeader.getEncoder();
-        m_shooterPID = new PIDController(ShooterConstants.LEADER_Kp, 0, 0);
-        m_shooterFF = new SimpleMotorFeedforward(ShooterConstants.LEADER_FF_kS, ShooterConstants.LEADER_FF_kV);
+        m_shooterPID = new PIDController(m_currentKP, 0, 0);
     }
-
-    // --- Action Methods ---
 
     public void runShooterAtTarget() {
+        // We create a temporary FF object using the live m_currentKV variable
+        SimpleMotorFeedforward tempFF = new SimpleMotorFeedforward(ShooterConstants.LEADER_FF_kS, ShooterConstants.LEADER_FF_kV);
+
+        m_shooterPID.setP(m_currentKP);
         double pidOutput = m_shooterPID.calculate(m_shooterEncoder.getVelocity(), m_targetRPM);
-        double ffOutput = m_shooterFF.calculate(m_targetRPM / 60.0);
+        double ffOutput = tempFF.calculate(m_targetRPM / 60.0); 
+        
         m_shooterLeader.set(MathUtil.clamp(pidOutput + ffOutput, -1.0, 1.0));
+
+        SmartDashboard.putNumber("current KP", m_currentKP);
     }
 
-    public void setIntake(double speed) { m_intakeLeader.set(speed); }
-    public void setKicker(double speed) { m_kicker.set(speed); }
-    
+    // --- Tuning Methods ---
     public void incrementRPM() { m_targetRPM += ShooterConstants.RPM_INCREMENT; }
     public void decrementRPM() { m_targetRPM -= ShooterConstants.RPM_INCREMENT; }
+
+    public void incrementKV() { m_currentKV += ShooterConstants.KV_INCREMENT; } // Increments by 0.01 for fine tuning
+    public void decrementKV() { m_currentKV -= ShooterConstants.KV_INCREMENT; }
+
+    public void incrementKP() { m_currentKP += ShooterConstants.KP_INCREMENT; } // Increments by 0.01 for fine tuning
+    public void decrementKP() { m_currentKP -= ShooterConstants.KP_INCREMENT; }
 
     public void stopAll() {
         m_intakeLeader.set(0);
@@ -68,23 +82,31 @@ public class TestingSubsystem extends SubsystemBase {
         m_kicker.set(0);
     }
 
+    public void runIntakeForward(){
+        m_intakeLeader.set(IntakeConstants.INTAKE_SPEED);
+    }
+
+    public void runIntakeBackward(){
+        m_intakeLeader.set(-IntakeConstants.INTAKE_SPEED);
+    }
+
+
     // --- Command Factories ---
+    public Command runShooterCommand() { return run(this::runShooterAtTarget); }
+    public Command runIntakeCommand() { return  run(this::runIntakeForward); }
+    public Command runBackwardIntakeCommand() { return run(this::runIntakeBackward); }
 
-    public Command runShooterCommand() {
-        return run(this::runShooterAtTarget);
-    }
-
-    public Command runIntakeCommand() {
-        return startEnd(() -> setIntake(IntakeConstants.INTAKE_SPEED), () -> setIntake(0));
-    }
-
-    public Command runKickerCommand(double speed) {
-        return startEnd(() -> setKicker(speed), () -> setKicker(0));
-    }
+    public Command runKickerCommand(double speed) { return run((); }
 
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Testing/Target RPM", m_targetRPM);
         SmartDashboard.putNumber("Testing/Actual RPM", m_shooterEncoder.getVelocity());
+        SmartDashboard.putNumber("Testing/Current kV Tuning", m_currentKV);
+        SmartDashboard.putNumber("Testing/Current kP Tuning", m_currentKP);
+        SmartDashboard.putNumber("intake bus voltage", m_intakeLeader.getBusVoltage());
+        
+        boolean atSpeed = Math.abs(m_shooterEncoder.getVelocity() - m_targetRPM) < 50;
+        SmartDashboard.putBoolean("Testing/Shooter Ready", atSpeed);
     }
 }
