@@ -16,11 +16,11 @@ public final class Constants {
         public static final int SHOOTER_FEEDER = 16; 
 
         // PIDF Values (Tuned for your shooter)
-        public static final double LEADER_Kp = 0.00047;
+        public static final double LEADER_Kp = 0.00061;
         public static final double LEADER_Kd = 0.00003;
-        public static final double LEADER_Ki = 0.00001;
+        public static final double LEADER_Ki = 0.000019998;
         public static final double LEADER_FF_kS = 0.0;
-        public static final double LEADER_FF_kV = 0.0110;
+        public static final double LEADER_FF_kV = 0.0112;
     
         // Manual Control Settings
         public static final double RPM_INCREMENT = 50.0;
@@ -29,7 +29,7 @@ public final class Constants {
         public static final double KI_INCREMENT = 0.00001;
 
 
-        public static final double DEFAULT_TARGET_RPM = 5400.0;
+        public static final double DEFAULT_TARGET_RPM = 5500.0;
         public static final double VELOCITY_TOLERANCE = 100; 
         public static final double KICKER_SPEED = 1.0;
     }
