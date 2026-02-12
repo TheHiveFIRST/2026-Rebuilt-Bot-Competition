@@ -10,17 +10,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 
-public class ArmSubsystem extends SubsystemBase {
-    private final SparkMax m_leader;
-    private final SparkMax m_follower;
-    private final AbsoluteEncoder m_encoder;
-    private final PIDController m_pid;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 
-    private double m_currentTarget = ArmConstants.kPivotIn;
+public class ArmSubsystem extends SubsystemBase {
+    private final SparkMax mPivotLeader;
+    private final SparkMax mPivotFollower;
+    private final AbsoluteEncoder mPivotEncoder;
+    private final PIDController mPivotPID;
+    public double mPivotOutput = 0; 
+
+    private double mCurrentTarget = ArmConstants.PIVOT_IN;
 
     public ArmSubsystem() {
-        m_leader = new SparkMax(ArmConstants.kArmLeaderId, MotorType.kBrushless);
-        m_follower = new SparkMax(ArmConstants.kArmFollowerId, MotorType.kBrushless);
+        mPivotLeader = new SparkMax(ArmConstants.ARM_LEADER_ID, MotorType.kBrushless);
+        mPivotFollower = new SparkMax(ArmConstants.ARM_FOLLOWER_ID, MotorType.kBrushless);
         
         // Configuration for Leader
         SparkMaxConfig leaderConfig = new SparkMaxConfig();
@@ -30,44 +34,44 @@ public class ArmSubsystem extends SubsystemBase {
 
         // Configuration for Follower
         SparkMaxConfig followerConfig = new SparkMaxConfig();
-        followerConfig.follow(ArmConstants.kArmLeaderId);
+        followerConfig.follow(ArmConstants.ARM_LEADER_ID);
         followerConfig.idleMode(IdleMode.kBrake);
 
         // Applying configurations using 2026 REV syntax
-        m_leader.configure(leaderConfig, SparkMax.ResetMode.kResetSafeParameters, SparkMax.PersistMode.kPersistParameters);
-        m_follower.configure(followerConfig, SparkMax.ResetMode.kResetSafeParameters, SparkMax.PersistMode.kPersistParameters);
+        mPivotLeader.configure(leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        mPivotFollower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        m_encoder = m_leader.getAbsoluteEncoder();
-        m_pid = new PIDController(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
-        m_pid.setTolerance(ArmConstants.kPositionTolerance);
+        mPivotEncoder = mPivotLeader.getAbsoluteEncoder();
+        mPivotPID = new PIDController(ArmConstants.ARM_KP, ArmConstants.ARM_KI, ArmConstants.ARM_KD);
+        mPivotPID.setTolerance(ArmConstants.POSITION_TOLERANCE);
     }
 
     public void setTargetPosition(double position) {
-        m_currentTarget = position;
+        mCurrentTarget = position;
+        double pidOutput = mPivotPID.calculate(mPivotEncoder.getPosition(), mCurrentTarget);
+        mPivotLeader.set(pidOutput);
     }
 
     public double encoderGetValue() {
-        return m_encoder.getPosition();
+        return mPivotEncoder.getPosition();
     }
 
     public boolean isAtTarget() {
-        return m_pid.atSetpoint();
+        return mPivotPID.atSetpoint();
     }
 
     @Override
     public void periodic() {
-        // Automatically move to the current target position
-        double pidOutput = m_pid.calculate(m_encoder.getPosition(), m_currentTarget);
-        m_leader.set(pidOutput);
+    
 
         // Debugging values to Glass/SmartDashboard
         SmartDashboard.putNumber("Arm/Encoder Value", encoderGetValue());
-        SmartDashboard.putNumber("Arm/Target Position", m_currentTarget);
+        SmartDashboard.putNumber("Arm/Target Position", mCurrentTarget);
         SmartDashboard.putBoolean("Arm/At Target", isAtTarget());
     }
 
     public void stopArm() {
-        m_leader.set(0);
-        m_currentTarget = m_encoder.getPosition(); // Hold current spot
+        mPivotLeader.set(0);
+        mCurrentTarget = mPivotEncoder.getPosition(); // Hold current spot
     }
 }
