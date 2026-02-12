@@ -83,7 +83,7 @@ public class TestingSubsystem extends SubsystemBase {
         double mTargetRPS = mTargetRPM / 60.0;
         
         // Temporarily boost target RPM when shooting
-        if (mCurrentRPM < mTargetRPM-400) {
+        if (mCurrentRPM < mTargetRPM - 400) {
             mTargetRPS = mTargetRPS + 200; // Preemptive compensation
         }
 
