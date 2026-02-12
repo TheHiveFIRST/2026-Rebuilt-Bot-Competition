@@ -23,113 +23,191 @@ import frc.robot.Configs.IntakeConfigs;
 
 public class TestingSubsystem extends SubsystemBase {
 
-    private final SparkMax m_intakeLeader;
-    private final SparkMax m_intakeFollower;
-    private final SparkMax m_shooterLeader;
-    private final SparkMax m_shooterFollower;
-    private final SparkMax m_kicker;
+    private final SparkMax mIntakeLeader;
+    private final SparkMax mIntakeFollower;
+    private final SparkMax mShooterLeader;
+    private final SparkMax mShooterFollower;
+    private final SparkMax mKicker;
 
-    private final RelativeEncoder m_shooterEncoder;
-    private final PIDController m_shooterPID;
-    private final BangBangController m_shooterBangBang;
+    private final RelativeEncoder mShooterLeaderEncoder;
+    private final RelativeEncoder mShooterFollowerEncoder; 
+    private final PIDController mShooterPID;
+    private final BangBangController mShooterBangBang;
 
     
     // --- State Variables ---
-    private double m_targetRPM = ShooterConstants.DEFAULT_TARGET_RPM;
-    private double m_currentKV = ShooterConstants.LEADER_FF_kV;
-    private double m_currentKP = ShooterConstants.LEADER_Kp;
-    private double m_currentKI = ShooterConstants.LEADER_Ki;
-    private double m_currentKD = ShooterConstants.LEADER_Kd;
-
-    private final SlewRateLimiter ffSlewRateLimiter;
+    private double mTargetRPM = ShooterConstants.DEFAULT_TARGET_RPM;
+    private double mCurrentKV = ShooterConstants.LEADER_FF_kV;
+    private double mCurrentKA = ShooterConstants.LEADER_FF_kA;
+    private double mCurrentKP = ShooterConstants.LEADER_Kp;
+    private double mCurrentKI = ShooterConstants.LEADER_Ki;
+    private double mCurrentKD = ShooterConstants.LEADER_Kd;
 
 
 
     public TestingSubsystem() {
-        m_intakeLeader = new SparkMax(IntakeConstants.INTAKE_LEADER_ID, MotorType.kBrushless);
-        m_intakeFollower = new SparkMax(IntakeConstants.INTAKE_FOLLOWER_ID, MotorType.kBrushless);
-        m_shooterLeader = new SparkMax(ShooterConstants.SHOOTER_LEADER_CANID, MotorType.kBrushless);
-        m_shooterFollower = new SparkMax(ShooterConstants.SHOOTER_FOLLOWER_CANID, MotorType.kBrushless);
-        m_kicker = new SparkMax(ShooterConstants.SHOOTER_FEEDER, MotorType.kBrushless);
+        mIntakeLeader = new SparkMax(IntakeConstants.INTAKE_LEADER_ID, MotorType.kBrushless);
+        mIntakeFollower = new SparkMax(IntakeConstants.INTAKE_FOLLOWER_ID, MotorType.kBrushless);
+        mShooterLeader = new SparkMax(ShooterConstants.SHOOTER_LEADER_CANID, MotorType.kBrushless);
+        mShooterFollower = new SparkMax(ShooterConstants.SHOOTER_FOLLOWER_CANID, MotorType.kBrushless);
+        mKicker = new SparkMax(ShooterConstants.SHOOTER_FEEDER, MotorType.kBrushless);
 
-        m_intakeLeader.configure(IntakeConfigs.intakeLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        m_intakeFollower.configure(IntakeConfigs.intakeFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        m_shooterLeader.configure(ShooterConfig.shooterLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        m_shooterFollower.configure(ShooterConfig.shooterFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        m_kicker.configure(ShooterConfig.shooterFeederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        mIntakeLeader.configure(IntakeConfigs.intakeLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        mIntakeFollower.configure(IntakeConfigs.intakeFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        mShooterLeader.configure(ShooterConfig.shooterLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        mShooterFollower.configure(ShooterConfig.shooterFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        mKicker.configure(ShooterConfig.shooterFeederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        m_shooterEncoder = m_shooterLeader.getEncoder();
-        m_shooterPID = new PIDController(m_currentKP, m_currentKI, m_currentKD);
-    
-        m_shooterBangBang = new BangBangController();
-        m_shooterBangBang.setTolerance(30); //TODO: must test if tolerance needed/works for PID and bang bang
+        mShooterLeaderEncoder = mShooterLeader.getEncoder();
+        mShooterFollowerEncoder = mShooterFollower.getEncoder();
 
-        ffSlewRateLimiter = new SlewRateLimiter(20);
+        mShooterPID = new PIDController(mCurrentKP, mCurrentKI, mCurrentKD);
+
+        mShooterBangBang = new BangBangController();
+        mShooterBangBang.setTolerance(30); 
+
         
     }
 
-    public void runShooterAtTarget() {
-        // We create a temporary FF object using the live m_currentKV variable
-        SimpleMotorFeedforward tempFF = new SimpleMotorFeedforward(ShooterConstants.LEADER_FF_kS, ShooterConstants.LEADER_FF_kV);
+    public void runShooterPIDF() {
+        // We create a temporary FF object using the live mCurrentKV variable
+        SimpleMotorFeedforward tempFF = new SimpleMotorFeedforward(ShooterConstants.LEADER_FF_kS, mCurrentKV, mCurrentKA);
 
             
-        m_shooterPID.setP(m_currentKP);
-        m_shooterPID.setI(m_currentKI);
-        m_shooterPID.setD(m_currentKD);
+        mShooterPID.setP(mCurrentKP);
+        mShooterPID.setI(mCurrentKI);
+        mShooterPID.setD(mCurrentKD);
         
-        double pidOutput = m_shooterPID.calculate(m_shooterEncoder.getVelocity(), m_targetRPM);
-        double ffOutput = tempFF.calculate(m_targetRPM / 60.0); 
-
+        double mCurrentRPM = mShooterLeaderEncoder.getVelocity();
         
-        m_shooterLeader.set(MathUtil.clamp(pidOutput + ffOutput, 0.0, 1.0));
+        double mTargetRPS = mTargetRPM / 60.0;
+        
+        // Temporarily boost target RPM when shooting
+        if (mCurrentRPM < mTargetRPM-400) {
+            mTargetRPS = mTargetRPS + 200; // Preemptive compensation
+        }
 
-        SmartDashboard.putNumber("current KP", m_currentKP);
+        double mCurrentRPS = mCurrentRPM / 60.0;
+        
+        double pidOutput = mShooterPID.calculate(mCurrentRPM, mTargetRPM);
+
+        double ffOutput = tempFF.calculate(mCurrentRPS); 
+        //TODO: test with different feedforward 
+       // double ffVelocityOutput = tempFF.calculateWithVelocities(mCurrentRPS,mTargetRPS); 
+
+        mShooterLeader.set(MathUtil.clamp(pidOutput + ffOutput, 0.0, 1.0));
+
+        //TODO: test without follow mode 
+        //mShooterLeader.set(MathUtil.clamp(pidOutput + ffOutput, 0.0, 1.0));
+        //mShooterFollower.set(MathUtil.clamp(pidOutput + ffOutput, 0.0, 1.0));
+
     }
 
-    public void runShooterBangBang() {
-        // We create a temporary FF object using the live m_currentKV variable
-        SimpleMotorFeedforward tempFF = new SimpleMotorFeedforward(ShooterConstants.LEADER_FF_kS, ShooterConstants.LEADER_FF_kV);
-
-        double bbOutput = m_shooterBangBang.calculate(m_shooterEncoder.getVelocity(), m_targetRPM);
-        double ffOutput = tempFF.calculate(m_targetRPM / 60.0); 
-        
-        m_shooterLeader.set(MathUtil.clamp(bbOutput*60 + ffOutput, 0.0, 1.0));
-
+    public void runShooterPower(double motorPower){
+       //TODO: turn off follow mode? or not invert
+        mShooterLeader.set(motorPower);
+        mShooterFollower.set(motorPower);
     }
-
-    // --- Tuning Methods ---
-    public void incrementRPM() { m_targetRPM += ShooterConstants.RPM_INCREMENT; }
-    public void decrementRPM() { m_targetRPM -= ShooterConstants.RPM_INCREMENT; }
-
-    public void incrementKD() { m_currentKD += ShooterConstants.KD_INCREMENT; } // Increments by 0.01 for fine tuning
-    public void decrementKD() { m_currentKD -= ShooterConstants.KD_INCREMENT; }
-
-    public void incrementKI() { m_currentKI += ShooterConstants.KI_INCREMENT; } // Increments by 0.01 for fine tuning
-    public void decrementKI() { m_currentKI -= ShooterConstants.KI_INCREMENT; }
-
-    public void incrementKP() { m_currentKP += ShooterConstants.KP_INCREMENT; } // Increments by 0.01 for fine tuning
-    public void decrementKP() { m_currentKP -= ShooterConstants.KP_INCREMENT; }
+     // Finds the average velocity of the two motors 
+    public double getVelocity() {
+        double sum = mShooterLeaderEncoder.getVelocity() + mShooterFollowerEncoder.getVelocity();
+        double average = sum / 2;
+        return average;
+    }
 
     public void stopAll() {
-        m_intakeLeader.set(0);
-        m_shooterLeader.set(0);
-        m_kicker.set(0);
-    }
+            mIntakeLeader.set(0);
+            mShooterLeader.set(0);
+            mKicker.set(0);
+        }
 
     public void runIntake(double speed){
-        m_intakeLeader.set(speed);
-    }
+            mIntakeLeader.set(speed);
+        }
 
     public void runKicker(double speed){
-        m_kicker.set(speed);
+            mKicker.set(speed);
+        }
+
+
+
+    // --- Tuning Methods ---
+    
+    // Add tuning mode enum
+    public enum TuningMode {
+        KP, KI, KD
     }
+    
+    private TuningMode mCurrentTuningMode = TuningMode.KP;
+    
+    // Cycle through tuning modes
+    public void cycleTuningMode() {
+        switch (mCurrentTuningMode) {
+            case KP:
+                mCurrentTuningMode = TuningMode.KI;
+                break;
+            case KI:
+                mCurrentTuningMode = TuningMode.KD;
+                break;
+            case KD:
+                mCurrentTuningMode = TuningMode.KP;
+                break;
+        }
+    }
+    
+    // Universal increment based on current mode
+    public void incrementCurrentGain() {
+        switch (mCurrentTuningMode) {
+            case KP:
+                incrementKP();
+                break;
+            case KI:
+                incrementKI();
+                break;
+            case KD:
+                incrementKD();
+                break;
+        }
+    }
+    
+    // Universal decrement based on current mode
+    public void decrementCurrentGain() {
+        switch (mCurrentTuningMode) {
+            case KP:
+                decrementKP();
+                break;
+            case KI:
+                decrementKI();
+                break;
+            case KD:
+                decrementKD();
+                break;
+        }
+    }
+    public void incrementRPM() { mTargetRPM += ShooterConstants.RPM_INCREMENT; }
+    public void decrementRPM() { mTargetRPM -= ShooterConstants.RPM_INCREMENT; }
 
+    public void incrementKD() { mCurrentKD += ShooterConstants.KD_INCREMENT; } // Increments by 0.01 for fine tuning
+    public void decrementKD() { mCurrentKD -= ShooterConstants.KD_INCREMENT; }
 
+    public void incrementKI() { mCurrentKI += ShooterConstants.KI_INCREMENT; } // Increments by 0.01 for fine tuning
+    public void decrementKI() { mCurrentKI -= ShooterConstants.KI_INCREMENT; }
 
+    public void incrementKP() { mCurrentKP += ShooterConstants.KP_INCREMENT; } // Increments by 0.01 for fine tuning
+    public void decrementKP() { mCurrentKP -= ShooterConstants.KP_INCREMENT; }
+
+    
     // --- Command Factories ---
-    public Command runShooterCommand() { return run(this::runShooterAtTarget); }
-    public Command runBangBangShooterCommand() { return run(this::runShooterBangBang); }
+    public Command runShooterCommand() { return run(this::runShooterPIDF); }
+    //public Command runBangBangShooterCommand() { return run(this::runShooterBangBang); }
 
+    
+    public Command runShooterPowerCommand() {
+         return run(
+        () -> {
+            runShooterPower(ShooterConstants.SHOOTER_SPEED);
+              });
+    }
     
    
     public Command runIntakeForwardCommand() {
@@ -153,22 +231,42 @@ public class TestingSubsystem extends SubsystemBase {
               });
     }
 
+    
+
 
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Testing/Target RPM", m_targetRPM);
-        SmartDashboard.putNumber("Testing/Actual RPM", m_shooterEncoder.getVelocity());
-        SmartDashboard.putNumber("Testing/Current kD Tuning", m_currentKD);
-        SmartDashboard.putNumber("Testing/Current kP Tuning", m_currentKP);
-        SmartDashboard.putNumber("Testing/Current kI Tuning", m_currentKI);
-        SmartDashboard.putNumber("Testing/intake bus voltage", m_intakeLeader.getBusVoltage());
-        SmartDashboard.putNumber("Testing/shooter current", m_shooterLeader.getOutputCurrent());
-        SmartDashboard.putNumber("Testing/shooter motor 2 current", m_shooterFollower.getOutputCurrent());
+        SmartDashboard.putNumber("Testing/Target RPM", mTargetRPM);
+        SmartDashboard.putNumber("Testing/Actual RPM", mShooterLeaderEncoder.getVelocity());
+        SmartDashboard.putNumber("Testing/Current kD Tuning", mCurrentKD);
+        SmartDashboard.putNumber("Testing/Current kP Tuning", mCurrentKP);
+        SmartDashboard.putNumber("Testing/Current kI Tuning", mCurrentKI);
+        SmartDashboard.putNumber("Testing/intake bus voltage", mIntakeLeader.getBusVoltage());
+        SmartDashboard.putNumber("Testing/shooter current", mShooterLeader.getOutputCurrent());
+        SmartDashboard.putNumber("Testing/shooter motor 2 current", mShooterFollower.getOutputCurrent());
+        SmartDashboard.putString("Testing/Tuning Mode", mCurrentTuningMode.toString());
+
 
 
         
-        boolean atSpeed = Math.abs(m_shooterEncoder.getVelocity() - m_targetRPM) < ShooterConstants.VELOCITY_TOLERANCE;
+        boolean atSpeed = Math.abs(mShooterLeaderEncoder.getVelocity() - mTargetRPM) < ShooterConstants.VELOCITY_TOLERANCE;
         SmartDashboard.putBoolean("Testing/Shooter Ready", atSpeed);
     }
+
+
+
+
+    //DEPRECATED 
+
+    /* public void runShooterBangBang() {
+        //updatereaction time is not fast enough
+        SimpleMotorFeedforward tempFF = new SimpleMotorFeedforward(ShooterConstants.LEADER_FF_kS, ShooterConstants.LEADER_FF_kV);
+
+        double bbOutput = mShooterBangBang.calculate(mShooterEncoder.getVelocity(), mTargetRPM);
+        double ffOutput = tempFF.calculate(mTargetRPM / 60.0); 
+        
+        mShooterLeader.set(MathUtil.clamp(bbOutput*60 + ffOutput, 0.0, 1.0));
+
+    } */
 }

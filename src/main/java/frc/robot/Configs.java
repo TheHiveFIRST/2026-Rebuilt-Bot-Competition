@@ -18,7 +18,8 @@ public final class Configs {
                 .idleMode(IdleMode.kCoast);
             // Follower configuration - set to follow Leader (ID 14) and invert
             shooterFollowerConfig
-                .follow(ShooterConstants.SHOOTER_LEADER_CANID, true)
+                //.follow(ShooterConstants.SHOOTER_LEADER_CANID, true)
+                .inverted(true)
                 .smartCurrentLimit(40)
                 .idleMode(IdleMode.kCoast);
 

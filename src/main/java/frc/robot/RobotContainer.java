@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -12,10 +13,10 @@ import frc.robot.subsystems.TestingSubsystem;
 
 public class RobotContainer {
     // --- Subsystems ---
-    private final TestingSubsystem m_testingSubsystem = new TestingSubsystem();
+    private final TestingSubsystem mTestingSubsystem = new TestingSubsystem();
 
     // --- Controller ---
-    private final CommandXboxController m_driverController =
+    private final CommandXboxController mDriverController =
         new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
     public RobotContainer() {
@@ -26,30 +27,39 @@ public class RobotContainer {
     private void configureBindings() {
       
         // Y Button: Run Shooter
-       m_driverController.y().toggleOnTrue(m_testingSubsystem.runShooterCommand());
-        m_driverController.a().toggleOnTrue(m_testingSubsystem.runBangBangShooterCommand());
+        mDriverController.y().toggleOnTrue(mTestingSubsystem.runShooterCommand());
+        mDriverController.a().toggleOnTrue(mTestingSubsystem.runShooterPowerCommand());
 
-          //                   .toggleOnFalse(m_testingSubsystem.runOnce(m_testingSubsystem::stopAll));
-       m_driverController.x().toggleOnFalse(m_testingSubsystem.runOnce(m_testingSubsystem::stopAll));
-
-        // D-Pad Up/Down: Target RPM
-        m_driverController.povUp().onTrue(m_testingSubsystem.runOnce(m_testingSubsystem::incrementKD));
-        m_driverController.povDown().onTrue(m_testingSubsystem.runOnce(m_testingSubsystem::decrementKD));
-
-        m_driverController.back().onTrue(m_testingSubsystem.runOnce(m_testingSubsystem::incrementKI));
-        m_driverController.start().onTrue(m_testingSubsystem.runOnce(m_testingSubsystem::decrementKI));
-
-        // D-Pad Left/Right: kV Tuning
-        m_driverController.povRight().onTrue(m_testingSubsystem.runOnce(m_testingSubsystem::incrementKP));
-        m_driverController.povLeft().onTrue(m_testingSubsystem.runOnce(m_testingSubsystem::decrementKP));
+        mDriverController.x().toggleOnFalse(mTestingSubsystem.runOnce(mTestingSubsystem::stopAll));
 
         // Bumpers: Kicker and Intake
-        m_driverController.rightBumper().whileTrue(shoot());
-        m_driverController.rightTrigger().whileTrue(m_testingSubsystem.runKickerCommand());
-        m_driverController.leftBumper().whileTrue(m_testingSubsystem.runIntakeForwardCommand());
-        m_driverController.leftTrigger().whileTrue(m_testingSubsystem.runIntakeBackwardCommand());
+        mDriverController.rightBumper().whileTrue(shoot());
+        mDriverController.rightTrigger().whileTrue(mTestingSubsystem.runKickerCommand());
+        mDriverController.leftBumper().whileTrue(mTestingSubsystem.runIntakeForwardCommand());
+        mDriverController.leftTrigger().whileTrue(mTestingSubsystem.runIntakeBackwardCommand());
 
-    }
+                // ===== PID TUNING =====
+        // Back Button (Double Tap): Cycle through KP -> KI -> KD tuning mode
+        mDriverController.back()
+            .onTrue(mTestingSubsystem.runOnce(mTestingSubsystem::cycleTuningMode))
+            .debounce(0.3); // Prevents accidental double presses
+        
+        // POV Up: Increment current gain (KP, KI, or KD depending on mode)
+        mDriverController.povUp()
+            .onTrue(mTestingSubsystem.runOnce(mTestingSubsystem::incrementCurrentGain));
+        
+        // POV Down: Decrement current gain
+        mDriverController.povDown()
+            .onTrue(mTestingSubsystem.runOnce(mTestingSubsystem::decrementCurrentGain));
+        
+        // POV Left: Decrease RPM target
+        mDriverController.povLeft()
+            .onTrue(mTestingSubsystem.runOnce(mTestingSubsystem::decrementRPM));
+
+        mDriverController.povRight()
+            .onTrue(mTestingSubsystem.runOnce(mTestingSubsystem::incrementRPM));
+
+}
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -62,8 +72,8 @@ public class RobotContainer {
 
     public Command shoot(){
     return Commands.parallel(           
-    new RunCommand(() -> m_testingSubsystem.runIntake(Constants.IntakeConstants.INTAKE_SPEED)),
-    new RunCommand(() -> m_testingSubsystem.runKicker(-Constants.ShooterConstants.KICKER_SPEED)));
+    new RunCommand(() -> mTestingSubsystem.runIntake(Constants.IntakeConstants.INTAKE_SPEED)),
+    new RunCommand(() -> mTestingSubsystem.runKicker(-Constants.ShooterConstants.KICKER_SPEED)));
   }
 
 }

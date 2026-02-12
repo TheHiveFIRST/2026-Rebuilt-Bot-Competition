@@ -21,6 +21,7 @@ public final class Constants {
         public static final double LEADER_Ki = 0.000019998;
         public static final double LEADER_FF_kS = 0.0;
         public static final double LEADER_FF_kV = 0.0112;
+        public static final double LEADER_FF_kA = 0.0002;
     
         // Manual Control Settings
         public static final double RPM_INCREMENT = 50.0;
@@ -32,6 +33,8 @@ public final class Constants {
         public static final double DEFAULT_TARGET_RPM = 5500.0;
         public static final double VELOCITY_TOLERANCE = 100; 
         public static final double KICKER_SPEED = 1.0;
+        public static final double SHOOTER_SPEED = 0.1;
+
     }
 
     public static class IntakeConstants {
