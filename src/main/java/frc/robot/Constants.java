@@ -29,7 +29,7 @@ public final class Constants {
     
         // Manual Control Settings
         public static final double RPM_INCREMENT = 50.0;
-        public static final double KP_INCREMENT = 0.00001;
+        public static final double KP_INCREMENT = 0.01;
         public static final double KI_INCREMENT = 0.00001;
         public static final double KD_INCREMENT = 0.00001;
 
@@ -47,13 +47,13 @@ public final class Constants {
         public static final int ARM_FOLLOWER_ID = 13;
 
         // PID Gains
-        public static final double ARM_KP = 0.0001; 
+        public static final double ARM_KP = 0.32; 
         public static final double ARM_KI = 0.0;
         public static final double ARM_KD = 0.0;
 
         // Positions (0 to 1 for Absolute Encoders)
-        public static final double PIVOT_OUT = 0.4; 
-        public static final double PIVOT_IN = 0.1;  
+        public static final double PIVOT_OUT = 0.400; 
+        public static final double PIVOT_IN = 0.3;  
         
         public static final double POSITION_TOLERANCE = 0.02;
     }

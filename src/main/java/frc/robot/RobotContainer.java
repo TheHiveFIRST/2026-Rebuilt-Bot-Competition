@@ -17,7 +17,7 @@ import static edu.wpi.first.units.Units.RPM;
 
 public class RobotContainer {
     // --- Subsystems ---
-    private final TestingSubsystem mTestingSubsystem = new TestingSubsystem();
+   // private final TestingSubsystem mTestingSubsystem = new TestingSubsystem();
     private final ArmSubsystem mArmSubsystem = new ArmSubsystem();
 
     private final FlywheelSubsystem mFlywheelSubsystem = new FlywheelSubsystem();
@@ -32,13 +32,15 @@ public class RobotContainer {
 
         // Set the default command to force the shooter rest.
         mFlywheelSubsystem.setDefaultCommand(mFlywheelSubsystem.set(0));
-        mTestingSubsystem.setDefaultCommand(new RunCommand(()-> mTestingSubsystem.runShooterPower(0), mTestingSubsystem));
-        mTestingSubsystem.setDefaultCommand(new RunCommand(()-> mTestingSubsystem.runIntake(0), mTestingSubsystem));
-        mTestingSubsystem.setDefaultCommand(new RunCommand(()-> mTestingSubsystem.runKicker(0), mTestingSubsystem));
+        mArmSubsystem.setDefaultCommand(mArmSubsystem.stopPivot());
+      //  mTestingSubsystem.setDefaultCommand(new RunCommand(()-> mTestingSubsystem.runShooterPower(0), mTestingSubsystem));
+        //mTestingSubsystem.setDefaultCommand(new RunCommand(()-> mTestingSubsystem.runIntake(0), mTestingSubsystem));
+        //mTestingSubsystem.setDefaultCommand(new RunCommand(()-> mTestingSubsystem.runKicker(0), mTestingSubsystem));
      }
 
     private void configureBindings() {
         // --- ARM / STINGER (A Button Toggle) ---
+        /* 
         mDriverController.a().onTrue(
             Commands.runOnce(() -> {
                 // If current position is near the OUT setpoint, move to IN. Otherwise, move OUT.
@@ -49,16 +51,24 @@ public class RobotContainer {
                 }
             }, mArmSubsystem)
         );
+        */
 
-         mDriverController.a().whileTrue(mArmSubsystem.runIntakePivotCommand());
+        //INTAKE TUNING 
+        mDriverController.a().whileTrue(mArmSubsystem.runIntakePivotGround());
+        mDriverController.b().whileTrue(mArmSubsystem.runIntakePivotUp());
+        mDriverController.y().whileTrue(mArmSubsystem.runPivot());
+        mDriverController.x().whileTrue(mArmSubsystem.runPivot12());
+        mDriverController.povLeft().onTrue(mArmSubsystem.runOnce(mArmSubsystem::incrementKP));
+        mDriverController.povRight().onTrue(mArmSubsystem.runOnce(mArmSubsystem::decrementKP));
+
 
 
 
         // --- SHOOTER CONTROLS ---
-        mDriverController.y().whileTrue(mTestingSubsystem.runShooterCommand());
+       // mDriverController.y().whileTrue(mTestingSubsystem.runShooterCommand());
        // mDriverController.x().toggleOnFalse(mTestingSubsystem.runOnce(mTestingSubsystem::stopAll));
 
-
+/* 
         // Schedule `setVelocity` when the Xbox controller's B button is pressed,
         // cancelling on release.
         mDriverController.b().whileTrue(mFlywheelSubsystem.setVelocity(RPM.of(ShooterConstants.DEFAULT_TARGET_RPM)));
@@ -68,8 +78,8 @@ public class RobotContainer {
 
         // Bumpers: Kicker and Intake
         mDriverController.rightBumper().whileTrue(shoot());
-        mDriverController.rightTrigger().whileTrue(mTestingSubsystem.runKickerCommand());
-        mDriverController.leftBumper().whileTrue(mTestingSubsystem.runIntakeForwardCommand());
+        //mDriverController.rightTrigger().whileTrue(mTestingSubsystem.runKickerCommand());
+       // mDriverController.leftBumper().whileTrue(mTestingSubsystem.runIntakeForwardCommand());
        // mDriverController.leftTrigger().whileTrue(mTestingSubsystem.runIntakeBackwardCommand());
 
         // ===== PID TUNING =====
@@ -95,17 +105,19 @@ public class RobotContainer {
         mDriverController.rightBumper().whileTrue(mTestingSubsystem.runKickerCommand());
         mDriverController.leftBumper().whileTrue(mTestingSubsystem.runIntakeForwardCommand());
         mDriverController.leftTrigger().whileTrue(mTestingSubsystem.runIntakeBackwardCommand());
+
+        */
     }
 
     public Command getAutonomousCommand() {
         return Commands.none();
     }
 
-    public Command shoot(){
-    return Commands.parallel(           
-    new RunCommand(() -> mTestingSubsystem.runIntake(Constants.IntakeConstants.INTAKE_SPEED)),
-    new RunCommand(() -> mTestingSubsystem.runKicker(-Constants.ShooterConstants.KICKER_SPEED)));
-  }
+  //  public Command shoot(){
+  //  return Commands.parallel(           
+   // new RunCommand(() -> mTestingSubsystem.runIntake(Constants.IntakeConstants.INTAKE_SPEED)),
+   // new RunCommand(() -> mTestingSubsystem.runKicker(-Constants.ShooterConstants.KICKER_SPEED)));
+  //}
 
 }
 

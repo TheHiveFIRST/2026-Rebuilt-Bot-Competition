@@ -22,6 +22,12 @@ public class ArmSubsystem extends SubsystemBase {
     private final PIDController mPivotPID;
     public double mPivotOutput = 0; 
 
+    //tuning 
+    private double mArmCurrentKP = ArmConstants.ARM_KP;
+    private double mArmCurrentKI = ArmConstants.ARM_KI;
+    private double mArmCurrentKD = ArmConstants.ARM_KD;
+
+
     private double mCurrentTarget = ArmConstants.PIVOT_IN;
 
     public ArmSubsystem() {
@@ -31,27 +37,38 @@ public class ArmSubsystem extends SubsystemBase {
         // Configuration for Leader
         SparkMaxConfig leaderConfig = new SparkMaxConfig();
         leaderConfig.idleMode(IdleMode.kBrake);
-        // If the arm moves the wrong way, uncomment the line below:
-        // leaderConfig.inverted(true); 
 
         // Configuration for Follower
         SparkMaxConfig followerConfig = new SparkMaxConfig();
-        followerConfig.follow(ArmConstants.ARM_LEADER_ID);
-        followerConfig.idleMode(IdleMode.kBrake);
+        followerConfig.idleMode(IdleMode.kCoast);
 
-        // Applying configurations using 2026 REV syntax
+        // Applying configuration`s using 2026 REV syntax
         mPivotLeader.configure(leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         mPivotFollower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        mPivotEncoder = mPivotLeader.getAbsoluteEncoder();
+        mPivotEncoder = mPivotFollower.getAbsoluteEncoder();
         mPivotPID = new PIDController(ArmConstants.ARM_KP, ArmConstants.ARM_KI, ArmConstants.ARM_KD);
         mPivotPID.setTolerance(ArmConstants.POSITION_TOLERANCE);
     }
 
     public void setTargetArm(double position) {
         mCurrentTarget = position;
+        mPivotPID.setP(mArmCurrentKP);
+        mPivotPID.setI(mArmCurrentKI);
+        mPivotPID.setD(mArmCurrentKD);
+
         double mPivotOutput = mPivotPID.calculate(mPivotEncoder.getPosition(), mCurrentTarget);
         mPivotLeader.set(mPivotOutput);
+        mPivotFollower.set(mPivotOutput);
+    }
+    public void setPivotPower(double pivotPower){
+        mPivotLeader.set(pivotPower);
+        mPivotFollower.set(pivotPower);
+
+    }
+
+    public void setPivot12Power(double pivotPower){
+        mPivotLeader.set(pivotPower);
     }
 
     public double encoderGetValue() {
@@ -67,11 +84,42 @@ public class ArmSubsystem extends SubsystemBase {
             mCurrentTarget = mPivotEncoder.getPosition(); // Hold current spot
         }
 
+    public void incrementKP() { mArmCurrentKP += ShooterConstants.KP_INCREMENT; } // Increments by 0.01 for fine tuning
+    public void decrementKP() { mArmCurrentKP -= ShooterConstants.KP_INCREMENT; }
+
     
-     public Command runIntakePivotCommand() {
+     public Command runIntakePivotGround() {
+         return run(
+        () -> {
+            setTargetArm(ArmConstants.PIVOT_OUT);
+              });
+    }
+
+    public Command runIntakePivotUp() {
          return run(
         () -> {
             setTargetArm(ArmConstants.PIVOT_IN);
+              });
+    }
+
+    public Command stopPivot() {
+         return run(
+        () -> {
+            setPivotPower(0.0);
+              });
+    }
+
+    public Command runPivot(){
+         return run(
+        () -> {
+            setPivotPower(0.1);
+              });
+    }
+
+    public Command runPivot12(){
+         return run(
+        () -> {
+            setPivot12Power(0.1);
               });
     }
     @Override
@@ -82,6 +130,8 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Arm/Encoder Value", encoderGetValue());
         SmartDashboard.putNumber("Arm/Target Position", mCurrentTarget);
         SmartDashboard.putBoolean("Arm/At Target", isAtTarget());
+         SmartDashboard.putNumber("Arm/pivot current", mPivotLeader.getOutputCurrent());
+          SmartDashboard.putNumber("Arm/Current kP Tuning", mArmCurrentKP);
     }
 
     
