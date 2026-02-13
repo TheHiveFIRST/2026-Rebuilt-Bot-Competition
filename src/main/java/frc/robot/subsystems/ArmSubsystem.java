@@ -46,7 +46,7 @@ public class ArmSubsystem extends SubsystemBase {
         mPivotPID.setTolerance(ArmConstants.POSITION_TOLERANCE);
     }
 
-    public void setTargetPosition(double position) {
+    public void setTargetArm(double position) {
         mCurrentTarget = position;
         double pidOutput = mPivotPID.calculate(mPivotEncoder.getPosition(), mCurrentTarget);
         mPivotLeader.set(pidOutput);

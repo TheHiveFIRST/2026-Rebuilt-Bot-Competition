@@ -95,11 +95,13 @@ public class TestingSubsystem extends SubsystemBase {
         //TODO: test with different feedforward 
        // double ffVelocityOutput = tempFF.calculateWithVelocities(mCurrentRPS,mTargetRPS); 
 
-        mShooterLeader.set(MathUtil.clamp(pidOutput + ffOutput, 0.0, 1.0));
-
+        double motorPower = MathUtil.clamp(pidOutput + ffOutput, 0.0, 1.0);
+        
         //TODO: test without follow mode 
         //mShooterLeader.set(MathUtil.clamp(pidOutput + ffOutput, 0.0, 1.0));
         //mShooterFollower.set(MathUtil.clamp(pidOutput + ffOutput, 0.0, 1.0));
+        runShooterPower(motorPower);
+        
 
     }
 

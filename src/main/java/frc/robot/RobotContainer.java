@@ -32,6 +32,9 @@ public class RobotContainer {
 
         // Set the default command to force the shooter rest.
         mFlywheelSubsystem.setDefaultCommand(mFlywheelSubsystem.set(0));
+        mTestingSubsystem.setDefaultCommand(new RunCommand(()-> mTestingSubsystem.runShooterPower(0), mTestingSubsystem));
+        mTestingSubsystem.setDefaultCommand(new RunCommand(()-> mTestingSubsystem.runIntake(0), mTestingSubsystem));
+        mTestingSubsystem.setDefaultCommand(new RunCommand(()-> mTestingSubsystem.runKicker(0), mTestingSubsystem));
      }
 
     private void configureBindings() {
@@ -40,9 +43,9 @@ public class RobotContainer {
             Commands.runOnce(() -> {
                 // If current position is near the OUT setpoint, move to IN. Otherwise, move OUT.
                 if (Math.abs(mArm.encoderGetValue() - ArmConstants.PIVOT_OUT) < 0.05) {
-                    mArm.setTargetPosition(ArmConstants.PIVOT_IN);
+                    mArm.setTargetArm(ArmConstants.PIVOT_IN);
                 } else {
-                    mArm.setTargetPosition(ArmConstants.PIVOT_OUT);
+                    mArm.setTargetArm(ArmConstants.PIVOT_OUT);
                 }
             }, mArm)
         );
