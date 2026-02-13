@@ -27,7 +27,7 @@ public final class DriveConfig {
             .velocityConversionFactor(drivingFactor/60.0);
             drivingConfig.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .pid(0.04, 0, 0)  
+            .pid(0.04, 0,0)  
             .outputRange(-1,1)  //speed setpoint to actual velocity  
             .feedForward.kV(drivingVelocityFeedForward);
             
@@ -42,7 +42,7 @@ public final class DriveConfig {
             .apply(AbsoluteEncoderConfig.Presets.REV_ThroughBoreEncoder);
             turningConfig.closedLoop
             .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-            .pid(0.04, 0, 0)
+            .pid(1, 0, 0)
             .outputRange(-1, 1)
             // Enable PID wrap around for the turning motor. This will allow the PID
             // controller to go through 0 to get to the setpoint i.e. going from 350 degrees
