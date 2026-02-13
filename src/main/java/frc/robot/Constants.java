@@ -47,7 +47,7 @@ public final class Constants {
         public static final int ARM_FOLLOWER_ID = 13;
 
         // PID Gains
-        public static final double ARM_KP = 0.5; 
+        public static final double ARM_KP = 0.0001; 
         public static final double ARM_KI = 0.0;
         public static final double ARM_KD = 0.0;
 

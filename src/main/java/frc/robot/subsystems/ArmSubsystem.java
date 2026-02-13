@@ -7,8 +7,10 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.AbsoluteEncoder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.ShooterConstants;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
@@ -48,8 +50,8 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void setTargetArm(double position) {
         mCurrentTarget = position;
-        double pidOutput = mPivotPID.calculate(mPivotEncoder.getPosition(), mCurrentTarget);
-        mPivotLeader.set(pidOutput);
+        double mPivotOutput = mPivotPID.calculate(mPivotEncoder.getPosition(), mCurrentTarget);
+        mPivotLeader.set(mPivotOutput);
     }
 
     public double encoderGetValue() {
@@ -60,6 +62,18 @@ public class ArmSubsystem extends SubsystemBase {
         return mPivotPID.atSetpoint();
     }
 
+    public void stopArm() {
+            mPivotLeader.set(0);
+            mCurrentTarget = mPivotEncoder.getPosition(); // Hold current spot
+        }
+
+    
+     public Command runIntakePivotCommand() {
+         return run(
+        () -> {
+            setTargetArm(ArmConstants.PIVOT_IN);
+              });
+    }
     @Override
     public void periodic() {
     
@@ -70,8 +84,5 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("Arm/At Target", isAtTarget());
     }
 
-    public void stopArm() {
-        mPivotLeader.set(0);
-        mCurrentTarget = mPivotEncoder.getPosition(); // Hold current spot
-    }
+    
 }

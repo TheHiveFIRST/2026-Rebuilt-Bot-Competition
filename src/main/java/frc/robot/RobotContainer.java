@@ -18,7 +18,7 @@ import static edu.wpi.first.units.Units.RPM;
 public class RobotContainer {
     // --- Subsystems ---
     private final TestingSubsystem mTestingSubsystem = new TestingSubsystem();
-    private final ArmSubsystem mArm = new ArmSubsystem();
+    private final ArmSubsystem mArmSubsystem = new ArmSubsystem();
 
     private final FlywheelSubsystem mFlywheelSubsystem = new FlywheelSubsystem();
 
@@ -42,16 +42,20 @@ public class RobotContainer {
         mDriverController.a().onTrue(
             Commands.runOnce(() -> {
                 // If current position is near the OUT setpoint, move to IN. Otherwise, move OUT.
-                if (Math.abs(mArm.encoderGetValue() - ArmConstants.PIVOT_OUT) < 0.05) {
-                    mArm.setTargetArm(ArmConstants.PIVOT_IN);
+                if (Math.abs(mArmSubsystem.encoderGetValue() - ArmConstants.PIVOT_OUT) < 0.05) {
+                    mArmSubsystem.setTargetArm(ArmConstants.PIVOT_IN);
                 } else {
-                    mArm.setTargetArm(ArmConstants.PIVOT_OUT);
+                    mArmSubsystem.setTargetArm(ArmConstants.PIVOT_OUT);
                 }
-            }, mArm)
+            }, mArmSubsystem)
         );
 
+         mDriverController.a().whileTrue(mArmSubsystem.runIntakePivotCommand());
+
+
+
         // --- SHOOTER CONTROLS ---
-        mDriverController.y().toggleOnTrue(mTestingSubsystem.runShooterCommand());
+        mDriverController.y().whileTrue(mTestingSubsystem.runShooterCommand());
        // mDriverController.x().toggleOnFalse(mTestingSubsystem.runOnce(mTestingSubsystem::stopAll));
 
 
