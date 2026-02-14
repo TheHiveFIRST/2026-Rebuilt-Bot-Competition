@@ -26,6 +26,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 //import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.DriveSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -38,6 +40,13 @@ public class RobotContainer {
   //private final SwerveSubsystem swerve = new SwerveSubsystem();
 
   private final SendableChooser<Command> autoChooser;
+  private final DriveSubsystem swerve = new DriveSubsystem(); 
+  // Replace with CommandPS4Controller or CommandJoystick if needed
+  private final CommandXboxController mDriverController =
+      new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER);
+
+  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -89,7 +98,7 @@ public class RobotContainer {
 
     // Add a button to SmartDashboard that will create and follow an on-the-fly path
     // This example will simply move the robot 2m in the +X field direction
-    /*SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
+    SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
       Pose2d currentPose = swerve.getPose();
       
       // The rotation component in these poses represents the direction of travel
@@ -111,7 +120,7 @@ public class RobotContainer {
       path.preventFlipping = true;
 
       AutoBuilder.followPath(path).schedule();
-    }));*/
+    }));
   }
 
   /**
