@@ -19,35 +19,38 @@ import Constants.ClimbPIDConstants;
 
 public class ClimbSubsystem extends SubsystemBase {
 
-  private SparkMax climbLeaderMotor;
-  private SparkMax climbFollowerMotor;
-  private SparkMaxConfig climbConfig = new SparkMaxConfig();
-  private SparkMaxConfig climbConfig2 = new SparkMaxConfig();
+  private SparkMax climbLeaderMotor; //Set name to ensure we can use variable throughout class
+  private SparkMax climbFollowerMotor; //Set name to ensure we can use variable throughout class
+  private SparkMaxConfig climbConfig = new SparkMaxConfig(); //Set name to ensure we can use variable throughout class
+  private SparkMaxConfig climbConfig2 = new SparkMaxConfig(); //Set name to ensure we can use variable throughout class
 
   /** Creates a new ExampleSubsystem. */
   public ClimbSubsystem() {
-    climbLeaderMotor = new SparkMax(ClimbConstants.climbLeaderCanID, MotorType.kBrushless);
-    climbFollowerMotor = new SparkMax(ClimbConstants.climbFollowerCanID, MotorType.kBrushless);
+    climbLeaderMotor = new SparkMax(ClimbConstants.climbLeaderCanID, MotorType.kBrushless); //Create a new motor (brushless)
+    climbFollowerMotor = new SparkMax(ClimbConstants.climbFollowerCanID, MotorType.kBrushless); //Create a new motor (brushless)
 
     climbConfig
       .smartCurrentLimit(50)
       .closedLoop.pid(ClimbPIDConstants.kP, ClimbPIDConstants.kI, ClimbPIDConstants.kD)
-      .idleMode(IdleMode.kBrake);
+      .idleMode(IdleMode.kBrake); //Set limits for leader motor and pid using constant file
 
-    climbLeaderMotor.configure(climbConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    climbLeaderMotor.setPositionConversionFactor(ClimbPIDConstants.conversionFactor);
+    climbLeaderMotor.configure(climbConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); //set configuration of leadermotor
+    climbLeaderMotor.setPositionConversionFactor(ClimbPIDConstants.conversionFactor); //Convert from rotations of robot to inchs
 
     climbConfig2
       .smartCurrentLimit(50)
-      .idleMode(IdleMode.kBrake);
+      .idleMode(IdleMode.kBrake); //Set limits for follower motor
 
-    climbFollowerMotor.configure(climbConfig2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    climbFollowerMotor.configure(climbConfig2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); //set configuration of followermotor
 
-    climbFollowerMotor.follow(climbLeaderMotor);
+    climbFollowerMotor.follow(climbLeaderMotor); //set follower to follow the leader so we only need to call the leader when moving the climb
   }
 
   public void setStartClimb() {
-    climbLeaderMotor.getClosedLoopController().setReference(ClimbConstants.endPose, ControlType.kPosition);
+    climbLeaderMotor.getClosedLoopController().setReference(ClimbConstants.endPose, ControlType.kPosition); //Sets climb position to the desirecd extension
+  }
+  public void setEndClimb() {
+    climbLeaderMotor.getClosedLoopController().setReference(ClimbConstants.startPose, ControlType.kPosition); //Moves climb back to initialized position
   }
   /**
    * Example command factory method.
@@ -59,7 +62,15 @@ public class ClimbSubsystem extends SubsystemBase {
     // Subsystem::RunOnce implicitly requires `this` subsystem.
     return runOnce(
         () -> {
-          setStartClimb();
+          setStartClimb(); //Calls the funtion to extend the climb
+        });
+  }
+  public Command retractClimb() {
+    // Inline construction of command goes here.
+    // Subsystem::RunOnce implicitly requires `this` subsystem.
+    return runOnce(
+        () -> {
+          setEndClimb(); //Calls the function to lift the robot
         });
   }
 
