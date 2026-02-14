@@ -17,7 +17,14 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
   public static class ClimbConstants() {
-    public static final int climbLeaderCanID = 11
-    public static final int climbFollowerCanID = 12
+    public static final int climbLeaderCanID = 11;
+    public static final int climbFollowerCanID = 12;
+    public static final double endPose = 0.5;
+  }
+  public static class ClimbPIDConstants() {
+    public static final double kP = 0.001;
+    public static final double kI = 0.001;
+    public static final double kD = 0.001;
+    public static final double conversionFactor = 1;
   }
 }

@@ -4,15 +4,25 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkMaxConfig;
+import com.revrobotics.spark.SparkMax.ControlType;
+import com.revrobotics.spark.SparkMax.ResetMode;
+import com.revrobotics.spark.SparkMax.PersistMode;
+import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.SparkMaxConfig.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import Constants.ClimbConstants;
+import Constants.ClimbPIDConstants;
 
 public class ClimbSubsystem extends SubsystemBase {
 
   private SparkMax climbLeaderMotor;
   private SparkMax climbFollowerMotor;
   private SparkMaxConfig climbConfig = new SparkMaxConfig();
+  private SparkMaxConfig climbConfig2 = new SparkMaxConfig();
 
   /** Creates a new ExampleSubsystem. */
   public ClimbSubsystem() {
@@ -21,32 +31,36 @@ public class ClimbSubsystem extends SubsystemBase {
 
     climbConfig
       .smartCurrentLimit(50)
+      .closedLoop.pid(ClimbPIDConstants.kP, ClimbPIDConstants.kI, ClimbPIDConstants.kD)
       .idleMode(IdleMode.kBrake);
 
-    spark.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    climbLeaderMotor.configure(climbConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    climbLeaderMotor.setPositionConversionFactor(ClimbPIDConstants.conversionFactor);
+
+    climbConfig2
+      .smartCurrentLimit(50)
+      .idleMode(IdleMode.kBrake);
+
+    climbFollowerMotor.configure(climbConfig2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    climbFollowerMotor.follow(climbLeaderMotor);
+  }
+
+  public void setStartClimb() {
+    climbLeaderMotor.getClosedLoopController().setReference(ClimbConstants.endPose, ControlType.kPosition);
   }
   /**
    * Example command factory method.
    *
    * @return a command
    */
-  public Command exampleMethodCommand() {
+  public Command extendClimb() {
     // Inline construction of command goes here.
     // Subsystem::RunOnce implicitly requires `this` subsystem.
     return runOnce(
         () -> {
-          /* one-time action goes here */
+          setStartClimb();
         });
-  }
-
-  /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
-   *
-   * @return value of some boolean subsystem state, such as a digital sensor.
-   */
-  public boolean exampleCondition() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
   }
 
   @Override
