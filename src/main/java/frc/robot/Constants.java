@@ -20,11 +20,11 @@ public final class Constants {
         public static final int SHOOTER_FEEDER = 16; 
 
         // PIDF Values
-        public static final double LEADER_Kp = 0.000001; // 0.00061;
+        public static final double LEADER_Kp = 0.0000709999; // 0.00061;
         public static final double LEADER_Kd = 0; //0.00003;
         public static final double LEADER_Ki = 0; //0.000019998;
         public static final double LEADER_FF_kS = 0.0;
-        public static final double LEADER_FF_kV = 0.000183;
+        public static final double LEADER_FF_kV = 0.00012;
         public static final double LEADER_FF_kA = 0.0002;
 
         public static final double TESTING_KP = 0.0006;
@@ -46,7 +46,7 @@ public final class Constants {
 
         public static final double VELOCITY_TOLERANCE =  30; 
 
-        public static final double DEFAULT_TARGET_RPM = 2000; 
+        public static final double DEFAULT_TARGET_RPM = 4000; 
 
     }
 

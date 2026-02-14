@@ -15,7 +15,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Configs.ShooterConfig;
@@ -23,11 +23,10 @@ import frc.robot.Configs.IntakeConfigs;
 
 public class TestingSubsystem extends SubsystemBase {
 
-    private final SparkMax mIntakeLeader;
-    private final SparkMax mIntakeFollower;
     private final SparkMax mShooterLeader;
     private final SparkMax mShooterFollower;
     private final SparkMax mKicker;
+
 
     private final RelativeEncoder mShooterLeaderEncoder;
     private final RelativeEncoder mShooterFollowerEncoder; 
@@ -46,14 +45,12 @@ public class TestingSubsystem extends SubsystemBase {
 
 
     public TestingSubsystem() {
-        mIntakeLeader = new SparkMax(IntakeConstants.INTAKE_LEADER_ID, MotorType.kBrushless);
-        mIntakeFollower = new SparkMax(IntakeConstants.INTAKE_FOLLOWER_ID, MotorType.kBrushless);
+    
         mShooterLeader = new SparkMax(ShooterConstants.SHOOTER_LEADER_CANID, MotorType.kBrushless);
         mShooterFollower = new SparkMax(ShooterConstants.SHOOTER_FOLLOWER_CANID, MotorType.kBrushless);
         mKicker = new SparkMax(ShooterConstants.SHOOTER_FEEDER, MotorType.kBrushless);
 
-        mIntakeLeader.configure(IntakeConfigs.intakeLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        mIntakeFollower.configure(IntakeConfigs.intakeFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
         mShooterLeader.configure(ShooterConfig.shooterLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         mShooterFollower.configure(ShooterConfig.shooterFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         mKicker.configure(ShooterConfig.shooterFeederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -115,13 +112,8 @@ public class TestingSubsystem extends SubsystemBase {
     }
 
     public void stopAll() {
-            runIntake(0);
             runShooterPower(0);
             runKicker(0);
-        }
-
-    public void runIntake(double speed){
-            mIntakeLeader.set(speed);
         }
 
     public void runKicker(double speed){
@@ -212,17 +204,11 @@ public class TestingSubsystem extends SubsystemBase {
     }
     
    
-    public Command runIntakeForwardCommand() {
+
+    public Command stop() {
          return run(
         () -> {
-            runIntake(IntakeConstants.INTAKE_SPEED);
-              });
-    }
-    
-    public Command runIntakeBackwardCommand() {
-         return run(
-        () -> {
-            runIntake(-IntakeConstants.INTAKE_SPEED);
+            stopAll();
               });
     }
 
@@ -233,13 +219,9 @@ public class TestingSubsystem extends SubsystemBase {
               });
     }
 
+    
 
-    public Command stop() {
-         return run(
-        () -> {
-            stopAll();
-              });
-    }
+
 
 
     
@@ -254,7 +236,6 @@ public class TestingSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Testing/Current kP Tuning", mCurrentKP);
         SmartDashboard.putNumber("Testing/Current kI Tuning", mCurrentKI);
         SmartDashboard.putNumber("Testing/Current kV Tuning", mCurrentKV);
-        SmartDashboard.putNumber("Testing/intake bus voltage", mIntakeLeader.getBusVoltage());
         SmartDashboard.putNumber("Testing/shooter current", mShooterLeader.getOutputCurrent());
         SmartDashboard.putNumber("Testing/shooter motor 2 current", mShooterFollower.getOutputCurrent());
         SmartDashboard.putString("Testing/Tuning Mode", mCurrentTuningMode.toString());

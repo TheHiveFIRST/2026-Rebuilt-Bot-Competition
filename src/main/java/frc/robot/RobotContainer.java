@@ -3,13 +3,18 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.UnjamCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.TestingSubsystem;
 import frc.robot.subsystems.FlywheelSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+
 
 
 import static edu.wpi.first.units.Units.RPM;
@@ -17,7 +22,9 @@ import static edu.wpi.first.units.Units.RPM;
 
 public class RobotContainer {
     // --- Subsystems ---
-   private final TestingSubsystem mTestingSubsystem = new TestingSubsystem();
+   private final IntakeSubsystem mIntakeSubsystem = new IntakeSubsystem();
+      private final TestingSubsystem mTestingSubsystem = new TestingSubsystem();
+
     private final ArmSubsystem mArmSubsystem = new ArmSubsystem();
 
     //private final FlywheelSubsystem mFlywheelSubsystem = new FlywheelSubsystem();
@@ -34,7 +41,7 @@ public class RobotContainer {
         //mFlywheelSubsystem.setDefaultCommand(mFlywheelSubsystem.set(0));
         mArmSubsystem.setDefaultCommand(mArmSubsystem.stopPivot());
         //mTestingSubsystem.setDefaultCommand(new RunCommand(()-> mTestingSubsystem.runShooterPower(0), mTestingSubsystem));
-        mTestingSubsystem.setDefaultCommand(new RunCommand(()-> mTestingSubsystem.runIntake(0), mTestingSubsystem));
+        mIntakeSubsystem.setDefaultCommand(new RunCommand(()-> mIntakeSubsystem.runIntake(0), mIntakeSubsystem));
         mTestingSubsystem.setDefaultCommand(new RunCommand(()-> mTestingSubsystem.runKicker(0), mTestingSubsystem));
      }
 
@@ -107,8 +114,8 @@ public class RobotContainer {
 
         // --- INTAKE & KICKER ---
         mDriverController.rightTrigger().whileTrue(mTestingSubsystem.runKickerCommand());
-        mDriverController.leftBumper().whileTrue(mTestingSubsystem.runIntakeForwardCommand());
-        mDriverController.leftTrigger().whileTrue(mTestingSubsystem.runIntakeBackwardCommand());
+        mDriverController.leftTrigger().whileTrue(mIntakeSubsystem.runIntakeForwardCommand());
+        mDriverController.leftBumper().whileTrue(shootwithJam());
 
     }
 
@@ -118,9 +125,15 @@ public class RobotContainer {
 
    public Command shoot(){
     return Commands.parallel(           
-    new RunCommand(() -> mTestingSubsystem.runIntake(Constants.IntakeConstants.INTAKE_SPEED)),
+    new RunCommand(() -> mIntakeSubsystem.runIntake(Constants.IntakeConstants.INTAKE_SPEED)),
     new RunCommand(() -> mTestingSubsystem.runKicker(-Constants.ShooterConstants.KICKER_SPEED)));
   }
+  public Command shootwithJam(){
+    return Commands.parallel(           
+    new UnjamCommand(mIntakeSubsystem),
+    mTestingSubsystem.runKickerCommand());
+  }
+
 
 }
 

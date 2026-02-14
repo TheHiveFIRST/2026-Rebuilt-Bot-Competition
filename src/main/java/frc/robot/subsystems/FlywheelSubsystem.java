@@ -52,6 +52,7 @@ public class FlywheelSubsystem extends SubsystemBase {
 
 
 
+
 // Vendor motor controller object
   private SparkMax mShooterLeader = new SparkMax(ShooterConstants.SHOOTER_LEADER_CANID, MotorType.kBrushless);
 
