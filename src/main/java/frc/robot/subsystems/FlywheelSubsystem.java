@@ -14,9 +14,9 @@ import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-
-
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
@@ -25,6 +25,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Configs.ShooterConfig;
 import frc.robot.Constants.ShooterConstants;
 
 import yams.mechanisms.config.FlyWheelConfig;
@@ -42,11 +43,13 @@ import yams.motorcontrollers.local.SparkWrapper;
 
 public class FlywheelSubsystem extends SubsystemBase {
 
- private double mCurrentKV = ShooterConstants.LEADER_FF_kV;
- private double mCurrentKA = ShooterConstants.LEADER_FF_kA;
- private double mCurrentKP = ShooterConstants.LEADER_Kp;
- private double mCurrentKI = ShooterConstants.LEADER_Ki;
- private double mCurrentKD = ShooterConstants.LEADER_Kd;
+ private double mCurrentKV = ShooterConstants.FF_KV;
+ private double mCurrentKA = ShooterConstants.FF_KA;
+ private double mCurrentKP = ShooterConstants.TESTING_KP;
+ private double mCurrentKI = ShooterConstants.TESTING_KI;
+ private double mCurrentKD = ShooterConstants.TESTING_KD;
+ private final RelativeEncoder mShooterLeaderEncoder;
+
 
 
 // Vendor motor controller object
@@ -78,6 +81,7 @@ public class FlywheelSubsystem extends SubsystemBase {
   .withMass(Pounds.of(2.12))
   // Maximum speed of the shooter.
   .withUpperSoftLimit(RPM.of(5500))
+  .withLowerSoftLimit(RPM.of(0))
   // Telemetry name and verbosity for the arm.
   .withTelemetry("ShooterMech", TelemetryVerbosity.HIGH);
 
@@ -90,6 +94,10 @@ public class FlywheelSubsystem extends SubsystemBase {
    * @return Shooter velocity.
    */
   public AngularVelocity getVelocity() {return shooter.getSpeed();}
+
+  public double getAngularVelocity() { return mShooterLeaderEncoder.getVelocity() *Math.PI/30;  }
+   public double getRPM() { return mShooterLeaderEncoder.getVelocity();  }
+
 
   /**
    * Set the shooter velocity.
@@ -106,6 +114,14 @@ public class FlywheelSubsystem extends SubsystemBase {
    */
   public void setVelocitySetpoint(AngularVelocity speed) {shooter.setMechanismVelocitySetpoint(speed);}
 
+    public void incrementKD() { mCurrentKD += ShooterConstants.KD_INCREMENT; } // Increments by 0.01 for fine tuning
+    public void decrementKD() { mCurrentKD -= ShooterConstants.KD_INCREMENT; }
+
+    public void incrementKI() { mCurrentKI += ShooterConstants.KI_INCREMENT; } // Increments by 0.01 for fine tuning
+    public void decrementKI() { mCurrentKI -= ShooterConstants.KI_INCREMENT; }
+
+    public void incrementKP() { mCurrentKP += ShooterConstants.KP_INCREMENT; } // Increments by 0.01 for fine tuning
+    public void decrementKP() { mCurrentKP -= ShooterConstants.KP_INCREMENT; }
   /**
    * Set the dutycycle of the shooter.
    *
@@ -115,7 +131,10 @@ public class FlywheelSubsystem extends SubsystemBase {
   public Command set(double dutyCycle) {return shooter.set(dutyCycle);}
 
   /** Creates a new ExampleSubsystem. */
-  public FlywheelSubsystem() {}
+  public FlywheelSubsystem() {
+        mShooterLeaderEncoder = mShooterLeader.getEncoder();
+
+  }
 
   /**
    * Example command factory method.
@@ -148,6 +167,13 @@ public class FlywheelSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     // This method will be called once per scheduler run
     shooter.updateTelemetry();
+    SmartDashboard.putNumber("Shooter/Target RPM", ShooterConstants.DEFAULT_TARGET_RPM);
+    SmartDashboard.putNumber("Shooter/Actual AngularVelocity", getAngularVelocity());
+    SmartDashboard.putNumber("Shooter/Actual RPM", getRPM());
+    SmartDashboard.putNumber("Shooter/Current kD Tuning", mCurrentKD);
+    SmartDashboard.putNumber("Shooter/Current kP Tuning", mCurrentKP);
+    SmartDashboard.putNumber("Shooter/Current kI Tuning", mCurrentKI);
+    SmartDashboard.putNumber("Shooter/intake bus voltage", mShooterLeader.getBusVoltage());
   }
 
   @Override

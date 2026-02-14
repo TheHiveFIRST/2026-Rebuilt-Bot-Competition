@@ -17,10 +17,10 @@ import static edu.wpi.first.units.Units.RPM;
 
 public class RobotContainer {
     // --- Subsystems ---
-   // private final TestingSubsystem mTestingSubsystem = new TestingSubsystem();
+   private final TestingSubsystem mTestingSubsystem = new TestingSubsystem();
     private final ArmSubsystem mArmSubsystem = new ArmSubsystem();
 
-    private final FlywheelSubsystem mFlywheelSubsystem = new FlywheelSubsystem();
+    //private final FlywheelSubsystem mFlywheelSubsystem = new FlywheelSubsystem();
 
     // --- Controller ---
     // Only ONE controller instance to prevent HID conflicts
@@ -31,11 +31,11 @@ public class RobotContainer {
         configureBindings();
 
         // Set the default command to force the shooter rest.
-        mFlywheelSubsystem.setDefaultCommand(mFlywheelSubsystem.set(0));
+        //mFlywheelSubsystem.setDefaultCommand(mFlywheelSubsystem.set(0));
         mArmSubsystem.setDefaultCommand(mArmSubsystem.stopPivot());
-      //  mTestingSubsystem.setDefaultCommand(new RunCommand(()-> mTestingSubsystem.runShooterPower(0), mTestingSubsystem));
-        //mTestingSubsystem.setDefaultCommand(new RunCommand(()-> mTestingSubsystem.runIntake(0), mTestingSubsystem));
-        //mTestingSubsystem.setDefaultCommand(new RunCommand(()-> mTestingSubsystem.runKicker(0), mTestingSubsystem));
+        //mTestingSubsystem.setDefaultCommand(new RunCommand(()-> mTestingSubsystem.runShooterPower(0), mTestingSubsystem));
+        mTestingSubsystem.setDefaultCommand(new RunCommand(()-> mTestingSubsystem.runIntake(0), mTestingSubsystem));
+        mTestingSubsystem.setDefaultCommand(new RunCommand(()-> mTestingSubsystem.runKicker(0), mTestingSubsystem));
      }
 
     private void configureBindings() {
@@ -54,25 +54,30 @@ public class RobotContainer {
         */
 
         //INTAKE TUNING 
+        /* 
         mDriverController.a().whileTrue(mArmSubsystem.runIntakePivotGround());
         mDriverController.b().whileTrue(mArmSubsystem.runIntakePivotUp());
         mDriverController.y().whileTrue(mArmSubsystem.runPivot());
-        mDriverController.x().whileTrue(mArmSubsystem.runPivot12());
-        mDriverController.povLeft().onTrue(mArmSubsystem.runOnce(mArmSubsystem::incrementKP));
-        mDriverController.povRight().onTrue(mArmSubsystem.runOnce(mArmSubsystem::decrementKP));
+        mDriverController.x().whileTrue(mArmSubsystem.runPivot12()); 
+        */
+        //mDriverController.povLeft().onTrue(mArmSubsystem.runOnce(mArmSubsystem::incrementKP));
+       // mDriverController.povRight().onTrue(mArmSubsystem.runOnce(mArmSubsystem::decrementKP));
+        
 
 
 
 
         // --- SHOOTER CONTROLS ---
-       // mDriverController.y().whileTrue(mTestingSubsystem.runShooterCommand());
-       // mDriverController.x().toggleOnFalse(mTestingSubsystem.runOnce(mTestingSubsystem::stopAll));
+       mDriverController.y().whileTrue(mTestingSubsystem.runShooterCommand());
+       mDriverController.a().whileTrue(mTestingSubsystem.runShooterPowerCommand());
 
-/* 
+       mDriverController.x().toggleOnTrue(mTestingSubsystem.stop());
+
+
         // Schedule `setVelocity` when the Xbox controller's B button is pressed,
         // cancelling on release.
-        mDriverController.b().whileTrue(mFlywheelSubsystem.setVelocity(RPM.of(ShooterConstants.DEFAULT_TARGET_RPM)));
-        mDriverController.leftTrigger().whileTrue(mFlywheelSubsystem.set(0.3));
+        //mDriverController.b().whileTrue(mFlywheelSubsystem.setVelocity(RPM.of(ShooterConstants.DEFAULT_TARGET_RPM)));
+       // mDriverController.leftTrigger().whileTrue(mFlywheelSubsystem.set(0.3));
 
 
 
@@ -84,40 +89,38 @@ public class RobotContainer {
 
         // ===== PID TUNING =====
         // Back Button (Double Tap): Cycle through KP -> KI -> KD tuning mode
-        mDriverController.back()
-            .onTrue(mTestingSubsystem.runOnce(mTestingSubsystem::cycleTuningMode))
-            .debounce(0.3); // Prevents accidental double presses
+       // mDriverController.back()
+         //   .whileTrue(mTestingSubsystem.run(mTestingSubsystem::cycleTuningMode))
+         //   .debounce(0.3); // Prevents accidental double presses
         
-        //
-        mDriverController.x().onTrue(Commands.runOnce(() -> {
-            mTestingSubsystem.stopAll();
-        }, mTestingSubsystem));
 
         // --- TUNING (D-Pad) ---
         mDriverController.povLeft().onTrue(mTestingSubsystem.runOnce(mTestingSubsystem::incrementRPM));
         mDriverController.povRight().onTrue(mTestingSubsystem.runOnce(mTestingSubsystem::decrementRPM));
         mDriverController.povUp().onTrue(mTestingSubsystem.runOnce(mTestingSubsystem::incrementCurrentGain));
         mDriverController.povDown().onTrue(mTestingSubsystem.runOnce(mTestingSubsystem::decrementCurrentGain));
+        mDriverController.start().onTrue(mTestingSubsystem.runOnce(mTestingSubsystem::incrementKP));
+        mDriverController.back().onTrue(mTestingSubsystem.runOnce(mTestingSubsystem::decrementKP));
+
 
 
 
         // --- INTAKE & KICKER ---
-        mDriverController.rightBumper().whileTrue(mTestingSubsystem.runKickerCommand());
+        mDriverController.rightTrigger().whileTrue(mTestingSubsystem.runKickerCommand());
         mDriverController.leftBumper().whileTrue(mTestingSubsystem.runIntakeForwardCommand());
         mDriverController.leftTrigger().whileTrue(mTestingSubsystem.runIntakeBackwardCommand());
 
-        */
     }
 
     public Command getAutonomousCommand() {
         return Commands.none();
     }
 
-  //  public Command shoot(){
-  //  return Commands.parallel(           
-   // new RunCommand(() -> mTestingSubsystem.runIntake(Constants.IntakeConstants.INTAKE_SPEED)),
-   // new RunCommand(() -> mTestingSubsystem.runKicker(-Constants.ShooterConstants.KICKER_SPEED)));
-  //}
+   public Command shoot(){
+    return Commands.parallel(           
+    new RunCommand(() -> mTestingSubsystem.runIntake(Constants.IntakeConstants.INTAKE_SPEED)),
+    new RunCommand(() -> mTestingSubsystem.runKicker(-Constants.ShooterConstants.KICKER_SPEED)));
+  }
 
 }
 

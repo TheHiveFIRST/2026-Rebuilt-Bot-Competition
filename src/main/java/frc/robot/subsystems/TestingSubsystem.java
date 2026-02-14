@@ -83,30 +83,27 @@ public class TestingSubsystem extends SubsystemBase {
         double mTargetRPS = mTargetRPM / 60.0;
         
         // Temporarily boost target RPM when shooting
-        if (mCurrentRPM < mTargetRPM - 400) {
-            mTargetRPS = mTargetRPS + 200; // Preemptive compensation
-        }
+       // if (mCurrentRPM < mTargetRPM - 400) {
+       //     mTargetRPS = mTargetRPS + 200; // Preemptive compensation
+       // }
 
         double mCurrentRPS = mCurrentRPM / 60.0;
         
         double pidOutput = mShooterPID.calculate(mCurrentRPM, mTargetRPM);
 
-        double ffOutput = tempFF.calculate(mCurrentRPS); 
+        double ffOutput = tempFF.calculate(mTargetRPM); 
         //TODO: test with different feedforward 
        // double ffVelocityOutput = tempFF.calculateWithVelocities(mCurrentRPS,mTargetRPS); 
 
         double motorPower = MathUtil.clamp(pidOutput + ffOutput, 0.0, 1.0);
-        
-        //TODO: test without follow mode 
-        //mShooterLeader.set(MathUtil.clamp(pidOutput + ffOutput, 0.0, 1.0));
-        //mShooterFollower.set(MathUtil.clamp(pidOutput + ffOutput, 0.0, 1.0));
-        runShooterPower(motorPower);
+
+        mShooterLeader.set(motorPower);
+        mShooterFollower.set(motorPower);
         
 
     }
 
     public void runShooterPower(double motorPower){
-       //TODO: turn off follow mode? or not invert
         mShooterLeader.set(motorPower);
         mShooterFollower.set(motorPower);
     }
@@ -118,9 +115,9 @@ public class TestingSubsystem extends SubsystemBase {
     }
 
     public void stopAll() {
-            mIntakeLeader.set(0);
-            mShooterLeader.set(0);
-            mKicker.set(0);
+            runIntake(0);
+            runShooterPower(0);
+            runKicker(0);
         }
 
     public void runIntake(double speed){
@@ -137,22 +134,22 @@ public class TestingSubsystem extends SubsystemBase {
     
     // Add tuning mode enum
     public enum TuningMode {
-        KP, KI, KD
+        KP, KV, KD, 
     }
     
-    private TuningMode mCurrentTuningMode = TuningMode.KP;
+    private TuningMode mCurrentTuningMode = TuningMode.KV;
     
     // Cycle through tuning modes
     public void cycleTuningMode() {
         switch (mCurrentTuningMode) {
             case KP:
-                mCurrentTuningMode = TuningMode.KI;
+                mCurrentTuningMode = TuningMode.KP;
                 break;
-            case KI:
-                mCurrentTuningMode = TuningMode.KD;
+            case KV:
+                mCurrentTuningMode = TuningMode.KV;
                 break;
             case KD:
-                mCurrentTuningMode = TuningMode.KP;
+                mCurrentTuningMode = TuningMode.KD;
                 break;
         }
     }
@@ -163,8 +160,8 @@ public class TestingSubsystem extends SubsystemBase {
             case KP:
                 incrementKP();
                 break;
-            case KI:
-                incrementKI();
+            case KV:
+                incrementKV();
                 break;
             case KD:
                 incrementKD();
@@ -178,8 +175,8 @@ public class TestingSubsystem extends SubsystemBase {
             case KP:
                 decrementKP();
                 break;
-            case KI:
-                decrementKI();
+            case KV:
+                decrementKV();
                 break;
             case KD:
                 decrementKD();
@@ -197,6 +194,9 @@ public class TestingSubsystem extends SubsystemBase {
 
     public void incrementKP() { mCurrentKP += ShooterConstants.KP_INCREMENT; } // Increments by 0.01 for fine tuning
     public void decrementKP() { mCurrentKP -= ShooterConstants.KP_INCREMENT; }
+
+    public void incrementKV() { mCurrentKV += ShooterConstants.KV_INCREMENT; } // Increments by 0.01 for fine tuning
+    public void decrementKV() { mCurrentKV -= ShooterConstants.KV_INCREMENT; }
 
     
     // --- Command Factories ---
@@ -233,6 +233,15 @@ public class TestingSubsystem extends SubsystemBase {
               });
     }
 
+
+    public Command stop() {
+         return run(
+        () -> {
+            stopAll();
+              });
+    }
+
+
     
 
 
@@ -244,6 +253,7 @@ public class TestingSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Testing/Current kD Tuning", mCurrentKD);
         SmartDashboard.putNumber("Testing/Current kP Tuning", mCurrentKP);
         SmartDashboard.putNumber("Testing/Current kI Tuning", mCurrentKI);
+        SmartDashboard.putNumber("Testing/Current kV Tuning", mCurrentKV);
         SmartDashboard.putNumber("Testing/intake bus voltage", mIntakeLeader.getBusVoltage());
         SmartDashboard.putNumber("Testing/shooter current", mShooterLeader.getOutputCurrent());
         SmartDashboard.putNumber("Testing/shooter motor 2 current", mShooterFollower.getOutputCurrent());
