@@ -76,7 +76,6 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Add a button to run the example auto to SmartDashboard, this will also be in the auto chooser built above
-    SmartDashboard.putData("Example Auto", new PathPlannerAuto("Example Auto"));
 
     // Add a button to run pathfinding commands to SmartDashboard
     SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
@@ -109,7 +108,7 @@ public class RobotContainer {
       PathPlannerPath path = new PathPlannerPath(
         waypoints, 
         new PathConstraints(
-          4.0, 4.0, 
+          4.8, 11.8, 
           Units.degreesToRadians(360), Units.degreesToRadians(540)
         ),
         null, // Ideal starting state can be null for on-the-fly paths

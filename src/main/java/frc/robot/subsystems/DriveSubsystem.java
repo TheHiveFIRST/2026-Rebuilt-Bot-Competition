@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
@@ -13,14 +14,31 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 
+
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.auto.CommandUtil;
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.AutoBuilderException
+;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.config.RobotConfig;
+
+
+
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
@@ -69,38 +87,40 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem() {
     //usage reporting for MAXSwerve template 
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
-  }
-  RobotConfig config;
+    RobotConfig config;
     try{
       config = RobotConfig.fromGUISettings();
     } catch (Exception e) {
       // Handle exception as needed
       e.printStackTrace();
+      config = null;
     }
-  AutoBuilder.configure(
-            this::getPose, // Robot pose supplier
-            this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
-            this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-            (speeds, feedforwards) -> drive(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-            new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
-            ),
-            config, // The robot configuration
-            () -> {
-              // Boolean supplier that controls when the path will be mirrored for the red alliance
-              // This will flip the path being followed to the red side of the field.
-              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+    AutoBuilder.configure(
+                this::getPose, // Robot pose supplier
+                this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+                this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                (speeds, feedforwards) -> drive(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+                new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+                        new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+                ),
+                config, // The robot configuration
+                () -> {
+                // Boolean supplier that controls when the path will be mirrored for the red alliance
+                // This will flip the path being followed to the red side of the field.
+                // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-              var alliance = DriverStation.getAlliance();
-              if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
-              }
-              return false;
-            },
-            this // Reference to this subsystem to set requirements
-    );  
+                var alliance = DriverStation.getAlliance();
+                if (alliance.isPresent()) {
+                    return alliance.get() == DriverStation.Alliance.Red;
+                }
+                return false;
+                },
+                this // Reference to this subsystem to set requirements
+        );  
 
+  }
+  
   @Override
   public void periodic(){
   //updates Odometry in periodic block 
@@ -143,17 +163,7 @@ public class DriveSubsystem extends SubsystemBase {
         pose);
   }
 
-  public void driveJoystick(double xJoystick, double yJoystick, double rotJoystick, boolean fieldRelative) {
-    
-    //convert joystick input (-1, 1) to m/s for drivetrain 
-    double xSpeedDelivered = xJoystick * DriveConstants.MAX_SPEED_METERS_PER_SECOND; 
-    double ySpeedDelivered = yJoystick * DriveConstants.MAX_SPEED_METERS_PER_SECOND;
-    double rotDelivered = rotJoystick * DriveConstants.MAX_ANGULAR_SPEED;
-
-    driveChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, fieldRelative);
-  }
-
-  public void drive(double xSpeed, double ySpeed, double rotValue, boolean fieldRelative){
+  public void driveChassisSpeeds(double xSpeed, double ySpeed, double rotValue, boolean fieldRelative){
     // clamps speed to be within max/min range 
     double xSpeedClamped = MathUtil.clamp(xSpeed, -DriveConstants.MAX_SPEED_METERS_PER_SECOND,DriveConstants.MAX_SPEED_METERS_PER_SECOND); 
     double ySpeedClamped = MathUtil.clamp(ySpeed, -DriveConstants.MAX_SPEED_METERS_PER_SECOND,DriveConstants.MAX_SPEED_METERS_PER_SECOND); 
@@ -175,6 +185,34 @@ public class DriveSubsystem extends SubsystemBase {
     mBackLeft.setDesiredState(swerveModuleStates[2]);
     mBackRight.setDesiredState(swerveModuleStates[3]);
 
+  }
+  public void driveJoystick(double xJoystick, double yJoystick, double rotJoystick, boolean fieldRelative) {
+    
+    //convert joystick input (-1, 1) to m/s for drivetrain 
+    double xSpeedDelivered = xJoystick * DriveConstants.MAX_SPEED_METERS_PER_SECOND; 
+    double ySpeedDelivered = yJoystick * DriveConstants.MAX_SPEED_METERS_PER_SECOND;
+    double rotDelivered = rotJoystick * DriveConstants.MAX_ANGULAR_SPEED;
+
+    driveChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, fieldRelative);
+  }
+
+  public void drive(ChassisSpeeds speeds){
+    // clamps speed to be within max/min range 
+    SwerveModuleState[] swerveModuleStates = DriveConstants.DriveKinematics.toSwerveModuleStates(speeds);
+
+    mFrontLeft.setDesiredState(swerveModuleStates[0]);
+    mFrontRight.setDesiredState(swerveModuleStates[1]);
+    mBackLeft.setDesiredState(swerveModuleStates[2]);
+    mBackRight.setDesiredState(swerveModuleStates[3]);
+
+  }
+  public ChassisSpeeds getRobotRelativeSpeeds() {
+    return DriveConstants.DriveKinematics.toChassisSpeeds(
+        mFrontLeft.getState(),
+        mFrontRight.getState(),
+        mBackLeft.getState(),
+        mBackRight.getState()
+        );
   }
 
   /**
