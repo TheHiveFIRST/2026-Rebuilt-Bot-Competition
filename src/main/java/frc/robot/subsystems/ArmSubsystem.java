@@ -36,11 +36,11 @@ public class ArmSubsystem extends SubsystemBase {
         
         // Configuration for Leader
         SparkMaxConfig leaderConfig = new SparkMaxConfig();
-        leaderConfig.idleMode(IdleMode.kBrake);
+        leaderConfig.idleMode(IdleMode.kBrake).inverted(true);
 
         // Configuration for Follower
         SparkMaxConfig followerConfig = new SparkMaxConfig();
-        followerConfig.idleMode(IdleMode.kCoast);
+        followerConfig.idleMode(IdleMode.kBrake).inverted(false);
 
         // Applying configuration`s using 2026 REV syntax
         mPivotLeader.configure(leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -84,8 +84,8 @@ public class ArmSubsystem extends SubsystemBase {
             mCurrentTarget = mPivotEncoder.getPosition(); // Hold current spot
         }
 
-    public void incrementKP() { mArmCurrentKP += ShooterConstants.KP_INCREMENT; } // Increments by 0.01 for fine tuning
-    public void decrementKP() { mArmCurrentKP -= ShooterConstants.KP_INCREMENT; }
+    public void incrementKP() { mArmCurrentKP += ArmConstants.ARM_KP_INCREMENT; } // Increments by 0.01 for fine tuning
+    public void decrementKP() { mArmCurrentKP -= ArmConstants.ARM_KP_INCREMENT; }
 
     
      public Command runIntakePivotGround() {

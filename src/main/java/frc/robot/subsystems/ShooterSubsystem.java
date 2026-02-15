@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import com.fasterxml.jackson.databind.RuntimeJsonMappingException;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -11,17 +10,14 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.IntakeConstants;
-import frc.robot.Configs.ShooterConfig;
-import frc.robot.Configs.IntakeConfigs;
+import frc.robot.configs.ShootConfig.ShooterConfig;
 
-public class TestingSubsystem extends SubsystemBase {
+public class ShooterSubsystem extends SubsystemBase {
 
     private final SparkMax mShooterLeader;
     private final SparkMax mShooterFollower;
@@ -44,7 +40,7 @@ public class TestingSubsystem extends SubsystemBase {
 
 
 
-    public TestingSubsystem() {
+    public ShooterSubsystem() {
     
         mShooterLeader = new SparkMax(ShooterConstants.SHOOTER_LEADER_CANID, MotorType.kBrushless);
         mShooterFollower = new SparkMax(ShooterConstants.SHOOTER_FOLLOWER_CANID, MotorType.kBrushless);
