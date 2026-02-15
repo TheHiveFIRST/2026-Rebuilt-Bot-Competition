@@ -87,7 +87,8 @@ public class RobotContainer {
       0
     ));
     SmartDashboard.putData("Pathfind to Scoring Pos", AutoBuilder.pathfindToPose(
-      new Pose2d(2.15, 3.0, Rotation2d.fromDegrees(180)), 
+      new Pose2d(2.15
+      , 3.0, Rotation2d.fromDegrees(180)), 
       new PathConstraints(
         4.0, 4.0, 
         Units.degreesToRadians(360), Units.degreesToRadians(540)
@@ -102,7 +103,7 @@ public class RobotContainer {
       
       // The rotation component in these poses represents the direction of travel
       Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
-      Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(2.0, 0.0)), new Rotation2d());
+      Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(3.3333, 0.0)), new Rotation2d());
 
       List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPos, endPos);
       PathPlannerPath path = new PathPlannerPath(
@@ -128,6 +129,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new PathPlannerAuto("New Auto");
+    return autoChooser.getSelected();
   }
 }
