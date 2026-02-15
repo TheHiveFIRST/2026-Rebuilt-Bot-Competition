@@ -4,46 +4,32 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkMaxConfig;
 import com.revrobotics.spark.SparkMax.ControlType;
 import com.revrobotics.spark.SparkMax.ResetMode;
 import com.revrobotics.spark.SparkMax.PersistMode;
 import com.revrobotics.spark.config.ClosedLoopConfig;
-import com.revrobotics.spark.config.SparkMaxConfig.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import Constants.ClimbConstants;
 import Constants.ClimbPIDConstants;
+import frc.robot.Configs.ClimbConfigs;
 
 public class ClimbSubsystem extends SubsystemBase {
 
   private SparkMax climbLeaderMotor; //Set name to ensure we can use variable throughout class
   private SparkMax climbFollowerMotor; //Set name to ensure we can use variable throughout class
-  private SparkMaxConfig climbConfig = new SparkMaxConfig(); //Set name to ensure we can use variable throughout class
-  private SparkMaxConfig climbConfig2 = new SparkMaxConfig(); //Set name to ensure we can use variable throughout class
 
   /** Creates a new ExampleSubsystem. */
   public ClimbSubsystem() {
     climbLeaderMotor = new SparkMax(ClimbConstants.climbLeaderCanID, MotorType.kBrushless); //Create a new motor (brushless)
     climbFollowerMotor = new SparkMax(ClimbConstants.climbFollowerCanID, MotorType.kBrushless); //Create a new motor (brushless)
 
-    climbConfig
-      .smartCurrentLimit(50)
-      .closedLoop.pid(ClimbPIDConstants.kP, ClimbPIDConstants.kI, ClimbPIDConstants.kD)
-      .idleMode(IdleMode.kBrake); //Set limits for leader motor and pid using constant file
+    climbLeaderMotor.configure(ClimbConfigs.climbConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); //set configuration of leadermotor
+    climbLeaderMotor.setPositionConversionFactor(ClimbConfigs.ClimbPIDConstants.conversionFactor); //Convert from rotations of robot to inchs
 
-    climbLeaderMotor.configure(climbConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); //set configuration of leadermotor
-    climbLeaderMotor.setPositionConversionFactor(ClimbPIDConstants.conversionFactor); //Convert from rotations of robot to inchs
+    climbFollowerMotor.configure(ClimbConfigs.climbConfig2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); //set configuration of followermotor
 
-    climbConfig2
-      .smartCurrentLimit(50)
-      .idleMode(IdleMode.kBrake); //Set limits for follower motor
-
-    climbFollowerMotor.configure(climbConfig2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); //set configuration of followermotor
-
-    climbFollowerMotor.follow(climbLeaderMotor); //set follower to follow the leader so we only need to call the leader when moving the climb
   }
 
   public void setStartClimb() {
