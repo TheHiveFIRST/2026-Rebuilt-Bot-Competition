@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import Constants.ClimbConstants;
 import Constants.ClimbPIDConstants;
-import frc.robot.Configs.ClimbConfigs;
+import frc.robot.configs.ClimbConfigs;
 
 public class ClimbSubsystem extends SubsystemBase {
 
