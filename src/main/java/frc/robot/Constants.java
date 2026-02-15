@@ -16,4 +16,16 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+  public static class ClimbConstants {
+    public static final int climbLeaderCanID = 11; //ID for climb leader
+    public static final int climbFollowerCanID = 12; //ID for climb leader
+    public static final double endPose = 0.5; //Where to extend the climb so it latches onto the end game piece
+    public static final double startPose = 0; //Reset the climb position to the original position so it lifts the robot
+  }
+  public static class ClimbPIDConstants {
+    public static final double kP = 0.001; //PID controls for leader climber
+    public static final double kI = 0.001; //PID controls for leader climber
+    public static final double kD = 0.001; //PID controls for leader climber
+    public static final double conversionFactor = 1; //Converstion factor from rotations to inchs
+  }
 }
