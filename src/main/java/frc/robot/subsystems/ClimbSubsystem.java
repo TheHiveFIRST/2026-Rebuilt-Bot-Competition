@@ -4,15 +4,16 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkMax.ControlType;
-import com.revrobotics.spark.SparkMax.ResetMode;
-import com.revrobotics.spark.SparkMax.PersistMode;
+import com.revrobotics.ResetMode;
+import com.revrobotics.PersistMode;
 import com.revrobotics.spark.config.ClosedLoopConfig;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkLowLevel.MotorType; 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import Constants.ClimbConstants;
-import Constants.ClimbPIDConstants;
+import frc.robot.Constants.ClimbConstants;
+import frc.robot.Constants.ClimbPIDConstants;
 import frc.robot.configs.ClimbConfigs;
 
 public class ClimbSubsystem extends SubsystemBase {
@@ -26,17 +27,17 @@ public class ClimbSubsystem extends SubsystemBase {
     climbFollowerMotor = new SparkMax(ClimbConstants.climbFollowerCanID, MotorType.kBrushless); //Create a new motor (brushless)
 
     climbLeaderMotor.configure(ClimbConfigs.climbConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); //set configuration of leadermotor
-    climbLeaderMotor.setPositionConversionFactor(ClimbConfigs.ClimbPIDConstants.conversionFactor); //Convert from rotations of robot to inchs
+    climbLeaderMotor.setPositionConversionFactor(ClimbPIDConstants.conversionFactor); //Convert from rotations of robot to inchs
 
     climbFollowerMotor.configure(ClimbConfigs.climbConfig2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); //set configuration of followermotor
 
   }
 
   public void setStartClimb() {
-    climbLeaderMotor.getClosedLoopController().setReference(ClimbConstants.endPose, ControlType.kPosition); //Sets climb position to the desirecd extension
+    climbLeaderMotor.getClosedLoopController().setReference(ClimbConstants.endPose); //Sets climb position to the desirecd extension
   }
   public void setEndClimb() {
-    climbLeaderMotor.getClosedLoopController().setReference(ClimbConstants.startPose, ControlType.kPosition); //Moves climb back to initialized position
+    climbLeaderMotor.getClosedLoopController().setReference(ClimbConstants.startPose); //Moves climb back to initialized position
   }
   /**
    * Example command factory method.
