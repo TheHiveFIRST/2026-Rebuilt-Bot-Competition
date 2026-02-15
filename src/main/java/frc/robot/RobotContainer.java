@@ -33,6 +33,8 @@ public class RobotContainer {
     // Only ONE controller instance to prevent HID conflicts
     private final CommandXboxController mDriverController = 
         new CommandXboxController(OperatorConstants.kDriverControllerPort);
+    private final CommandXboxController mOperatorController = 
+        new CommandXboxController(OperatorConstants.kOperatorControllerPort);
 
     public RobotContainer() {
         configureBindings();
@@ -61,14 +63,14 @@ public class RobotContainer {
         */
 
         //INTAKE TUNING 
-        /* 
-        mDriverController.a().whileTrue(mArmSubsystem.runIntakePivotGround());
-        mDriverController.b().whileTrue(mArmSubsystem.runIntakePivotUp());
-        mDriverController.y().whileTrue(mArmSubsystem.runPivot());
-        mDriverController.x().whileTrue(mArmSubsystem.runPivot12()); 
-        */
-        //mDriverController.povLeft().onTrue(mArmSubsystem.runOnce(mArmSubsystem::incrementKP));
-       // mDriverController.povRight().onTrue(mArmSubsystem.runOnce(mArmSubsystem::decrementKP));
+        
+        mOperatorController.a().whileTrue(mArmSubsystem.runIntakePivotGround());
+        mOperatorController.b().whileTrue(mArmSubsystem.runIntakePivotUp());
+        mOperatorController.y().whileTrue(mArmSubsystem.runPivot());
+        mOperatorController.x().whileTrue(mArmSubsystem.runPivot12()); 
+        
+        mOperatorController.povLeft().onTrue(mArmSubsystem.runOnce(mArmSubsystem::incrementKP));
+        mOperatorController.povRight().onTrue(mArmSubsystem.runOnce(mArmSubsystem::decrementKP));
         
 
 

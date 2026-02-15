@@ -9,13 +9,14 @@ public class UnjamCommand extends SequentialCommandGroup {
 
   public UnjamCommand(IntakeSubsystem mIntakeSubsystem) {
     addCommands( 
+      mIntakeSubsystem.runIntakeForwardCommand().withTimeout(0.15),
       new WaitCommand(0.1),          
-      mIntakeSubsystem.runIntakeBackwardCommand().withTimeout(0.2),
+      mIntakeSubsystem.runIntakeBackwardCommand().withTimeout(0.15),
       new WaitCommand(0.1),
-      mIntakeSubsystem.runIntakeForwardCommand().withTimeout(0.8),
+      mIntakeSubsystem.runIntakeForwardCommand().withTimeout(1),
       new WaitCommand(0.1),
-      mIntakeSubsystem.runIntakeBackwardCommand().withTimeout(0.2),
+      mIntakeSubsystem.runIntakeBackwardCommand().withTimeout(0.15),
       new WaitCommand(0.1),
-      mIntakeSubsystem.runIntakeForwardCommand());
+      mIntakeSubsystem.runIntakeForwardCommand().withTimeout(1));
   }
 }
