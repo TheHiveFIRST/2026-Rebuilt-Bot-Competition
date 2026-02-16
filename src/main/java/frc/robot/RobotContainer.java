@@ -42,7 +42,7 @@ public class RobotContainer {
                 MathUtil.applyDeadband(mDriverController.getLeftY(), OperatorConstants.DRIVE_DEADBAND),
                 MathUtil.applyDeadband(mDriverController.getLeftX(), OperatorConstants.DRIVE_DEADBAND),
                 MathUtil.applyDeadband(mDriverController.getRightX(), OperatorConstants.DRIVE_DEADBAND),
-                false),
+                true),
             mDriveSubsystem));
   }
 
@@ -69,7 +69,7 @@ public class RobotContainer {
       .whileTrue(mDriveSubsystem.defensePosition());
     
     //zero gyro
-    mDriverController.start()
+    mDriverController.leftBumper()
       .whileTrue(mDriveSubsystem.resetGyro()); 
   }
 

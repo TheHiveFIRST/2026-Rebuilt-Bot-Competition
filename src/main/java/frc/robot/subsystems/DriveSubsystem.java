@@ -57,7 +57,7 @@ public class DriveSubsystem extends SubsystemBase {
   //Odometry class for tracking robot pose 
   SwerveDriveOdometry Odometry = new SwerveDriveOdometry(
     DriveConstants.DriveKinematics,
-    Rotation2d.fromDegrees(-mGyro.getAngle()), //inversion as NavX is CCW+
+    getGyroRotation(), //inversion as NavX is CCW+
     new SwerveModulePosition[] {
         mFrontLeft.getPosition(),
         mFrontRight.getPosition(),
@@ -75,7 +75,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic(){
   //updates Odometry in periodic block 
     Odometry.update(
-        Rotation2d.fromDegrees(-mGyro.getAngle()),
+        getGyroRotation(),
         new SwerveModulePosition[] {
             mFrontLeft.getPosition(),
             mFrontRight.getPosition(),
@@ -84,7 +84,6 @@ public class DriveSubsystem extends SubsystemBase {
         });
 
    //adding field map to smart dashboard 
-    //TODO: change to elastic 
     field2d.setRobotPose(Odometry.getPoseMeters());
     SmartDashboard.putData(field2d);
       }
@@ -103,7 +102,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose) {
     Odometry.resetPosition(
-        Rotation2d.fromDegrees(-mGyro.getAngle()),
+        getGyroRotation(),
         new SwerveModulePosition[] {
             mFrontLeft.getPosition(),
             mFrontRight.getPosition(),
@@ -133,7 +132,7 @@ public class DriveSubsystem extends SubsystemBase {
     var swerveModuleStates = DriveConstants.DriveKinematics.toSwerveModuleStates(
       fieldRelative 
         ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedClamped, ySpeedClamped, 
-          rotDelivered, Rotation2d.fromDegrees(-mGyro.getAngle()))
+          rotDelivered, getGyroRotation())
         
         : new ChassisSpeeds(xSpeedClamped, ySpeedClamped, rotDelivered));
     
@@ -183,12 +182,16 @@ public class DriveSubsystem extends SubsystemBase {
     mGyro.reset();
   }
 
+  public Rotation2d getGyroRotation(){
+    return Rotation2d.fromDegrees(mGyro.getAngle());
+  }
+
   /**
    * Returns the heading of the robot.
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
-    return Rotation2d.fromDegrees(-mGyro.getAngle()).getDegrees();
+    return Rotation2d.fromDegrees(mGyro.getAngle()).getDegrees();
   }
 
   /**
