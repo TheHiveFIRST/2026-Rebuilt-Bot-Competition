@@ -2,6 +2,9 @@
 // // Open Source Software; you can modify and/or share it under the terms of
 // // the WPILib BSD license file in the root directory of this project.
 
+
+
+//FOR LATER TESTING/IMPROVEMENT 
 // package frc.robot.subsystems;
 
 // import static edu.wpi.first.units.Units.Amps;
@@ -41,7 +44,7 @@
 // import yams.motorcontrollers.local.SparkWrapper;
 
 
-// public class FlywheelSubsystem extends SubsystemBase {
+// public class TestingSubsystem extends SubsystemBase {
 
 //  private double mCurrentKV = ShooterConstants.FF_KV;
 //  private double mCurrentKA = ShooterConstants.FF_KA;
@@ -49,7 +52,6 @@
 //  private double mCurrentKI = ShooterConstants.TESTING_KI;
 //  private double mCurrentKD = ShooterConstants.TESTING_KD;
 //  private final RelativeEncoder mShooterLeaderEncoder;
-
 
 
 
@@ -132,7 +134,7 @@
 //   public Command set(double dutyCycle) {return shooter.set(dutyCycle);}
 
 //   /** Creates a new ExampleSubsystem. */
-//   public FlywheelSubsystem() {
+//   public TestingSubsystem() {
 //         mShooterLeaderEncoder = mShooterLeader.getEncoder();
 
 //   }
@@ -184,3 +186,9 @@
 //     shooter.simIterate();
 //   }
 // }
+
+
+//ADD TO ROBOT CONTAINER  // Schedule `setVelocity` when the Xbox controller's B button is pressed,
+        // cancelling on release.
+        //mDriverController.b().whileTrue(mFlywheelSubsystem.setVelocity(RPM.of(ShooterConstants.DEFAULT_TARGET_RPM)));
+       // mDriverController.leftTrigger().whileTrue(mFlywheelSubsystem.set(0.3));

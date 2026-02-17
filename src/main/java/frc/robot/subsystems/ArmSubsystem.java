@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.ShooterConstants;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
@@ -61,15 +60,13 @@ public class ArmSubsystem extends SubsystemBase {
         mPivotLeader.set(mPivotOutput);
         mPivotFollower.set(mPivotOutput);
     }
+    
     public void setPivotPower(double pivotPower){
         mPivotLeader.set(pivotPower);
         mPivotFollower.set(pivotPower);
 
     }
 
-    public void setPivot12Power(double pivotPower){
-        mPivotLeader.set(pivotPower);
-    }
 
     public double encoderGetValue() {
         return mPivotEncoder.getPosition();
@@ -116,22 +113,14 @@ public class ArmSubsystem extends SubsystemBase {
               });
     }
 
-    public Command runPivot12(){
-         return run(
-        () -> {
-            setPivot12Power(0.1);
-              });
-    }
+
     @Override
     public void periodic() {
-    
-
-        // Debugging values to Glass/SmartDashboard
         SmartDashboard.putNumber("Arm/Encoder Value", encoderGetValue());
         SmartDashboard.putNumber("Arm/Target Position", mCurrentTarget);
         SmartDashboard.putBoolean("Arm/At Target", isAtTarget());
-         SmartDashboard.putNumber("Arm/pivot current", mPivotLeader.getOutputCurrent());
-          SmartDashboard.putNumber("Arm/Current kP Tuning", mArmCurrentKP);
+        SmartDashboard.putNumber("Arm/pivot current", mPivotLeader.getOutputCurrent());
+        SmartDashboard.putNumber("Arm/Current kP Tuning", mArmCurrentKP);
     }
 
     

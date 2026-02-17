@@ -8,7 +8,7 @@ public final class Constants {
     }
 
     public static final class IntakeConstants {
-        public static final int INTAKE_LEADER_ID = 10; // Check your real IDs!
+        public static final int INTAKE_LEADER_ID = 10; 
         public static final int INTAKE_FOLLOWER_ID = 11;
         public static final double INTAKE_SPEED = 0.7;
     }
@@ -16,8 +16,6 @@ public final class Constants {
     public static final class ShooterConstants {
         public static final int SHOOTER_LEADER_CANID = 14;
         public static final int SHOOTER_FOLLOWER_CANID = 15;
-        public static final int SHOOTER_TESTER_LEADER_CANID = 17; //TODO: delete later
-        public static final int SHOOTER_TESTER_FOLLOWER_CANID = 18;
         public static final int SHOOTER_FEEDER = 16; 
 
         // PIDF Values
@@ -35,7 +33,7 @@ public final class Constants {
         public static final double FF_KV = 0.0;
         public static final double FF_KA = 0.0;
     
-        // Manual Control Settings
+        // Manual Control 
         public static final double RPM_INCREMENT = 50.0;
         public static final double KV_INCREMENT = 0.000001;
         public static final double KP_INCREMENT = 0.000001;
@@ -49,6 +47,13 @@ public final class Constants {
 
         public static final double DEFAULT_TARGET_RPM = 4000; 
 
+        //Untested Regression coefficients 
+        public static final double REGRESSION_COEFFICIENT_4 = 0; 
+        public static final double REGRESSION_COEFFICIENT_3 = 0;
+        public static final double REGRESSION_COEFFICIENT_2 = 0;
+        public static final double REGRESSION_COEFFICIENT_1 = 0;
+        public static final double REGRESSION_COEFFICIENT_0 = 0;
+
     }
 
     public static final class ArmConstants {
@@ -56,16 +61,15 @@ public final class Constants {
         public static final int ARM_FOLLOWER_ID = 13;
 
         // PID Gains
-        public static final double ARM_KP = 0.97; 
+        public static final double ARM_KP = 0.94; 
         public static final double ARM_KI = 0.0;
         public static final double ARM_KD = 0.0;
 
         // Positions (0 to 1 for Absolute Encoders)
-        public static final double PIVOT_OUT = 0.400; 
+        public static final double PIVOT_OUT = 0.56; //TODO: PUT RIGHT ONES 
         public static final double PIVOT_IN = 0.1;  
         public static final double ARM_KP_INCREMENT = 0.01;
 
-        
         public static final double POSITION_TOLERANCE = 0.02;
     }
 }

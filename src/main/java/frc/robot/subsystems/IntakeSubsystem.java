@@ -19,9 +19,6 @@ public class IntakeSubsystem extends SubsystemBase {
     private final SparkMax mIntakeFollower;
 
 
-
-
-
     public IntakeSubsystem() {
         mIntakeLeader = new SparkMax(IntakeConstants.INTAKE_LEADER_ID, MotorType.kBrushless);
         mIntakeFollower = new SparkMax(IntakeConstants.INTAKE_FOLLOWER_ID, MotorType.kBrushless);
@@ -40,11 +37,6 @@ public class IntakeSubsystem extends SubsystemBase {
         }
 
 
-
-
-    // --- Tuning Methods ---
-    
-   
     public Command runIntakeForwardCommand() {
          return run(
         () -> {
@@ -60,7 +52,6 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
 
-
     public Command stop() {
          return run(
         () -> {
@@ -68,18 +59,10 @@ public class IntakeSubsystem extends SubsystemBase {
               });
     }
 
-    public Command pause() {
-         return runOnce(
-        () -> {
-            runIntake(0);
-              });
-    }
-
-
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Testing/intake bus voltage", mIntakeLeader.getBusVoltage());
+        SmartDashboard.putNumber("Intake/intake bus voltage", mIntakeLeader.getBusVoltage());
 
 
     }
