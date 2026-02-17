@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
@@ -12,29 +8,38 @@ import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 
-/**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and trigger mappings) should be declared here.
- */
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+
+import frc.robot.Constants.OperatorConstants;
+
+import frc.robot.commands.UnjamCommand;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+
+
+
+
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final DriveSubsystem mDriveSubsystem = new DriveSubsystem(); 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController mDriverController =
+  private final ArmSubsystem mArmSubsystem = new ArmSubsystem(); 
+  private final ShooterSubsystem mShooterSubsystem = new ShooterSubsystem(); 
+  private final IntakeSubsystem mIntakeSubsystem = new IntakeSubsystem(); 
+
+  private final CommandXboxController mDriverController = 
       new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER);
+  private final CommandXboxController mOperatorController = 
+      new CommandXboxController(OperatorConstants.OPERATOR_CONTROLLER);
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // Configure the trigger bindings
-    configureBindings();
+        configureBindings();
 
-    mDriveSubsystem.setDefaultCommand(
+        mDriveSubsystem.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick. field relative set true/false 
         new RunCommand(
@@ -44,42 +49,88 @@ public class RobotContainer {
                 MathUtil.applyDeadband(mDriverController.getRightX(), OperatorConstants.DRIVE_DEADBAND),
                 true),
             mDriveSubsystem));
-  }
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
-  private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
+        mArmSubsystem.setDefaultCommand(mArmSubsystem.runIntakePivotGround());
+        //mShooterSubsystem.setDefaultCommand(new RunCommand(()-> mShooterSubsystem.runShooterPower(0), mShooterSubsystem));
+        mIntakeSubsystem.setDefaultCommand(new RunCommand(()-> mIntakeSubsystem.runIntake(0), mIntakeSubsystem));
+        mShooterSubsystem.setDefaultCommand(new RunCommand(()-> mShooterSubsystem.runKicker(0), mShooterSubsystem));
+     }
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    mDriverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    private void configureBindings() {
+      
+        //INTAKE CONTROLS 
+        mOperatorController.a().whileTrue(mArmSubsystem.runIntakePivotGround());
+        mOperatorController.b().whileTrue(mArmSubsystem.runIntakePivotUp());
+        mOperatorController.y().whileTrue(mArmSubsystem.runPivot());
+        
+        mOperatorController.povLeft().onTrue(mArmSubsystem.runOnce(mArmSubsystem::incrementKP));
+        mOperatorController.povRight().onTrue(mArmSubsystem.runOnce(mArmSubsystem::decrementKP));
+        
 
-     //schedule defense position when driver controller right bumper is pressed 
-    mDriverController.leftTrigger()
-      .whileTrue(mDriveSubsystem.defensePosition());
+        //SHOOTER CONTROLS
+        mDriverController.y().whileTrue(mShooterSubsystem.runShooterCommand());
+        mDriverController.a().whileTrue(mArmSubsystem.runIntakePivotUp());
+        mDriverController.x().toggleOnTrue(mShooterSubsystem.stop());
+        mDriverController.rightBumper().whileTrue(shoot());
+        mDriverController.rightTrigger().whileTrue(mShooterSubsystem.runKickerCommand());
+        mDriverController.leftBumper().whileTrue(shootwithJam());
+        mDriverController.leftTrigger().whileTrue(mIntakeSubsystem.runIntakeForwardCommand());
+        mDriverController.b().whileTrue(mDriveSubsystem.resetGyro()); 
+
+
+        //  //schedule defense position when driver controller right bumper is pressed 
+        //   mDriverController.leftTrigger()
+        //  .whileTrue(mDriveSubsystem.defensePosition());
     
-    //zero gyro
-    mDriverController.leftBumper()
-      .whileTrue(mDriveSubsystem.resetGyro()); 
+       
+        //PID TUNING
+        // Back Button (double tap to cycle)
+       //mDriverController.back()
+           // .whileTrue(mShooterSubsystem.run(mShooterSubsystem::cycleTuningMode))
+           // .debounce(0.3); // Prevents accidental double presses
+        
+        mDriverController.povLeft().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::incrementRPM));
+        mDriverController.povRight().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::decrementRPM));
+        mDriverController.povUp().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::incrementCurrentGain));
+        mDriverController.povDown().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::decrementCurrentGain));
+        mDriverController.start().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::incrementKP));
+        mDriverController.back().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::decrementKP));
+
+        
+
+        // --- ARM / STINGER (A Button Toggle) ---
+        /* 
+        mDriverController.a().onTrue(
+            Commands.runOnce(() -> {
+                // If current position is near the OUT setpoint, move to IN. Otherwise, move OUT.
+                if (Math.abs(mArmSubsystem.encoderGetValue() - ArmConstants.PIVOT_OUT) < 0.05) {
+                    mArmSubsystem.setTargetArm(ArmConstants.PIVOT_IN);
+                } else {
+                    mArmSubsystem.setTargetArm(ArmConstants.PIVOT_OUT);
+                }
+            }, mArmSubsystem)
+        );
+        */
+
+    }
+
+    public Command getAutonomousCommand() {
+        return Commands.none();
+    }
+
+   public Command shoot(){
+    return Commands.parallel(           
+    new RunCommand(() -> mIntakeSubsystem.runIntake(Constants.IntakeConstants.INTAKE_SPEED)),
+    new RunCommand(() -> mShooterSubsystem.runKicker(-Constants.ShooterConstants.KICKER_SPEED)));
+  }
+  public Command shootwithJam(){
+    return Commands.parallel(           
+    new UnjamCommand(mIntakeSubsystem),
+    mShooterSubsystem.runKickerCommand());
   }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
-  }
 }
+
+  
+
+
