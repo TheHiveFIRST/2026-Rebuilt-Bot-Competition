@@ -122,6 +122,40 @@ public class DriveSubsystem extends SubsystemBase {
     driveChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, fieldRelative);
   }
 
+  public void driveIntakeAlign(double xJoystick, double yJoystick, boolean fieldRelative) {
+
+   double xSpeed = xJoystick * DriveConstants.MAX_SPEED_METERS_PER_SECOND;
+   double ySpeed = yJoystick * DriveConstants.MAX_SPEED_METERS_PER_SECOND;
+
+   double rotSpeed = 0;
+
+   if (Math.abs(xSpeed) > 0.05 || Math.abs(ySpeed) > 0.05) {
+      double desiredAngle = Math.atan2(ySpeed, xSpeed); // radians
+     double currentAngle = getGyroRotation().getRadians();
+     double angleError = MathUtil.angleModulus(desiredAngle - currentAngle);
+     //TODO: TEST AND TUNE THE PID
+     rotSpeed = angleError * DriveConstants.INTAKE_ALIGN_KP;
+    }
+
+  driveChassisSpeeds(xSpeed, ySpeed, rotSpeed, fieldRelative);
+  }
+
+  public void driveDiagonalBumpAlign(double xJoystick, double yJoystick, boolean fieldRelative, double targetDegrees) {
+
+    double xSpeed = xJoystick * DriveConstants.MAX_SPEED_METERS_PER_SECOND;
+    double ySpeed = yJoystick * DriveConstants.MAX_SPEED_METERS_PER_SECOND;
+
+    double desiredAngle = Math.toRadians(targetDegrees);
+    double currentAngle = getGyroRotation().getRadians();
+    double angleError = MathUtil.angleModulus(desiredAngle - currentAngle);
+
+    double rotSpeed = angleError * DriveConstants.DIAGONAL_ALIGN_kP;
+
+  driveChassisSpeeds(xSpeed, ySpeed, rotSpeed, fieldRelative);
+  }
+
+
+
   public void driveChassisSpeeds(double xSpeed, double ySpeed, double rotValue, boolean fieldRelative){
     // clamps speed to be within max/min range 
     double xSpeedClamped = MathUtil.clamp(xSpeed, -DriveConstants.MAX_SPEED_METERS_PER_SECOND,DriveConstants.MAX_SPEED_METERS_PER_SECOND); 

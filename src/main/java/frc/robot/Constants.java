@@ -53,6 +53,9 @@ public final class Constants {
     public static final int BACK_RIGHT_TURNING_CAN_ID = 7;
 
     public static final boolean GYRO_REVERSED = false;
+    
+    public static final double INTAKE_ALIGN_KP = 0.0001;
+    public static final double DIAGONAL_ALIGN_kP = 0.0001;
   }
 
   public static final class ModuleConstants{
@@ -164,8 +167,8 @@ public final class Constants {
         public static final double ARM_KI = 0.0;
         public static final double ARM_KD = 0.0;
 
-        // Positions (0 to 1 for Absolute Encoders)
         public static final double PIVOT_OUT = 0.55; 
+        public static final double PIVOT_DEFAULT = 0.4; 
         public static final double PIVOT_IN = 0.1;  
         public static final double ARM_KP_INCREMENT = 0.01;
 

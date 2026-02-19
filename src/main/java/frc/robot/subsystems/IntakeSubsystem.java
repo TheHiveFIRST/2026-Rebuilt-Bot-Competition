@@ -44,7 +44,7 @@ public class IntakeSubsystem extends SubsystemBase {
               });
     }
     
-    public Command runIntakeBackwardCommand() {
+    public Command runOuttakeCommand() {
          return run(
         () -> {
             runIntake(-IntakeConstants.INTAKE_SPEED);

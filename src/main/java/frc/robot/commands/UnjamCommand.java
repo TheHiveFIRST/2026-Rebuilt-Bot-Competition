@@ -11,11 +11,11 @@ public class UnjamCommand extends SequentialCommandGroup {
     addCommands( 
       mIntakeSubsystem.runIntakeForwardCommand().withTimeout(0.15),
       new WaitCommand(0.1),          
-      mIntakeSubsystem.runIntakeBackwardCommand().withTimeout(0.15),
+      mIntakeSubsystem.runOuttakeCommand().withTimeout(0.15),
       new WaitCommand(0.1),
       mIntakeSubsystem.runIntakeForwardCommand().withTimeout(1),
       new WaitCommand(0.1),
-      mIntakeSubsystem.runIntakeBackwardCommand().withTimeout(0.15),
+      mIntakeSubsystem.runOuttakeCommand().withTimeout(0.15),
       new WaitCommand(0.1),
       mIntakeSubsystem.runIntakeForwardCommand().withTimeout(1));
   }

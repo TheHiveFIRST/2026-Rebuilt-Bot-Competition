@@ -92,6 +92,13 @@ public class ArmSubsystem extends SubsystemBase {
               });
     }
 
+    public Command IntakePivotDefault() {
+         return run(
+        () -> {
+            setTargetArm(ArmConstants.PIVOT_DEFAULT);
+              });
+    }
+
     public Command runIntakePivotUp() {
          return run(
         () -> {
