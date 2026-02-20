@@ -73,6 +73,23 @@ public final class Constants {
     public static final double DRIVING_MOTOR_REDUCTION = (45.0 * 22) / (DRIVING_MOTOR_PINION_TEETH * 15);
     public static final double DRIVE_WHEEL_FREE_SPEED_RPS = (DRIVING_MOTOR_FREE_SPEED_RPS * WHEEL_CIRCUMFERENCE_METERS)
         / DRIVING_MOTOR_REDUCTION;
+    
+    public static final double FRONT_LEFT_DRIVING_P = 0.17;
+    public static final double FRONT_RIGHT_DRIVING_P = 0.17;
+    public static final double BACK_LEFT_DRIVING_P = 0.17;
+    public static final double BACK_RIGHT_DRIVING_P = 0.17;
+
+    public static final double FRONT_LEFT_DRIVING_D = 0.17;
+    public static final double FRONT_RIGHT_DRIVING_D = 0.17;
+    public static final double BACK_LEFT_DRIVING_D = 0.17;
+    public static final double BACK_RIGHT_DRIVING_D = 0.17;
+
+
+    public static final double FRONT_LEFT_TURNING_P = 1;
+    public static final double FRONT_RIGHT_TURNING_P = 1;
+    public static final double BACK_LEFT_TURNING_P  = 1;
+    public static final double BACK_RIGHT_TURNING_P = 1;
+
 
   }
   public static class OperatorConstants {

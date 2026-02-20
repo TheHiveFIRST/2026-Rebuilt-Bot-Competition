@@ -42,6 +42,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.configs.DriveConfig;
 
 public class DriveSubsystem extends SubsystemBase {
   //create 4 MAXSwerveModules 
@@ -49,22 +50,30 @@ public class DriveSubsystem extends SubsystemBase {
   private final MaxSwerveModule mFrontLeft = new MaxSwerveModule(
     DriveConstants.FRONT_LEFT_DRIVING_CAN_ID,
     DriveConstants.FRONT_LEFT_TURNING_CAN_ID,
-    DriveConstants.FRONT_LEFT_CHASSIS_ANGULAR_OFFSET);
+    DriveConstants.FRONT_LEFT_CHASSIS_ANGULAR_OFFSET,
+    DriveConfig.MAXSwerveModule.frontLeftDrivingConfig,
+    DriveConfig.MAXSwerveModule.frontLeftTurningConfig);
   
   private final MaxSwerveModule mFrontRight = new MaxSwerveModule(
     DriveConstants.FRONT_RIGHT_DRIVING_CAN_ID,
     DriveConstants.FRONT_RIGHT_TURNING_CAN_ID,
-    DriveConstants.FRONT_RIGHT_CHASSIS_ANGULAR_OFFSET);
+    DriveConstants.FRONT_RIGHT_CHASSIS_ANGULAR_OFFSET,
+    DriveConfig.MAXSwerveModule.frontRightDrivingConfig,
+    DriveConfig.MAXSwerveModule.frontRightTurningConfig);
   
   private final MaxSwerveModule mBackLeft = new MaxSwerveModule(
     DriveConstants.BACK_LEFT_DRIVING_CAN_ID,
     DriveConstants.BACK_LEFT_TURNING_CAN_ID,
-    DriveConstants.BACK_LEFT_CHASSIS_ANGULAR_OFFSET);
+    DriveConstants.BACK_LEFT_CHASSIS_ANGULAR_OFFSET,
+    DriveConfig.MAXSwerveModule.backLeftDrivingConfig,
+    DriveConfig.MAXSwerveModule.backLeftTurningConfig);
 
   private final MaxSwerveModule mBackRight = new MaxSwerveModule(
     DriveConstants.BACK_RIGHT_DRIVING_CAN_ID,
     DriveConstants.BACK_RIGHT_TURNING_CAN_ID,
-    DriveConstants.BACK_RIGHT_CHASSIS_ANGULAR_OFFSET);
+    DriveConstants.BACK_RIGHT_CHASSIS_ANGULAR_OFFSET,
+    DriveConfig.MAXSwerveModule.backRightDrivingConfig,
+    DriveConfig.MAXSwerveModule.backRightTurningConfig);
 
   //mGyro sensor/IMU (usb input type to roborio)
   private final AHRS mGyro = new AHRS(NavXComType.kUSB1); 

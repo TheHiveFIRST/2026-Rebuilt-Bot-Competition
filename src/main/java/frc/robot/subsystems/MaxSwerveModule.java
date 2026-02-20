@@ -16,7 +16,8 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 
@@ -42,7 +43,7 @@ public class MaxSwerveModule extends SubsystemBase{
      * Encoder.
      */
 
-    public MaxSwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset) {
+    public MaxSwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset, SparkMaxConfig dconfig, SparkMaxConfig tconfig) {
       mDrivingSpark = new SparkMax(drivingCANId, MotorType.kBrushless); 
       mTurningSpark = new SparkMax(turningCANId, MotorType.kBrushless); 
 
@@ -56,9 +57,9 @@ public class MaxSwerveModule extends SubsystemBase{
       //applying the configuration to bring the SPARK to a known good state. Persist
       // the settings to avoid losing them on a power cycle.
 
-      mDrivingSpark.configure(DriveConfig.MAXSwerveModule.drivingConfig, ResetMode.kResetSafeParameters,
+      mDrivingSpark.configure(dconfig, ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters); 
-      mTurningSpark.configure(DriveConfig.MAXSwerveModule.turningConfig, ResetMode.kResetSafeParameters,
+      mTurningSpark.configure(tconfig, ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
       mChassisAngularOffset = chassisAngularOffset; 
