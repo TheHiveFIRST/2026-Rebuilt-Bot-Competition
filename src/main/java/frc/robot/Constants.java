@@ -79,16 +79,16 @@ public final class Constants {
     public static final double BACK_LEFT_DRIVING_P = 0.17;
     public static final double BACK_RIGHT_DRIVING_P = 0.17;
 
-    public static final double FRONT_LEFT_DRIVING_D = 0.17;
-    public static final double FRONT_RIGHT_DRIVING_D = 0.17;
-    public static final double BACK_LEFT_DRIVING_D = 0.17;
-    public static final double BACK_RIGHT_DRIVING_D = 0.17;
+    public static final double FRONT_LEFT_DRIVING_D = 0.1;
+    public static final double FRONT_RIGHT_DRIVING_D = 0.1;
+    public static final double BACK_LEFT_DRIVING_D = 0.1;
+    public static final double BACK_RIGHT_DRIVING_D = 0.1;
 
 
-    public static final double FRONT_LEFT_TURNING_P = 1;
-    public static final double FRONT_RIGHT_TURNING_P = 1;
-    public static final double BACK_LEFT_TURNING_P  = 1;
-    public static final double BACK_RIGHT_TURNING_P = 1;
+    public static final double FRONT_LEFT_TURNING_P = 0.15654;
+    public static final double FRONT_RIGHT_TURNING_P = 0.16395;
+    public static final double BACK_LEFT_TURNING_P  = 0.16125;
+    public static final double BACK_RIGHT_TURNING_P = 0.16225;
 
 
   }
