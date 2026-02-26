@@ -15,6 +15,12 @@
           "data": {
             "pathName": "Turn 90"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
         }
       ]
     }

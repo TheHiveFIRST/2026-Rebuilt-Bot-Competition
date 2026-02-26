@@ -23,11 +23,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 //import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -41,6 +43,8 @@ public class RobotContainer {
 
   private final SendableChooser<Command> autoChooser;
   private final DriveSubsystem swerve = new DriveSubsystem(); 
+    private final ShooterSubsystem mShooterSubsystem = new ShooterSubsystem(); 
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController mDriverController =
       new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER);
@@ -52,7 +56,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Register named commands
     NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
-    NamedCommands.registerCommand("shoot", Commands.print("time to shoot"));
+    NamedCommands.registerCommand("shoot", shoot());
     NamedCommands.registerCommand("print hello", Commands.print("hello"));
 
     // Use event markers as triggers
@@ -130,5 +134,9 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
+  }
+  public Command shoot(){
+    return Commands.parallel(           
+    new RunCommand(() -> mShooterSubsystem.runKicker(-Constants.ShooterConstants.KICKER_SPEED)));
   }
 }
