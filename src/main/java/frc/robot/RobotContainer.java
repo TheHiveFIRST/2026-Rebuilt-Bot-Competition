@@ -52,7 +52,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Register named commands
     NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
-    NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
+    NamedCommands.registerCommand("shoot", Commands.print("time to shoot"));
     NamedCommands.registerCommand("print hello", Commands.print("hello"));
 
     // Use event markers as triggers
