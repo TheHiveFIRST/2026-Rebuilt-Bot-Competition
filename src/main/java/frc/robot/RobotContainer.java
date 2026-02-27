@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 //import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.commands.AutoShootCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
@@ -57,8 +58,11 @@ public class RobotContainer {
   public RobotContainer() {
     // Register named commands
     NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
-    NamedCommands.registerCommand("shoot", shoot());
+    NamedCommands.registerCommand("shoot", new AutoShootCommand(mShooterSubsystem));
     NamedCommands.registerCommand("stopshoot", stopshoot());
+
+    new EventTrigger("shoot").onTrue(new AutoShootCommand(mShooterSubsystem));
+    new EventTrigger("stopshoot").onTrue(stopshoot());
 
     // Use event markers as triggers
     new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
@@ -138,12 +142,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
   }
-  public Command shoot(){
-    return Commands.parallel(           
-    new RunCommand(() -> mShooterSubsystem.runKicker(-Constants.ShooterConstants.KICKER_SPEED)),
-    new RunCommand(() -> mShooterSubsystem.runShooterCommand()));
-    
-  }
+  
   public Command stopshoot(){
     return Commands.parallel(           
     new RunCommand(() -> mShooterSubsystem.runKicker(0)),

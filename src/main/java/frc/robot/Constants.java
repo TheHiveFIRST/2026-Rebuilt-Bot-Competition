@@ -164,7 +164,7 @@ public final class Constants {
 
         public static final double VELOCITY_TOLERANCE =  30; 
 
-        public static final double DEFAULT_TARGET_RPM = 3600; 
+        public static final double DEFAULT_TARGET_RPM = 2000; 
 
         //Untested Regression coefficients 
         public static final double REGRESSION_COEFFICIENT_4 = 0; 
