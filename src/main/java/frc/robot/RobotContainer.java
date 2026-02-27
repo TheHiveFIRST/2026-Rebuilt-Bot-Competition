@@ -1,6 +1,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AutoAlignToTagCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.IntakeTapCommand;
 import frc.robot.commands.IntakeWobbleCommand;
@@ -75,25 +76,20 @@ public class RobotContainer {
         
          //SHOOTER CONTROLS
         mDriverController.y().whileTrue(mShooterSubsystem.runShooterPIDFCommand());
+        mDriverController.x().whileTrue(new AutoAlignToTagCommand(mDriveSubsystem, mDriverController));
         mDriverController.a().whileTrue(mArmSubsystem.runIntakePivotUp());
-        mDriverController.x().toggleOnTrue(mShooterSubsystem.stop());
+        mDriverController.b().whileTrue(shootWobble());
+
         mDriverController.rightBumper().whileTrue(mShooterSubsystem.runKickerCommand());
         mDriverController.rightTrigger().whileTrue(mShooterSubsystem.runKickerBackwardCommand());
-        mDriverController.leftBumper().whileTrue(mIntakeSubsystem.runIntakeForwardCommand());
-        mDriverController.leftTrigger().whileTrue(shootWobble());
+        mDriverController.leftBumper().toggleOnTrue(mShooterSubsystem.stop());
+        mDriverController.leftTrigger().whileTrue(mIntakeSubsystem.runIntakeForwardCommand());
+        
+
         mDriverController.start().whileTrue(mDriveSubsystem.resetGyro()); 
         mDriverController.povLeft().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::incrementRPM));
         mDriverController.povRight().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::decrementRPM));
 
-        // //SHOOTER CONTROLS
-        // mDriverController.y().whileTrue(shoot());
-        // mDriverController.rightTrigger().whileTrue(shootwithJam());
-        // mDriverController.x().toggleOnTrue(new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem)); //TODO: TEST INTAKE TAP 
-        // //mDriverController.x().toggleOnFalse(mIntakeSubsystem.stop());
-        // mDriverController.a().whileTrue(mIntakeSubsystem.runOuttakeCommand());        
-        // mDriverController.rightBumper().whileTrue(mShooterSubsystem.runShooterCommand());
-        // mDriverController.start().whileTrue(mDriveSubsystem.resetGyro()); 
-        // mDriverController.b().onTrue(mShooterSubsystem.stop());
 
         
         //intake forward align 
