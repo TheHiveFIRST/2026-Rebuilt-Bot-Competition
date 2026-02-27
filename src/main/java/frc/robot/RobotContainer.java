@@ -58,10 +58,12 @@ public class RobotContainer {
     // Register named commands
     NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
     NamedCommands.registerCommand("shoot", shoot());
-    NamedCommands.registerCommand("print hello", Commands.print("hello"));
+    NamedCommands.registerCommand("stopshoot", stopshoot());
 
     // Use event markers as triggers
     new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
+    //mShooterSubsystem.setDefaultCommand(new RunCommand(()-> mShooterSubsystem.runShooterPower(0), mShooterSubsystem));
+    //mShooterSubsystem.setDefaultCommand(new RunCommand(()-> mShooterSubsystem.runKicker(0), mShooterSubsystem));
 
     // Configure the trigger bindings
     configureBindings();
@@ -140,6 +142,12 @@ public class RobotContainer {
     return Commands.parallel(           
     new RunCommand(() -> mShooterSubsystem.runKicker(-Constants.ShooterConstants.KICKER_SPEED)),
     new RunCommand(() -> mShooterSubsystem.runShooterCommand()));
+    
+  }
+  public Command stopshoot(){
+    return Commands.parallel(           
+    new RunCommand(() -> mShooterSubsystem.runKicker(0)),
+    new RunCommand(() -> mShooterSubsystem.runShooterPower(0)));
     
   }
 }
