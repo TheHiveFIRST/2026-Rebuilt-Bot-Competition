@@ -56,7 +56,39 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }
 
-    public void runShooterPIDF() {
+    public double setShooterPIDF(double setRPM) {
+        SimpleMotorFeedforward tempFF = new SimpleMotorFeedforward(ShooterConstants.LEADER_FF_kS, mCurrentKV, mCurrentKA);
+
+        mShooterPID.setP(mCurrentKP); //TODO: put in robot container once tuned 
+        mShooterPID.setI(mCurrentKI);
+        mShooterPID.setD(mCurrentKD);
+        
+        double mCurrentRPM = mShooterLeaderEncoder.getVelocity();
+        
+        double targetRPM = setRPM; 
+       // double mTargetRPS = mTargetRPM / 60.0;
+        
+       // double mCurrentRPS = mCurrentRPM / 60.0;
+        
+        double pidOutput = mShooterPID.calculate(mCurrentRPM, targetRPM);
+
+        double ffOutput = tempFF.calculate(targetRPM); 
+        
+
+        double motorPower = MathUtil.clamp(pidOutput + ffOutput, 0.0, 1.0);
+ 
+        return motorPower; 
+    }
+
+    public double getShooterPIDF(){
+        return setShooterPIDF(mTargetRPM);
+    }
+
+   
+   
+   
+    //OLD TESTING ONE REVERT BACK IF IT DOESNT WORK 
+    public void runDirectShooterPIDF(double setRPM) {
         // We create a temporary FF object using the live mCurrentKV variable
         SimpleMotorFeedforward tempFF = new SimpleMotorFeedforward(ShooterConstants.LEADER_FF_kS, mCurrentKV, mCurrentKA);
 
@@ -67,13 +99,14 @@ public class ShooterSubsystem extends SubsystemBase {
         
         double mCurrentRPM = mShooterLeaderEncoder.getVelocity();
         
+        double targetRPM = setRPM; 
         double mTargetRPS = mTargetRPM / 60.0;
         
         double mCurrentRPS = mCurrentRPM / 60.0;
         
-        double pidOutput = mShooterPID.calculate(mCurrentRPM, mTargetRPM);
+        double pidOutput = mShooterPID.calculate(mCurrentRPM, targetRPM);
 
-        double ffOutput = tempFF.calculate(mTargetRPM); 
+        double ffOutput = tempFF.calculate(targetRPM); 
         
 
         double motorPower = MathUtil.clamp(pidOutput + ffOutput, 0.0, 1.0);
@@ -121,8 +154,10 @@ public class ShooterSubsystem extends SubsystemBase {
             mKicker.set(speed);
         }
 
-
-
+    public void updateRPM(double newRPM){
+        mTargetRPM = newRPM; 
+    
+    }
     // Tuning Methods 
     public enum TuningMode {
         KP, KV, KD, 
@@ -186,8 +221,21 @@ public class ShooterSubsystem extends SubsystemBase {
     public void decrementKV() { mCurrentKV -= ShooterConstants.KV_INCREMENT; }
 
     //Commands 
-    public Command runShooterCommand() { return run(this::runShooterPIDF); }
-
+   // public Command runShooterCommand() { return run(this::runShooterPIDF); }
+    public Command runShooterCommand() {
+         return run(
+        () -> {
+            runDirectShooterPIDF(mTargetRPM);
+              });
+    }
+    
+      public Command runShooterPIDFCommand() {
+         return run(
+        () -> {
+            runShooterPower(getShooterPIDF());
+              });
+    }
+    
     
     public Command runShooterPowerCommand() {
          return run(
@@ -212,6 +260,13 @@ public class ShooterSubsystem extends SubsystemBase {
               });
     }
 
+    public Command runKickerBackwardCommand() {
+         return run(
+        () -> {
+            runKicker(ShooterConstants.KICKER_SPEED);
+              });
+    }
+
     
 
 
@@ -223,6 +278,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        updateRPM(mTargetRPM);
         SmartDashboard.putNumber("Shooter/Target RPM", mTargetRPM);
         SmartDashboard.putNumber("Shooter/Actual RPM", mShooterLeaderEncoder.getVelocity());
         SmartDashboard.putNumber("Testing/Current kD Tuning", mCurrentKD);

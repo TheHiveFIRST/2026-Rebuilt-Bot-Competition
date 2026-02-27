@@ -142,12 +142,12 @@ public final class Constants {
         public static final double KI_INCREMENT = 0.0001;
         public static final double KD_INCREMENT = 0.0001;
 
-        public static final double KICKER_SPEED = 0.8;
+        public static final double KICKER_SPEED = 1.0;
         public static final double SHOOTER_SPEED = 0.7; 
 
         public static final double VELOCITY_TOLERANCE =  30; 
 
-        public static final double DEFAULT_TARGET_RPM = 4000; 
+        public static final double DEFAULT_TARGET_RPM = 3900; 
 
         //Untested Regression coefficients 
         public static final double REGRESSION_COEFFICIENT_4 = 0; 
@@ -167,9 +167,9 @@ public final class Constants {
         public static final double ARM_KI = 0.0;
         public static final double ARM_KD = 0.0;
 
-        public static final double PIVOT_OUT = 0.55; 
-        public static final double PIVOT_DEFAULT = 0.4; 
-        public static final double PIVOT_IN = 0.1;  
+        public static final double PIVOT_OUT = 0.58; 
+        public static final double PIVOT_DEFAULT = 0.58; 
+        public static final double PIVOT_IN = 0.3;  
         public static final double ARM_KP_INCREMENT = 0.01;
 
         public static final double POSITION_TOLERANCE = 0.02;
