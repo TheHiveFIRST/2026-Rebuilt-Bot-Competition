@@ -183,7 +183,8 @@ public class ShooterSubsystem extends SubsystemBase {
       return new InstantCommand(() -> changeShootingRPMOffset(-ShooterConstants.RPMOFFSET_INCREMENT));
     }
     public Command setHubShotCommand() {
-    return new InstantCommand(() -> mTargetRPM = ShooterConstants.HUB_TARGET_RPM);}
+    return new InstantCommand(() -> 
+    mTargetRPM = ShooterConstants.HUB_TARGET_RPM);}
 
     public Command setTrenchShotCommand() {
         return new InstantCommand(() -> mTargetRPM = ShooterConstants.TRENCH_TARGET_RPM);}

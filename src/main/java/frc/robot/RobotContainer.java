@@ -87,7 +87,7 @@ public class RobotContainer {
         
          //SHOOTER CONTROLS
         mDriverController.y().whileTrue(mShooterSubsystem.toggleShooterCommand()); 
-        //mDriverController.a().whileTrue(new AutoAlignToTagCommand(mDriveSubsystem, mDriverController));
+        mDriverController.a().whileTrue(new AutoAlignToTagCommand(mDriveSubsystem, mDriverController));
         mDriverController.x().toggleOnTrue(mShooterSubsystem.stop());
 
         mDriverController.rightBumper().whileTrue(mShooterSubsystem.runKickerCommand());
@@ -95,8 +95,7 @@ public class RobotContainer {
         mDriverController.leftBumper().whileTrue(mArmSubsystem.runIntakePivotUp());
         mDriverController.leftTrigger().whileTrue(new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem));
         
-        mOperatorController.a().onTrue(mShooterSubsystem.setHubShotCommand());
-        mOperatorController.back().onTrue(mShooterSubsystem.setTrenchShotCommand());
+        mDriverController.b().onTrue(mIntakeSubsystem.runOuttakeCommand());
 
         mDriverController.start().whileTrue(mDriveSubsystem.resetGyro()); 
         mDriverController.povLeft().onTrue(mShooterSubsystem.increaseShootingRPMOffsetCommand());
