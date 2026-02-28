@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.AutoShootCommand;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
@@ -46,7 +47,9 @@ public class RobotContainer {
 
   private final SendableChooser<Command> autoChooser;
   private final DriveSubsystem swerve = new DriveSubsystem(); 
-    private final ShooterSubsystem mShooterSubsystem = new ShooterSubsystem(); 
+  private final ShooterSubsystem mShooterSubsystem = new ShooterSubsystem(); 
+  private final ArmSubsystem mArmSubsystem = new ArmSubsystem(); 
+
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController mDriverController =
@@ -59,11 +62,14 @@ public class RobotContainer {
   public RobotContainer() {
     // Register named commands
     NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
+    NamedCommands.registerCommand("intakepivotdefault", mArmSubsystem.IntakePivotDefault());
     NamedCommands.registerCommand("shoot", new AutoShootCommand(mShooterSubsystem));
     NamedCommands.registerCommand("stopshoot", stopshoot());
 
     new EventTrigger("shoot").onTrue(new AutoShootCommand(mShooterSubsystem));
     new EventTrigger("stopshoot").onTrue(stopshoot());
+    new EventTrigger("intakepivotdefault").onTrue(mArmSubsystem.IntakePivotDefault());
+
 
     // Use event markers as triggers
     new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));

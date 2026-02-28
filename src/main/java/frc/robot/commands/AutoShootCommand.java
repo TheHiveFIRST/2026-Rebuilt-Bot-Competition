@@ -9,7 +9,7 @@ public class AutoShootCommand extends SequentialCommandGroup {
 
   public AutoShootCommand(ShooterSubsystem mShooterSubsystem) {
     addCommands( 
-    mShooterSubsystem.runShooterCommand().withTimeout(2), //TODO: change command to working shooter pidf 
+    mShooterSubsystem.runShooterAutoCommand().withTimeout(2), //TODO: change command to working shooter pidf 
     new WaitCommand(0.2),
     mShooterSubsystem.runKickerCommand().withTimeout(1));        
   }

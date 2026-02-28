@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
@@ -20,13 +16,13 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
   public static final class DriveConstants{ 
     //allowed max speeds
-    public static final double MAX_SPEED_METERS_PER_SECOND = 4.8; // TODO: after test change back to 4.8 and 2pi;
+    public static final double MAX_SPEED_METERS_PER_SECOND = 9.6; // TODO: after test change back to 4.8 and 2pi;
     public static final double MAX_ANGULAR_SPEED =  2*Math.PI; // rad/s 
     //Chassis config - width, depth, CAN IDS and angular offset values in Designdoc.md
   
-    public static final double WHEEL_CENTER_WIDTH = Units.inchesToMeters(22.8);
+    public static final double WHEEL_CENTER_WIDTH = Units.inchesToMeters(11.75);
     // Distance between centers of right and left wheels on robot
-    public static final double WHEEL_CENTER_DEPTH = Units.inchesToMeters(22.8);
+    public static final double WHEEL_CENTER_DEPTH = Units.inchesToMeters(11.75);
     // Distance between front and back wheels on robot
     //depth/frontback distance from robot center to each wheel 
 
@@ -56,7 +52,10 @@ public final class Constants {
     public static final int BACK_RIGHT_DRIVING_CAN_ID = 8;
     public static final int BACK_RIGHT_TURNING_CAN_ID = 7;
 
-    public static final boolean GYRO_REVERSED = true;
+    public static final boolean GYRO_REVERSED = false;
+    
+    public static final double INTAKE_ALIGN_KP = 0.0001;
+    public static final double DIAGONAL_ALIGN_kP = 0.0001;
   }
 
   public static final class ModuleConstants{
@@ -73,8 +72,8 @@ public final class Constants {
     public static final double DRIVING_MOTOR_REDUCTION = (45.0 * 22) / (DRIVING_MOTOR_PINION_TEETH * 15);
     public static final double DRIVE_WHEEL_FREE_SPEED_RPS = (DRIVING_MOTOR_FREE_SPEED_RPS * WHEEL_CIRCUMFERENCE_METERS)
         / DRIVING_MOTOR_REDUCTION;
-    
-    public static final double FRONT_LEFT_DRIVING_P = 0.17;
+
+     public static final double FRONT_LEFT_DRIVING_P = 0.17;
     public static final double FRONT_RIGHT_DRIVING_P = 0.17;
     public static final double BACK_LEFT_DRIVING_P = 0.17;
     public static final double BACK_RIGHT_DRIVING_P = 0.17;
@@ -90,10 +89,10 @@ public final class Constants {
     public static final double BACK_LEFT_TURNING_P  = 1;
     public static final double BACK_RIGHT_TURNING_P = 1;
 
-
   }
   public static class OperatorConstants {
     public static final int DRIVER_CONTROLLER = 0;
+    public static final int OPERATOR_CONTROLLER = 1;
     public static final double DRIVE_DEADBAND = 0.05; 
   }
 
@@ -113,7 +112,7 @@ public final class Constants {
     public static final double Y_TOLERANCE_TAG_ALIGNMENT = 0.02; 
 
     public static final double DONT_SEE_TAG_WAIT_TIME = 1;
-	  public static final double POSE_VALIDATION_TIME = 0.3;
+    public static final double POSE_VALIDATION_TIME = 0.3;
   }
 
   public static final class VisionConstants{
@@ -159,12 +158,16 @@ public final class Constants {
         public static final double KI_INCREMENT = 0.0001;
         public static final double KD_INCREMENT = 0.0001;
 
-        public static final double KICKER_SPEED = 0.8;
+        public static final double KICKER_SPEED = 1.0;
         public static final double SHOOTER_SPEED = 0.7; 
 
         public static final double VELOCITY_TOLERANCE =  30; 
 
-        public static final double DEFAULT_TARGET_RPM = 2000; 
+        public static final double HUB_TARGET_RPM = 1500; //TODO: FIND ACTUAL 
+        public static final double TRENCH_TARGET_RPM = 5000; 
+
+
+        public static final double RPMOFFSET_INCREMENT = 200; 
 
         //Untested Regression coefficients 
         public static final double REGRESSION_COEFFICIENT_4 = 0; 
@@ -184,14 +187,12 @@ public final class Constants {
         public static final double ARM_KI = 0.0;
         public static final double ARM_KD = 0.0;
 
-        public static final double PIVOT_OUT = 0.55; 
-        public static final double PIVOT_DEFAULT = 0.4; 
-        public static final double PIVOT_IN = 0.1;  
+        public static final double PIVOT_OUT = 0.60; 
+        public static final double PIVOT_DEFAULT = 0.5; 
+        public static final double PIVOT_IN = 0.3;  
         public static final double ARM_KP_INCREMENT = 0.01;
 
         public static final double POSITION_TOLERANCE = 0.02;
     }
 
 }
-
-
