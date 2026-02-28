@@ -30,7 +30,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 //import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.commands.AutoShootCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -63,10 +62,11 @@ public class RobotContainer {
     // Register named commands
     NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
     NamedCommands.registerCommand("intakepivotdefault", mArmSubsystem.IntakePivotDefault());
-    NamedCommands.registerCommand("shoot", new AutoShootCommand(mShooterSubsystem));
+    NamedCommands.registerCommand("shoot", shoot());
+    NamedCommands.registerCommand("rampupshoot", mShooterSubsystem.runShooterAutoCommand().withTimeout(4));
     NamedCommands.registerCommand("stopshoot", stopshoot());
 
-    new EventTrigger("shoot").onTrue(new AutoShootCommand(mShooterSubsystem));
+    new EventTrigger("shoot").onTrue(shoot());
     new EventTrigger("stopshoot").onTrue(stopshoot());
     new EventTrigger("intakepivotdefault").onTrue(mArmSubsystem.IntakePivotDefault());
 
@@ -151,11 +151,19 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
   }
+
   
   public Command stopshoot(){
     return Commands.parallel(           
     new RunCommand(() -> mShooterSubsystem.runKicker(0)),
     new RunCommand(() -> mShooterSubsystem.runShooterPower(0)));
     
+  }
+
+    
+  public Command shoot(){
+    return Commands.parallel(           
+    new RunCommand(() -> mShooterSubsystem.runKicker(1)).withTimeout(3),
+    new RunCommand(() -> mShooterSubsystem.runDirectShooterPIDF()).withTimeout(3));
   }
 }

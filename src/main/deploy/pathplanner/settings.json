@@ -2,7 +2,10 @@
   "robotWidth": 0.68,
   "robotLength": 0.68,
   "holonomicMode": true,
-  "pathFolders": [],
+  "pathFolders": [
+    "HP AUTO PATHS",
+    "SwipeAuto-bumpside"
+  ],
   "autoFolders": [],
   "defaultMaxVel": 4.0,
   "defaultMaxAccel": 7.1,

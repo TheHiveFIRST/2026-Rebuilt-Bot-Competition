@@ -163,7 +163,7 @@ public final class Constants {
 
         public static final double VELOCITY_TOLERANCE =  30; 
 
-        public static final double HUB_TARGET_RPM = 1500; //TODO: FIND ACTUAL 
+        public static final double HUB_TARGET_RPM = 4500; //TODO: FIND ACTUAL 
         public static final double TRENCH_TARGET_RPM = 5000; 
 
 
