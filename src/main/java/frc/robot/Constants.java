@@ -147,7 +147,11 @@ public final class Constants {
 
         public static final double VELOCITY_TOLERANCE =  30; 
 
-        public static final double DEFAULT_TARGET_RPM = 3900; 
+        public static final double HUB_TARGET_RPM = 1500; //TODO: FIND ACTUAL 
+        public static final double TRENCH_TARGET_RPM = 5000; 
+
+
+        public static final double RPMOFFSET_INCREMENT = 200; 
 
         //Untested Regression coefficients 
         public static final double REGRESSION_COEFFICIENT_4 = 0; 
@@ -167,8 +171,8 @@ public final class Constants {
         public static final double ARM_KI = 0.0;
         public static final double ARM_KD = 0.0;
 
-        public static final double PIVOT_OUT = 0.58; 
-        public static final double PIVOT_DEFAULT = 0.58; 
+        public static final double PIVOT_OUT = 0.60; 
+        public static final double PIVOT_DEFAULT = 0.5; 
         public static final double PIVOT_IN = 0.3;  
         public static final double ARM_KP_INCREMENT = 0.01;
 
