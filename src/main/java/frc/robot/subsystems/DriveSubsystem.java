@@ -24,6 +24,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ShooterConstants;
 
 public class DriveSubsystem extends SubsystemBase {
   //create 4 MAXSwerveModules 
@@ -54,6 +55,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   private final Field2d field2d = new Field2d();
 
+  public double autoAlignPID = 0.05;
+
   //Odometry class for tracking robot pose 
   SwerveDriveOdometry Odometry = new SwerveDriveOdometry(
     DriveConstants.DriveKinematics,
@@ -73,6 +76,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic(){
+    SmartDashboard.putNumber("Driving/autoalign", autoAlignPID);
   //updates Odometry in periodic block 
     Odometry.update(
         getGyroRotation(),
@@ -227,6 +231,9 @@ public class DriveSubsystem extends SubsystemBase {
   public double getHeading() {
     return Rotation2d.fromDegrees(mGyro.getAngle()).getDegrees();
   }
+
+   public void incrementPalign() { autoAlignPID += ShooterConstants.KD_INCREMENT; }
+   public void decrementPalign() { autoAlignPID -= ShooterConstants.KD_INCREMENT; }
 
   /**
    * Returns the turn rate of the robot.

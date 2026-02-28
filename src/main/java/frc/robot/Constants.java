@@ -56,6 +56,9 @@ public final class Constants {
     
     public static final double INTAKE_ALIGN_KP = 0.0001;
     public static final double DIAGONAL_ALIGN_kP = 0.0001;
+
+    public static double DRIVE_SPEED = 1;
+    public static final double SLOW_MODE_MULTIPLIER = 0.5;
   }
 
   public static final class ModuleConstants{
@@ -138,7 +141,7 @@ public final class Constants {
         // Manual Control 
         public static final double RPM_INCREMENT = 50.0;
         public static final double KV_INCREMENT = 0.000001;
-        public static final double KP_INCREMENT = 0.000001;
+        public static final double KP_INCREMENT = 0.001;
         public static final double KI_INCREMENT = 0.0001;
         public static final double KD_INCREMENT = 0.0001;
 
@@ -147,8 +150,8 @@ public final class Constants {
 
         public static final double VELOCITY_TOLERANCE =  30; 
 
-        public static final double HUB_TARGET_RPM = 1500; //TODO: FIND ACTUAL 
-        public static final double TRENCH_TARGET_RPM = 5000; 
+        public static final double HUB_TARGET_RPM = 4400; //TODO: FIND ACTUAL 
+        public static final double TRENCH_TARGET_RPM = 5700; 
 
 
         public static final double RPMOFFSET_INCREMENT = 200; 

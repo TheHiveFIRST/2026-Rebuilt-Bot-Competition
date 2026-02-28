@@ -1,5 +1,6 @@
 package frc.robot;
 
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.AutoAlignToTagCommand;
@@ -22,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OperatorConstants;
 
 import frc.robot.commands.UnjamCommand;
+import frc.robot.configs.DriveConfig;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -40,20 +42,26 @@ public class RobotContainer {
       new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER);
   private final CommandXboxController mOperatorController = 
       new CommandXboxController(OperatorConstants.OPERATOR_CONTROLLER);
+  boolean slowMode = false;
+
 
 
   public RobotContainer() {
         configureBindings();
-
+    
         mDriveSubsystem.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick. field relative set true/false 
+
+        
         new RunCommand(
-            () -> mDriveSubsystem.driveJoystick(
-                MathUtil.applyDeadband(mDriverController.getLeftY(), OperatorConstants.DRIVE_DEADBAND),
-                MathUtil.applyDeadband(mDriverController.getLeftX(), OperatorConstants.DRIVE_DEADBAND),
-                MathUtil.applyDeadband(mDriverController.getRightX(), OperatorConstants.DRIVE_DEADBAND),
-                true),
+            () -> {
+            double currentDriveSpeed = slowMode ? DriveConstants.DRIVE_SPEED * DriveConstants.SLOW_MODE_MULTIPLIER : DriveConstants.DRIVE_SPEED;
+            mDriveSubsystem.driveJoystick(
+                MathUtil.applyDeadband(mDriverController.getLeftY()*currentDriveSpeed, OperatorConstants.DRIVE_DEADBAND),
+                MathUtil.applyDeadband(mDriverController.getLeftX()*currentDriveSpeed, OperatorConstants.DRIVE_DEADBAND),
+                MathUtil.applyDeadband(mDriverController.getRightX()*currentDriveSpeed, OperatorConstants.DRIVE_DEADBAND),
+                true);},
             mDriveSubsystem));
 
         mArmSubsystem.setDefaultCommand(mArmSubsystem.IntakePivotDefault());
@@ -87,7 +95,13 @@ public class RobotContainer {
         
          //SHOOTER CONTROLS
         mDriverController.y().whileTrue(mShooterSubsystem.toggleShooterCommand()); 
-        mDriverController.a().whileTrue(new AutoAlignToTagCommand(mDriveSubsystem, mDriverController));
+        mDriverController.a().whileTrue(new RunCommand(
+         () -> mDriveSubsystem.driveJoystick(
+           MathUtil.applyDeadband(mDriverController.getLeftY(), OperatorConstants.DRIVE_DEADBAND),
+           MathUtil.applyDeadband(mDriverController.getLeftX(), OperatorConstants.DRIVE_DEADBAND),
+          LimelightHelpers.getTX("limelight")* -mDriveSubsystem.autoAlignPID, 
+          false
+        ), mDriveSubsystem));
         mDriverController.x().toggleOnTrue(mShooterSubsystem.stop());
 
         mDriverController.rightBumper().whileTrue(mShooterSubsystem.runKickerCommand());
@@ -100,11 +114,13 @@ public class RobotContainer {
         mDriverController.start().whileTrue(mDriveSubsystem.resetGyro()); 
         mDriverController.povLeft().onTrue(mShooterSubsystem.increaseShootingRPMOffsetCommand());
         mDriverController.povRight().onTrue(mShooterSubsystem.decreaseShootingRPMOffsetCommand());
-       // mDriverController.povUp().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::incrementRPM));
+        mDriverController.back().onTrue(toggleSlowMode());
+        mDriverController.povUp().onTrue(mShooterSubsystem.runOnce(mDriveSubsystem::incrementPalign));
+        mDriverController.povDown().onTrue(mShooterSubsystem.runOnce(mDriveSubsystem::decrementPalign));
        // mDriverController.povDown().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::decrementRPM));
 
         //intake forward align 
-        // //TODO: test if this works 
+        // //TODO: test if this \works 
         // mDriverController.leftTrigger().whileTrue(
         //     new RunCommand(
         //        () -> mDriveSubsystem.driveIntakeAlign(
@@ -170,6 +186,11 @@ public class RobotContainer {
         mShooterSubsystem.runKickerCommand());
     }
 
+    public Command toggleSlowMode(){
+        return new InstantCommand(() -> slowMode = !slowMode);
+    }
+
+    
 
 }
 

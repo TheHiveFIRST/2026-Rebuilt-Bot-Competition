@@ -12,7 +12,7 @@ public class AutoAlignToTagCommand extends Command {
         new RunCommand( () -> mDriveSubsystem.driveJoystick(
                 controller.getLeftY(), 
                 controller.getLeftX(), 
-                LimelightHelpers.getTX("limelight")* 0.08, 
+                LimelightHelpers.getTX("limelight")* 1.0, 
                 true), mDriveSubsystem);
     }
   
