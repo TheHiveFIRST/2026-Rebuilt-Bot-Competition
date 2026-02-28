@@ -11,6 +11,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "intakepivotdefault"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "hub"
@@ -35,9 +41,21 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "shoot to climb"
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopshoot"
           }
         }
       ]
