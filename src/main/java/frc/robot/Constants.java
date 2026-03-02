@@ -166,6 +166,7 @@ public final class Constants {
         public static final double HUB_TARGET_RPM = 4500; //TODO: FIND ACTUAL 
         public static final double TRENCH_TARGET_RPM = 5000; 
 
+        public static final double AUTO_TARGET_RPM = 5500; 
 
         public static final double RPMOFFSET_INCREMENT = 200; 
 

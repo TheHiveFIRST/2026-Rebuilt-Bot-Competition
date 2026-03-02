@@ -62,27 +62,23 @@ public class RobotContainer {
     // Register named commands
     NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
     NamedCommands.registerCommand("intakepivotdefault", mArmSubsystem.IntakePivotDefault());
-    NamedCommands.registerCommand("shoot", shoot());
+    NamedCommands.registerCommand("shoot", autoShoot());
     NamedCommands.registerCommand("rampupshoot", mShooterSubsystem.runShooterAutoCommand().withTimeout(4));
-    NamedCommands.registerCommand("stopshoot", stopshoot());
+    NamedCommands.registerCommand("stopshoot", autoStopShoot());
 
-    new EventTrigger("shoot").onTrue(shoot());
-    new EventTrigger("stopshoot").onTrue(stopshoot());
+    new EventTrigger("shoot").onTrue(autoShoot());
+    new EventTrigger("stopshoot").onTrue(autoStopShoot());
     new EventTrigger("intakepivotdefault").onTrue(mArmSubsystem.IntakePivotDefault());
 
 
     // Use event markers as triggers
     new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
-    //mShooterSubsystem.setDefaultCommand(new RunCommand(()-> mShooterSubsystem.runShooterPower(0), mShooterSubsystem));
-    //mShooterSubsystem.setDefaultCommand(new RunCommand(()-> mShooterSubsystem.runKicker(0), mShooterSubsystem));
 
     // Configure the trigger bindings
     configureBindings();
 
     autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
-    Shuffleboard.getTab("Autonomous")
-    .add("Auto Mode", autoChooser)
-    .withSize(2, 1);
+    Shuffleboard.getTab("Autonomous").add("Auto Mode", autoChooser).withSize(2, 1);
   }
 
   /**
@@ -98,50 +94,11 @@ public class RobotContainer {
     // Add a button to run the example auto to SmartDashboard, this will also be in the auto chooser built above
 
     // Add a button to run pathfinding commands to SmartDashboard
-    SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
-      new Pose2d(14.0, 6.5, Rotation2d.fromDegrees(0)), 
-      new PathConstraints(
-        4.0, 4.0, 
-        Units.degreesToRadians(360), Units.degreesToRadians(540)
-      ), 
-      0
-    ));
-    SmartDashboard.putData("Pathfind to Scoring Pos", AutoBuilder.pathfindToPose(
-      new Pose2d(2.15
-      , 3.0, Rotation2d.fromDegrees(180)), 
-      new PathConstraints(
-        4.0, 4.0, 
-        Units.degreesToRadians(360), Units.degreesToRadians(540)
-      ), 
-      0
-    ));
+   
 
-    // Add a button to SmartDashboard that will create and follow an on-the-fly path
-    // This example will simply move the robot 2m in the +X field direction
-    SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
-      Pose2d currentPose = swerve.getPose();
-      
-      // The rotation component in these poses represents the direction of travel
-      Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
-      Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(3.3333, 0.0)), new Rotation2d());
-
-      List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPos, endPos);
-      PathPlannerPath path = new PathPlannerPath(
-        waypoints, 
-        new PathConstraints(
-          4.8, 11.8, 
-          Units.degreesToRadians(360), Units.degreesToRadians(540)
-        ),
-        null, // Ideal starting state can be null for on-the-fly paths
-        new GoalEndState(0.0, currentPose.getRotation())
-      );
-
-      // Prevent this path from being flipped on the red alliance, since the given positions are already correct
-      path.preventFlipping = true;
-
-      AutoBuilder.followPath(path).schedule();
-    }));
-  }
+     
+    };
+  
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -153,7 +110,7 @@ public class RobotContainer {
   }
 
   
-  public Command stopshoot(){
+  public Command autoStopShoot(){
     return Commands.parallel(           
     new RunCommand(() -> mShooterSubsystem.runKicker(0)),
     new RunCommand(() -> mShooterSubsystem.runShooterPower(0)));
@@ -161,9 +118,9 @@ public class RobotContainer {
   }
 
     
-  public Command shoot(){
+  public Command autoShoot(){
     return Commands.parallel(           
-    new RunCommand(() -> mShooterSubsystem.runKicker(1)).withTimeout(3),
-    new RunCommand(() -> mShooterSubsystem.runDirectShooterPIDF()).withTimeout(3));
+    new RunCommand(() -> mShooterSubsystem.runKicker(-1)).withTimeout(3),
+    new RunCommand(() -> mShooterSubsystem.runShooterAutoCommand()).withTimeout(3));
   }
 }
