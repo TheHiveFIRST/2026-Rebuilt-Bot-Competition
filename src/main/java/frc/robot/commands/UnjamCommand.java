@@ -8,9 +8,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class UnjamCommand extends SequentialCommandGroup {
 
   public UnjamCommand(ShooterSubsystem mShooterSubsystem) {
-    addCommands( 
-      mShooterSubsystem.runKickerCommand().withTimeout(0.15),
-      new WaitCommand(0.1),          
+    addCommands(       
       mShooterSubsystem.runKickerBackwardCommand().withTimeout(0.15),
       new WaitCommand(0.1),
       mShooterSubsystem.runKickerCommand().withTimeout(1),

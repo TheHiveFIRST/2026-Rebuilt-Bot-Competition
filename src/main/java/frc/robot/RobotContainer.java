@@ -78,12 +78,12 @@ public class RobotContainer {
         //INTAKE CONTROLS 
         // mOperatorController.a().whileTrue(mArmSubsystem.runIntakePivotGround());
         // mOperatorController.b().whileTrue(mArmSubsystem.runIntakePivotUp());
-        mOperatorController.leftBumper().whileTrue(mShooterSubsystem.toggleShooterCommand());
+        mOperatorController.y().whileTrue(mShooterSubsystem.toggleShooterCommand());
         mOperatorController.leftTrigger().toggleOnTrue(mShooterSubsystem.stop());
         mOperatorController.a().onTrue(mShooterSubsystem.setHubShotCommand());
         mOperatorController.b().onTrue(mShooterSubsystem.setTrenchShotCommand());
-        mOperatorController.povUp().onTrue(mShooterSubsystem.increaseShootingRPMOffsetCommand());
-        mOperatorController.povDown().onTrue(mShooterSubsystem.decreaseShootingRPMOffsetCommand());
+        mOperatorController.leftBumper().onTrue(mShooterSubsystem.increaseShootingRPMOffsetCommand());
+        mOperatorController.leftTrigger().onTrue(mShooterSubsystem.decreaseShootingRPMOffsetCommand());
         mOperatorController.povLeft().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::incrementRPM));
         mOperatorController.povRight().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::decrementRPM));
 
@@ -99,25 +99,25 @@ public class RobotContainer {
          () -> mDriveSubsystem.driveJoystick(
            MathUtil.applyDeadband(mDriverController.getLeftY(), OperatorConstants.DRIVE_DEADBAND),
            MathUtil.applyDeadband(mDriverController.getLeftX(), OperatorConstants.DRIVE_DEADBAND),
-          LimelightHelpers.getTX("limelight")* -mDriveSubsystem.autoAlignPID, 
-          false
-        ), mDriveSubsystem));
-        mDriverController.x().toggleOnTrue(mShooterSubsystem.stop());
+          LimelightHelpers.getTX("limelight")* -DriveConstants.AUTO_ALIGN_PID, 
+          true), mDriveSubsystem));
+        mDriverController.x().whileTrue(new UnjamCommand(mShooterSubsystem));
+        mDriverController.b().onTrue(mIntakeSubsystem.runOuttakeCommand());
 
         mDriverController.rightBumper().whileTrue(mShooterSubsystem.runKickerCommand());
         mDriverController.rightTrigger().whileTrue(mShooterSubsystem.runKickerBackwardCommand());
         mDriverController.leftBumper().whileTrue(mArmSubsystem.runIntakePivotUp());
         mDriverController.leftTrigger().whileTrue(new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem));
-        
-        mDriverController.b().onTrue(mIntakeSubsystem.runOuttakeCommand());
+        mDriverController.povUp().onTrue(mShooterSubsystem.setTrenchShotCommand());
+
 
         mDriverController.start().whileTrue(mDriveSubsystem.resetGyro()); 
         mDriverController.povLeft().onTrue(mShooterSubsystem.increaseShootingRPMOffsetCommand());
         mDriverController.povRight().onTrue(mShooterSubsystem.decreaseShootingRPMOffsetCommand());
-        mDriverController.back().onTrue(toggleSlowMode());
-        mDriverController.povUp().onTrue(mShooterSubsystem.runOnce(mDriveSubsystem::incrementPalign));
-        mDriverController.povDown().onTrue(mShooterSubsystem.runOnce(mDriveSubsystem::decrementPalign));
-       // mDriverController.povDown().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::decrementRPM));
+        mDriverController.povDown().onTrue(toggleSlowMode());
+        //mDriverController.povUp().onTrue(mShooterSubsystem.runOnce(mDriveSubsystem::incrementPalign));
+        //mDriverController.povDown().onTrue(mShooterSubsystem.runOnce(mDriveSubsystem::decrementPalign));
+        //mDriverController.povDown().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::decrementRPM));
 
         //intake forward align 
         // //TODO: test if this \works 

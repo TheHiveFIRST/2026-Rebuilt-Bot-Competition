@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.LimelightHelpers;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class AutoAlignToTagCommand extends Command {
@@ -12,7 +13,7 @@ public class AutoAlignToTagCommand extends Command {
         new RunCommand( () -> mDriveSubsystem.driveJoystick(
                 controller.getLeftY(), 
                 controller.getLeftX(), 
-                LimelightHelpers.getTX("limelight")* 1.0, 
+                LimelightHelpers.getTX("limelight")* -DriveConstants.AUTO_ALIGN_PID, 
                 true), mDriveSubsystem);
     }
   

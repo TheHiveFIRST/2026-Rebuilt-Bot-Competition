@@ -59,6 +59,8 @@ public final class Constants {
 
     public static double DRIVE_SPEED = 1;
     public static final double SLOW_MODE_MULTIPLIER = 0.5;
+    public static final double AUTO_ALIGN_PID = 0.067;
+
   }
 
   public static final class ModuleConstants{

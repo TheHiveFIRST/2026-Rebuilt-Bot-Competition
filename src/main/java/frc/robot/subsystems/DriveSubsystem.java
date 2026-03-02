@@ -55,7 +55,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   private final Field2d field2d = new Field2d();
 
-  public double autoAlignPID = 0.05;
+  public double autoAlignPID = 0.067;
 
   //Odometry class for tracking robot pose 
   SwerveDriveOdometry Odometry = new SwerveDriveOdometry(
