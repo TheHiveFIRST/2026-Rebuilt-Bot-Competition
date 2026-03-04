@@ -21,31 +21,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "hub"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 3.0
+                        "pathName": "OutBump"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "2.5M out"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "3.75M strafe"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Turn.90(3,4)"
+                        "pathName": "SidetoShoot"
                       }
                     },
                     {
@@ -63,7 +45,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 1.0
+                        "waitTime": 4.0
                       }
                     },
                     {

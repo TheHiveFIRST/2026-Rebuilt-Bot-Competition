@@ -120,7 +120,7 @@ public class RobotContainer {
     
   public Command autoShoot(){
     return Commands.parallel(           
-    new RunCommand(() -> mShooterSubsystem.runKicker(-1)).withTimeout(3),
-    new RunCommand(() -> mShooterSubsystem.runShooterAutoCommand()).withTimeout(3));
+    new RunCommand(() -> mShooterSubsystem.runKicker(-ShooterConstants.KICKER_SPEED)).withTimeout(5),
+    new RunCommand(() -> mShooterSubsystem.runShooterAutoCommand()).withTimeout(5));
   }
 }

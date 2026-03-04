@@ -4,9 +4,13 @@
   "holonomicMode": true,
   "pathFolders": [
     "HP AUTO PATHS",
-    "SwipeAuto-bumpside"
+    "Autos",
+    "SwipeAuto-bumpside",
+    "Testing"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "Testing Autos"
+  ],
   "defaultMaxVel": 4.0,
   "defaultMaxAccel": 7.1,
   "defaultMaxAngVel": 360.0,

@@ -45,7 +45,7 @@
     "rotation": 170.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "HP AUTO PATHS",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -90.0
