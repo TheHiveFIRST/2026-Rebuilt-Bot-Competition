@@ -4,7 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -89,7 +91,34 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+
+    double matchTime = DriverStation.getMatchTime();
+    
+    double timeToNext = 0;
+    if (matchTime > 130){
+        timeToNext = matchTime - 130;
+    }
+    else if (matchTime > 105 ){
+        timeToNext = matchTime - 105;
+    }
+    else if (matchTime > 80 ){
+        timeToNext = matchTime - 80;
+    }
+    else if (matchTime > 55 ){
+        timeToNext = matchTime - 55;
+    }
+    else if (matchTime > 30 ){
+        timeToNext = matchTime - 30;
+    }
+    else{
+        timeToNext = matchTime;
+    }
+
+    SmartDashboard.putNumber("timeToNextShift", timeToNext);
+    
+    
+  }
 
   /** This function is called once when the robot is first started up. */
   @Override
