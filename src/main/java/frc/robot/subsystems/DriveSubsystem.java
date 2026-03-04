@@ -77,7 +77,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   //mGyro sensor/IMU (usb input type to roborio)
   private final AHRS mGyro = new AHRS(NavXComType.kUSB1); 
-
+  public static boolean useInvertedGyro = false;
 
   private final Field2d field2d = new Field2d();
 
@@ -267,7 +267,10 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public Rotation2d getGyroRotation(){
-    return Rotation2d.fromDegrees(-mGyro.getAngle());
+    double angle = mGyro.getAngle(); 
+    return Rotation2d.fromDegrees(
+      useInvertedGyro ? -angle : angle
+    );
   }
   /**
    * Returns the heading of the robot.
