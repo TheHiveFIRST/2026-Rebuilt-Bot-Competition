@@ -149,12 +149,19 @@ public class ShooterSubsystem extends SubsystemBase {
 
     //Commands 
    // public Command runShooterCommand() { return run(this::runShooterPIDF); }
-    public Command runShooterCommand() {
-         return run(
+    // public Command runShooterCommand() {
+    //      return run(
+    //     () -> {
+    //         runDirectShooterPIDF(mTargetRPM);
+    //           });
+    // }
+    
+    public Command runShooterAutoCommand() {       
+        return run(
         () -> {
-            runDirectShooterPIDF(mTargetRPM);
-              });
-    }
+            setShooterSpeeds(ShooterConstants.AUTO_TARGET_RPM, 0);
+              }); 
+        }
     
       public Command runShooterPIDFCommand() {
          return run(
@@ -240,7 +247,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("Testing/shooter current", mShooterLeader.getOutputCurrent());
         SmartDashboard.putNumber("Testing/shooter motor 2 current", mShooterFollower.getOutputCurrent());
-        boolean atSpeed = Math.abs(mShooterLeaderEncoder.getVelocity() - mTargetRPM) < ShooterConstants.VELOCITY_TOLERANCE;
+        boolean atSpeed = Math.abs(mShooterLeaderEncoder.getVelocity() - mTargetRPM + ShooterRPMOffset) < ShooterConstants.VELOCITY_TOLERANCE;
         SmartDashboard.putBoolean("Shooter/Shooter Ready", atSpeed);
     }
 

@@ -8,7 +8,6 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.IntakeTapCommand;
 import frc.robot.commands.IntakeWobbleCommand;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,6 +30,24 @@ import frc.robot.subsystems.IntakeSubsystem;
 
 
 
+import java.util.List;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.events.EventTrigger;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
@@ -38,6 +55,7 @@ public class RobotContainer {
   private final ArmSubsystem mArmSubsystem = new ArmSubsystem(); 
   private final ShooterSubsystem mShooterSubsystem = new ShooterSubsystem(); 
   private final IntakeSubsystem mIntakeSubsystem = new IntakeSubsystem(); 
+  private final SendableChooser<Command> autoChooser;
 
   private final CommandXboxController mDriverController = 
       new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER);
@@ -46,16 +64,24 @@ public class RobotContainer {
   boolean slowMode = false;
 
 
-
   public RobotContainer() {
-        configureBindings();
-    
-        mDriveSubsystem.setDefaultCommand(
-        // The left stick controls translation of the robot.
-        // Turning is controlled by the X axis of the right stick. field relative set true/false 
+    // Register named commands
+    NamedCommands.registerCommand("intakepivotdefault", mArmSubsystem.IntakePivotDefault());
+    NamedCommands.registerCommand("shoot", autoShoot());
+    NamedCommands.registerCommand("rampupshoot", mShooterSubsystem.runShooterAutoCommand().withTimeout(4));
+    NamedCommands.registerCommand("stopshoot", autoStopShoot());
 
-        
-        new RunCommand(
+    new EventTrigger("shoot").onTrue(autoShoot());
+    new EventTrigger("stopshoot").onTrue(autoStopShoot());
+    new EventTrigger("intakepivotdefault").onTrue(mArmSubsystem.IntakePivotDefault());
+
+    autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
+    Shuffleboard.getTab("Autonomous").add("Auto Mode", autoChooser).withSize(2, 1);
+    
+    
+    configureBindings();
+    mDriveSubsystem.setDefaultCommand(  
+    new RunCommand(
             () -> {
             double currentDriveSpeed = slowMode ? DriveConstants.DRIVE_SPEED * DriveConstants.SLOW_MODE_MULTIPLIER : DriveConstants.DRIVE_SPEED;
             mDriveSubsystem.driveJoystick(
@@ -163,11 +189,6 @@ public class RobotContainer {
 
     }
 
-    public Command getAutonomousCommand() {
-        return Commands.none();
-    }
-
-  
     
     public Command shootWobble(){
         return Commands.parallel(           
@@ -179,8 +200,30 @@ public class RobotContainer {
         return new InstantCommand(() -> slowMode = !slowMode);
     }
 
-    
+  
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public Command getAutonomousCommand() {
+    return autoChooser.getSelected();
+  }
 
+  
+  public Command autoStopShoot(){
+    return Commands.parallel(           
+    new RunCommand(() -> mShooterSubsystem.runKicker(0)),
+    new RunCommand(() -> mShooterSubsystem.runShooterPower(0)));
+    
+  }
+
+    
+  public Command autoShoot(){
+    return Commands.parallel(           
+    new RunCommand(() -> mShooterSubsystem.runKicker(-ShooterConstants.KICKER_SPEED)).withTimeout(5),
+    new RunCommand(() -> mShooterSubsystem.runShooterAutoCommand()).withTimeout(5));
+  }
 }
 
   

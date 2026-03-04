@@ -1,0 +1,55 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TravelToMidfield"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "first90Degrees"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SwipeBalls"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BackToTrench"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "90 degrees"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AllianceSide"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MoveToShoot"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

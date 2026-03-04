@@ -1,0 +1,39 @@
+{
+  "robotWidth": 0.68,
+  "robotLength": 0.68,
+  "holonomicMode": true,
+  "pathFolders": [
+    "PreloadShotPaths",
+    "HP AUTO PATHS",
+    "SwipeAuto-bumpside",
+    "Testing"
+  ],
+  "autoFolders": [
+    "Testing Autos"
+  ],
+  "defaultMaxVel": 4.0,
+  "defaultMaxAccel": 7.1,
+  "defaultMaxAngVel": 360.0,
+  "defaultMaxAngAccel": 1858.0,
+  "defaultNominalVoltage": 12.0,
+  "robotMass": 45.3,
+  "robotMOI": 4.05,
+  "robotTrackwidth": 0.546,
+  "driveWheelRadius": 0.038,
+  "driveGearing": 4.71,
+  "maxDriveSpeed": 4.0,
+  "driveMotorType": "NEO",
+  "driveCurrentLimit": 45.0,
+  "wheelCOF": 1.2,
+  "flModuleX": 0.29,
+  "flModuleY": 0.29,
+  "frModuleX": 0.29,
+  "frModuleY": -0.29,
+  "blModuleX": -0.29,
+  "blModuleY": 0.29,
+  "brModuleX": -0.29,
+  "brModuleY": -0.29,
+  "bumperOffsetX": 0.0,
+  "bumperOffsetY": 0.0,
+  "robotFeatures": []
+}

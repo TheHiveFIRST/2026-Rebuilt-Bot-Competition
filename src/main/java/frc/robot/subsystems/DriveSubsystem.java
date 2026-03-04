@@ -16,6 +16,24 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.auto.CommandUtil;
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.AutoBuilderException
+;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.config.RobotConfig;
+
+
+
+
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -25,6 +43,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ShooterConstants;
+import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.configs.DriveConfig;
 
 public class DriveSubsystem extends SubsystemBase {
   //create 4 MAXSwerveModules 
@@ -51,11 +71,11 @@ public class DriveSubsystem extends SubsystemBase {
 
   //mGyro sensor/IMU (usb input type to roborio)
   private final AHRS mGyro = new AHRS(NavXComType.kUSB1); 
-
-
+  public static boolean useInvertedGyro = false;
+  
   private final Field2d field2d = new Field2d();
 
-  public double autoAlignPID = 0.067;
+  private double autoAlignPID = 0.067; 
 
   //Odometry class for tracking robot pose 
   SwerveDriveOdometry Odometry = new SwerveDriveOdometry(
@@ -72,11 +92,43 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem() {
     //usage reporting for MAXSwerve template 
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
-  }
+    RobotConfig config;
+    try{
+      config = RobotConfig.fromGUISettings();
+    } catch (Exception e) {
+      // Handle exception as needed
+      e.printStackTrace();
+      config = null;
+    }
+    AutoBuilder.configure(
+                this::getPose, // Robot pose supplier
+                this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+                this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+                new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+                        new PIDConstants(10.0, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(5.5, 0.0, 0.0) // Rotation PID constants
+                ),
+                config, // The robot configuration
+                () -> {
+                // Boolean supplier that controls when the path will be mirrored for the red alliance
+                // This will flip the path being followed to the red side of the field.
+                // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
+                var alliance = DriverStation.getAlliance();
+                if (alliance.isPresent()) {
+                    return alliance.get() == DriverStation.Alliance.Red;
+                }
+                return false;
+                },
+                this // Reference to this subsystem to set requirements
+        );   
+      
+  }  
+
+  
   @Override
   public void periodic(){
-    SmartDashboard.putNumber("Driving/autoalign", autoAlignPID);
   //updates Odometry in periodic block 
     Odometry.update(
         getGyroRotation(),
@@ -90,7 +142,7 @@ public class DriveSubsystem extends SubsystemBase {
    //adding field map to smart dashboard 
     field2d.setRobotPose(Odometry.getPoseMeters());
     SmartDashboard.putData(field2d);
-      }
+  }
 
   /**
    * Returns the currently-estimated pose of the robot.
@@ -104,7 +156,7 @@ public class DriveSubsystem extends SubsystemBase {
    * Resets the Odometry to the specified pose.
    * @param pose The pose to which to set the Odometry.
    */
-  public void resetOdometry(Pose2d pose) {
+  public void resetPose(Pose2d pose) {
     Odometry.resetPosition(
         getGyroRotation(),
         new SwerveModulePosition[] {
@@ -183,6 +235,26 @@ public class DriveSubsystem extends SubsystemBase {
     mBackRight.setDesiredState(swerveModuleStates[3]);
 
   }
+ 
+  public void driveRobotRelative(ChassisSpeeds speeds) {
+    var swerveModuleStates = DriveConstants.DriveKinematics.toSwerveModuleStates(speeds);
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+        swerveModuleStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
+    
+    mFrontLeft.setDesiredState(swerveModuleStates[0]);
+    mFrontRight.setDesiredState(swerveModuleStates[1]);
+    mBackLeft.setDesiredState(swerveModuleStates[2]);
+    mBackRight.setDesiredState(swerveModuleStates[3]);
+  }  
+
+  public ChassisSpeeds getRobotRelativeSpeeds() {
+    return DriveConstants.DriveKinematics.toChassisSpeeds(
+        mFrontLeft.getState(),
+        mFrontRight.getState(),
+        mBackLeft.getState(),
+        mBackRight.getState()
+        );
+  }
 
   /**
    * Sets the wheels into an X formation to prevent movement.
@@ -221,19 +293,22 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public Rotation2d getGyroRotation(){
-    return Rotation2d.fromDegrees(mGyro.getAngle());
+    double angle = mGyro.getAngle(); 
+    return Rotation2d.fromDegrees(
+      useInvertedGyro ? -angle : angle
+    );
   }
-
   /**
    * Returns the heading of the robot.
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
-    return Rotation2d.fromDegrees(mGyro.getAngle()).getDegrees();
+    return getGyroRotation().getDegrees();
   }
 
-   public void incrementPalign() { autoAlignPID += ShooterConstants.KD_INCREMENT; }
-   public void decrementPalign() { autoAlignPID -= ShooterConstants.KD_INCREMENT; }
+  public void incrementPalign() { autoAlignPID += ShooterConstants.KD_INCREMENT; }
+  public void decrementPalign() { autoAlignPID -= ShooterConstants.KD_INCREMENT; }
+
 
   /**
    * Returns the turn rate of the robot.
@@ -258,5 +333,7 @@ public class DriveSubsystem extends SubsystemBase {
         zeroHeading();
       });
   }
-  
+
 }
+  
+

@@ -101,7 +101,7 @@ public final class Constants {
     public static final double Y_TOLERANCE_TAG_ALIGNMENT = 0.02; 
 
     public static final double DONT_SEE_TAG_WAIT_TIME = 1;
-	  public static final double POSE_VALIDATION_TIME = 0.3;
+    public static final double POSE_VALIDATION_TIME = 0.3;
   }
 
   public static final class VisionConstants{
@@ -157,7 +157,7 @@ public final class Constants {
         public static final double HUB_TARGET_RPM = 4400; //TODO: FIND ACTUAL 
         public static final double TRENCH_TARGET_RPM = 5700; 
         public static final double DEFENCE_TARGET_RPM = 5000; 
-
+        public static final double AUTO_TARGET_RPM = 5500; 
 
         public static final double RPMOFFSET_INCREMENT = 200; 
 
