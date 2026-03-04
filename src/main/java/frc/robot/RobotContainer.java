@@ -27,7 +27,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-//import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.ArmSubsystem;
@@ -41,26 +40,14 @@ import frc.robot.subsystems.ShooterSubsystem;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  //private final SwerveSubsystem swerve = new SwerveSubsystem();
-
   private final SendableChooser<Command> autoChooser;
-  private final DriveSubsystem swerve = new DriveSubsystem(); 
   private final ShooterSubsystem mShooterSubsystem = new ShooterSubsystem(); 
   private final ArmSubsystem mArmSubsystem = new ArmSubsystem(); 
-
-
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController mDriverController =
-      new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER);
-
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Register named commands
-    NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
     NamedCommands.registerCommand("intakepivotdefault", mArmSubsystem.IntakePivotDefault());
     NamedCommands.registerCommand("shoot", autoShoot());
     NamedCommands.registerCommand("rampupshoot", mShooterSubsystem.runShooterAutoCommand().withTimeout(4));
@@ -69,10 +56,6 @@ public class RobotContainer {
     new EventTrigger("shoot").onTrue(autoShoot());
     new EventTrigger("stopshoot").onTrue(autoStopShoot());
     new EventTrigger("intakepivotdefault").onTrue(mArmSubsystem.IntakePivotDefault());
-
-
-    // Use event markers as triggers
-    new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
 
     // Configure the trigger bindings
     configureBindings();
@@ -91,12 +74,6 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Add a button to run the example auto to SmartDashboard, this will also be in the auto chooser built above
-
-    // Add a button to run pathfinding commands to SmartDashboard
-   
-
-     
     };
   
 
