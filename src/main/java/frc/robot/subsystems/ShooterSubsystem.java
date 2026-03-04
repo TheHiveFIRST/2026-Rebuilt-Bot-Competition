@@ -62,7 +62,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void setShooterSpeeds(double setRPM, double RPMOffset) {
         double mCurrentRPM = mShooterLeaderEncoder.getVelocity();
-        //TODO: trywith getAverageVelocity() for both
         double pidOutput = mShooterPID.calculate(mCurrentRPM, setRPM + RPMOffset);
         double ffOutput = tempFF.calculate(setRPM + RPMOffset); 
         double motorPower = MathUtil.clamp(pidOutput + ffOutput, 0.0, 1.0);
@@ -197,7 +196,7 @@ public class ShooterSubsystem extends SubsystemBase {
     
     public Command setDefenceShotCommand() {
           return new InstantCommand(() -> {
-        mTargetRPM = ShooterConstants.TRENCH_TARGET_RPM;
+        mTargetRPM = ShooterConstants.DEFENCE_TARGET_RPM;
         ShooterRPMOffset = 0;
         });}
 

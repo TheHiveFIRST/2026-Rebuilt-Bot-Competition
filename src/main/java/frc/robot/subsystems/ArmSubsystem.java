@@ -17,7 +17,8 @@ import com.revrobotics.ResetMode;
 public class ArmSubsystem extends SubsystemBase {
     private final SparkMax mPivotLeader;
     private final SparkMax mPivotFollower;
-    private final AbsoluteEncoder mPivotEncoder;
+    private final AbsoluteEncoder mPivotFollowerEncoder;
+    private final AbsoluteEncoder mPivotLeaderEncoder;
     private final PIDController mPivotPID;
     public double mPivotOutput = 0; 
 
@@ -45,20 +46,23 @@ public class ArmSubsystem extends SubsystemBase {
         mPivotLeader.configure(leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         mPivotFollower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        mPivotEncoder = mPivotFollower.getAbsoluteEncoder();
+        mPivotFollowerEncoder = mPivotFollower.getAbsoluteEncoder();
+        mPivotLeaderEncoder = mPivotLeader.getAbsoluteEncoder();
         mPivotPID = new PIDController(ArmConstants.ARM_KP, ArmConstants.ARM_KI, ArmConstants.ARM_KD);
         mPivotPID.setTolerance(ArmConstants.POSITION_TOLERANCE);
     }
 
     public void setTargetArm(double position) {
         mCurrentTarget = position;
-        mPivotPID.setP(mArmCurrentKP);
-        mPivotPID.setI(mArmCurrentKI);
-        mPivotPID.setD(mArmCurrentKD);
+        // mPivotPID.setP(mArmCurrentKP);
+        // mPivotPID.setI(mArmCurrentKI);
+        // mPivotPID.setD(mArmCurrentKD);
 
-        double mPivotOutput = mPivotPID.calculate(mPivotEncoder.getPosition(), mCurrentTarget);
-        mPivotLeader.set(mPivotOutput);
+        double mPivotOutput = mPivotPID.calculate(mPivotFollowerEncoder.getPosition(), mCurrentTarget);
         mPivotFollower.set(mPivotOutput);
+        double mPivotLeaderOutput = mPivotPID.calculate(mPivotLeaderEncoder.getPosition(), mCurrentTarget);
+        mPivotLeader.set(mPivotLeaderOutput);
+        
     }
     
     public void setPivotPower(double pivotPower){
@@ -69,7 +73,7 @@ public class ArmSubsystem extends SubsystemBase {
 
 
     public double encoderGetValue() {
-        return mPivotEncoder.getPosition();
+        return mPivotLeaderEncoder.getPosition();
     }
 
     public boolean isAtTarget() {
@@ -78,7 +82,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void stopArm() {
             mPivotLeader.set(0);
-            mCurrentTarget = mPivotEncoder.getPosition(); // Hold current spot
+            mCurrentTarget = mPivotLeaderEncoder.getPosition(); // Hold current spot
         }
 
     public void incrementKP() { mArmCurrentKP += ArmConstants.ARM_KP_INCREMENT; } // Increments by 0.01 for fine tuning

@@ -117,7 +117,9 @@ public final class Constants {
   public static final class IntakeConstants {
         public static final int INTAKE_LEADER_ID = 10; 
         public static final int INTAKE_FOLLOWER_ID = 11;
-        public static final double INTAKE_SPEED = 0.7;
+        public static final double INTAKE_SPEED = 1;
+        public static final double OUTTAKE_SPEED = -0.5;
+
     }
 
     public static final class ShooterConstants {
@@ -154,6 +156,7 @@ public final class Constants {
 
         public static final double HUB_TARGET_RPM = 4400; //TODO: FIND ACTUAL 
         public static final double TRENCH_TARGET_RPM = 5700; 
+        public static final double DEFENCE_TARGET_RPM = 5000; 
 
 
         public static final double RPMOFFSET_INCREMENT = 200; 
@@ -177,7 +180,7 @@ public final class Constants {
         public static final double ARM_KD = 0.0;
 
         public static final double PIVOT_OUT = 0.60; 
-        public static final double PIVOT_DEFAULT = 0.5; 
+        public static final double PIVOT_DEFAULT = 0.4; 
         public static final double PIVOT_IN = 0.3;  
         public static final double ARM_KP_INCREMENT = 0.01;
 
