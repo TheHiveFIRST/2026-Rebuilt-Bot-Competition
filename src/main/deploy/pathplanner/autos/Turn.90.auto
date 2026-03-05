@@ -25,15 +25,34 @@
                       }
                     },
                     {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 2.0
+                      }
+                    },
+                    {
                       "type": "path",
                       "data": {
                         "pathName": "Turn.90-180(0,0)"
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "parallel",
                       "data": {
-                        "name": "rampupshoot"
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "autoalign"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "rampupshoot"
+                            }
+                          }
+                        ]
                       }
                     },
                     {
@@ -64,6 +83,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Testing Autos",
+  "folder": null,
   "choreoAuto": false
 }

@@ -25,15 +25,34 @@
                       }
                     },
                     {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    },
+                    {
                       "type": "path",
                       "data": {
                         "pathName": "SidetoShoot"
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "parallel",
                       "data": {
-                        "name": "rampupshoot"
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "autoalign"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "rampupshoot"
+                            }
+                          }
+                        ]
                       }
                     },
                     {

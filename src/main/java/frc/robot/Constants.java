@@ -60,6 +60,8 @@ public final class Constants {
     public static double DRIVE_SPEED = 1;
     public static final double SLOW_MODE_MULTIPLIER = 0.5;
     public static final double AUTO_ALIGN_PID = 0.067;
+    public static final double AUTO_ALIGN_MAX_SPEED = 1.00;
+
 
   }
 
@@ -156,7 +158,10 @@ public final class Constants {
 
         public static final double HUB_TARGET_RPM = 4400; //TODO: FIND ACTUAL 
         public static final double TRENCH_TARGET_RPM = 5700; 
+        public static final double LADDER_TARGET_RPM = 6000;
+        public static final double PASSING_TARGET_RPM = 10000;
         public static final double DEFENCE_TARGET_RPM = 5000; 
+
         public static final double AUTO_TARGET_RPM = 5500; 
 
         public static final double RPMOFFSET_INCREMENT = 200; 

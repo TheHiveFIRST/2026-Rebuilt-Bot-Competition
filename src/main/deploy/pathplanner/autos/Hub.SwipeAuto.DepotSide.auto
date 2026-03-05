@@ -5,45 +5,147 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "TravelToMidfield"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakepivotdefault"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "TravelToMidfield"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "first90Degrees"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "first90Degrees"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakepivotdown"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "SwipeBalls"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "SwipeBalls"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "BackToTrench"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "90 degrees"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "AllianceSide"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "MoveToShoot"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakepivotdefault"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "BackToTrench"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "90 degrees"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "autoalign"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "AllianceSide"
+                      }
+                    },
+                    {
+                      "type": "parallel",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "MoveToShoot"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "rampupshoot"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "shoot"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 2.0
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "stopshoot"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

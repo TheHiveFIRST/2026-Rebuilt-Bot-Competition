@@ -4,6 +4,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.AutoAlignToTagCommand;
+import frc.robot.commands.AutonAlignCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.IntakeTapCommand;
 import frc.robot.commands.IntakeWobbleCommand;
@@ -67,9 +68,12 @@ public class RobotContainer {
   public RobotContainer() {
     // Register named commands
     NamedCommands.registerCommand("intakepivotdefault", mArmSubsystem.IntakePivotDefault());
+    NamedCommands.registerCommand("intakepivotdown", new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem));
     NamedCommands.registerCommand("shoot", autoShoot());
     NamedCommands.registerCommand("rampupshoot", mShooterSubsystem.runShooterAutoCommand().withTimeout(4));
     NamedCommands.registerCommand("stopshoot", autoStopShoot());
+    NamedCommands.registerCommand("autoalign", new AutonAlignCommand(mDriveSubsystem));
+
 
     new EventTrigger("shoot").onTrue(autoShoot());
     new EventTrigger("stopshoot").onTrue(autoStopShoot());
@@ -104,7 +108,8 @@ public class RobotContainer {
       
         //OPERATOR CONTROLS
         mOperatorController.y().whileTrue(mShooterSubsystem.toggleShooterCommand());
-        mOperatorController.leftTrigger().toggleOnTrue(mShooterSubsystem.stop());
+        mOperatorController.leftTrigger().onTrue(mShooterSubsystem.setLadderShotCommand());
+        mOperatorController.rightTrigger().onTrue(mShooterSubsystem.setPassingShotCommand());
         mOperatorController.b().onTrue(mShooterSubsystem.setHubShotCommand());
         mOperatorController.a().onTrue(mShooterSubsystem.setTrenchShotCommand());
         mOperatorController.x().onTrue(mShooterSubsystem.setDefenceShotCommand());

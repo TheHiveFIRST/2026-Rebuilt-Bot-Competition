@@ -33,6 +33,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private double ShooterRPMOffset = 0; 
     private boolean mShooterEnabled = false;
+    private String shotType;
 
 
     public ShooterSubsystem() {
@@ -192,6 +193,7 @@ public class ShooterSubsystem extends SubsystemBase {
     return new InstantCommand(() -> {
         mTargetRPM = ShooterConstants.HUB_TARGET_RPM;
         ShooterRPMOffset = 0;
+        shotType = "BUMPER_ALIGN_SHOT";
         });
     }
 
@@ -199,13 +201,33 @@ public class ShooterSubsystem extends SubsystemBase {
           return new InstantCommand(() -> {
         mTargetRPM = ShooterConstants.TRENCH_TARGET_RPM;
         ShooterRPMOffset = 0;
+        shotType = "TRENCH_SHOT";
+
         });}
     
     public Command setDefenceShotCommand() {
           return new InstantCommand(() -> {
         mTargetRPM = ShooterConstants.DEFENCE_TARGET_RPM;
         ShooterRPMOffset = 0;
+        shotType = "DEFENCE_SHOT";
+
         });}
+
+    public Command setLadderShotCommand() {
+          return new InstantCommand(() -> {
+        mTargetRPM = ShooterConstants.LADDER_TARGET_RPM;
+        ShooterRPMOffset = 0;
+        shotType = "TOWER_SHOT";
+
+        });}
+    
+    public Command setPassingShotCommand() {
+          return new InstantCommand(() -> {
+        mTargetRPM = ShooterConstants.PASSING_TARGET_RPM;
+        ShooterRPMOffset = 0;
+        shotType = "PASSING_SHOT";
+        });}
+
 
 
     public Command stop() {
@@ -244,7 +266,7 @@ public class ShooterSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Shooter/Target RPM", mTargetRPM +ShooterRPMOffset);
         SmartDashboard.putNumber("Shooter/Actual RPM", mShooterLeaderEncoder.getVelocity());
         SmartDashboard.putNumber("Shooter/RPM Offset", ShooterRPMOffset);
-
+        SmartDashboard.putString("Shooter/Shot Type", shotType);
         SmartDashboard.putNumber("Testing/shooter current", mShooterLeader.getOutputCurrent());
         SmartDashboard.putNumber("Testing/shooter motor 2 current", mShooterFollower.getOutputCurrent());
         boolean atSpeed = Math.abs(mShooterLeaderEncoder.getVelocity() - mTargetRPM + ShooterRPMOffset) < ShooterConstants.VELOCITY_TOLERANCE;

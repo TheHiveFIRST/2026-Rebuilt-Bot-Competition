@@ -37,9 +37,21 @@
                       }
                     },
                     {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    },
+                    {
                       "type": "path",
                       "data": {
                         "pathName": "3.75M strafe"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
                       }
                     },
                     {
@@ -62,9 +74,22 @@
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "parallel",
                       "data": {
-                        "name": "shoot"
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "autoalign"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "shoot"
+                            }
+                          }
+                        ]
                       }
                     },
                     {
