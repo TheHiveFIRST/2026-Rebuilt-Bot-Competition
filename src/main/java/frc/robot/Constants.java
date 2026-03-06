@@ -17,7 +17,7 @@ public final class Constants {
   public static final class DriveConstants{ 
     //allowed max speeds
     public static final double MAX_SPEED_METERS_PER_SECOND = 9.6; // TODO: after test change back to 4.8 and 2pi;
-    public static final double MAX_ANGULAR_SPEED =  2*Math.PI; // rad/s 
+    public static final double MAX_ANGULAR_SPEED =  2.3*Math.PI; // rad/s 
     //Chassis config - width, depth, CAN IDS and angular offset values in Designdoc.md
   
     public static final double WHEEL_CENTER_WIDTH = Units.inchesToMeters(11.75);
@@ -120,8 +120,8 @@ public final class Constants {
         public static final int INTAKE_LEADER_ID = 10; 
         public static final int INTAKE_FOLLOWER_ID = 11;
         public static final double INTAKE_SPEED = 1;
+        public static final double SLOW_INTAKE_SPEED = 0.05;
         public static final double OUTTAKE_SPEED = -0.5;
-
     }
 
     public static final class ShooterConstants {
@@ -156,13 +156,13 @@ public final class Constants {
 
         public static final double VELOCITY_TOLERANCE =  30; 
 
-        public static final double HUB_TARGET_RPM = 4400; //TODO: FIND ACTUAL 
+        public static final double HUB_TARGET_RPM = 4800; //TUNED 
         public static final double TRENCH_TARGET_RPM = 5700; 
         public static final double LADDER_TARGET_RPM = 6000;
-        public static final double PASSING_TARGET_RPM = 10000;
+        public static final double PASSING_TARGET_RPM = 8000;
         public static final double DEFENCE_TARGET_RPM = 5000; 
 
-        public static final double AUTO_TARGET_RPM = 5500; 
+        public static final double AUTO_TARGET_RPM = 5350; 
 
         public static final double RPMOFFSET_INCREMENT = 200; 
 
@@ -184,9 +184,9 @@ public final class Constants {
         public static final double ARM_KI = 0.0;
         public static final double ARM_KD = 0.0;
 
-        public static final double PIVOT_OUT = 0.60; 
-        public static final double PIVOT_DEFAULT = 0.4; 
-        public static final double PIVOT_IN = 0.3;  
+        public static final double PIVOT_OUT = 0.591; 
+        public static final double PIVOT_DEFAULT = 0.424; 
+        public static final double PIVOT_IN = 0.215;  
         public static final double ARM_KP_INCREMENT = 0.01;
 
         public static final double POSITION_TOLERANCE = 0.02;

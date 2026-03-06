@@ -23,6 +23,8 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
+  private double timeToNext; 
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -32,6 +34,9 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    timeToNext = 130;
+    SmartDashboard.putNumber("Driving/Shift Time", timeToNext);
+
   }
 
   /**
@@ -91,7 +96,6 @@ public class Robot extends TimedRobot {
 
     double matchTime = DriverStation.getMatchTime();
     
-    double timeToNext = 0;
     if (matchTime > 130){
         timeToNext = matchTime - 130;
     }
@@ -110,8 +114,8 @@ public class Robot extends TimedRobot {
     else{
         timeToNext = matchTime;
     }
+   SmartDashboard.putNumber("Driving/Shift Time", timeToNext);
 
-    SmartDashboard.putNumber("timeToNextShift", timeToNext);
     
     
   }

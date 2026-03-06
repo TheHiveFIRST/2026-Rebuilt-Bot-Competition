@@ -9,6 +9,51 @@
           "data": {
             "commands": [
               {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "SidewaysTrench"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakepivotdown"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "SwipeBalls"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
                 "type": "named",
                 "data": {
                   "name": "intakepivotdefault"
@@ -21,19 +66,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "depot"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 3.0
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "2.5M out"
+                        "pathName": "Back2Future"
                       }
                     },
                     {
@@ -45,25 +78,32 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "3.75M strafe"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.5
+                        "pathName": "Turn45"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Turn.90(3,4)"
+                        "pathName": "BackOverBump"
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "parallel",
                       "data": {
-                        "name": "rampupshoot"
+                        "commands": [
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "45MoveShoot"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "rampupshoot"
+                            }
+                          }
+                        ]
                       }
                     },
                     {
@@ -75,7 +115,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 4.0
+                        "waitTime": 2.0
                       }
                     },
                     {

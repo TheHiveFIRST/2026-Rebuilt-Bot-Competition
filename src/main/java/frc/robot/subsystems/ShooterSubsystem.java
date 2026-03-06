@@ -33,7 +33,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private double ShooterRPMOffset = 0; 
     private boolean mShooterEnabled = false;
-    private String shotType;
+    private String shotType = "HUB_SHOT";
 
 
     public ShooterSubsystem() {

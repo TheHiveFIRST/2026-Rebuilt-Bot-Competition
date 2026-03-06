@@ -43,6 +43,14 @@ public class IntakeSubsystem extends SubsystemBase {
             runIntake(IntakeConstants.INTAKE_SPEED);
               });
     }
+
+    public Command runIntakeSlowCommand() {
+         return run(
+        () -> {
+            runIntake(IntakeConstants.SLOW_INTAKE_SPEED);
+              });
+    }
+    
     
     public Command runOuttakeCommand() {
          return run(

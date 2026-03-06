@@ -125,7 +125,7 @@ public class RobotContainer {
         mDriverController.x().whileTrue(new UnjamIntakeCommand(mIntakeSubsystem));
         mDriverController.b().onTrue(mIntakeSubsystem.runOuttakeCommand());
 
-        mDriverController.rightBumper().whileTrue(mShooterSubsystem.runKickerCommand());
+        mDriverController.rightBumper().whileTrue(shootUnjam());
         mDriverController.rightTrigger().whileTrue(mShooterSubsystem.runKickerBackwardCommand());
         mDriverController.leftBumper().whileTrue(mArmSubsystem.runIntakePivotUp());
         mDriverController.leftTrigger().whileTrue(new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem));
@@ -134,6 +134,7 @@ public class RobotContainer {
         mDriverController.povLeft().onTrue(mShooterSubsystem.increaseShootingRPMOffsetCommand());
         mDriverController.povRight().onTrue(mShooterSubsystem.decreaseShootingRPMOffsetCommand());
         mDriverController.povDown().onTrue(toggleSlowMode());
+        mDriverController.povUp().whileTrue(mIntakeSubsystem.runIntakeSlowCommand());
         //mDriverController.povUp().onTrue(mShooterSubsystem.runOnce(mDriveSubsystem::incrementPalign));
         //mDriverController.povDown().onTrue(mShooterSubsystem.runOnce(mDriveSubsystem::decrementPalign));
         //mDriverController.povDown().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::decrementRPM));
@@ -195,9 +196,9 @@ public class RobotContainer {
     }
 
     
-    public Command shootWobble(){
+    public Command shootUnjam(){
         return Commands.parallel(           
-        new IntakeWobbleCommand(mArmSubsystem),
+        new UnjamIntakeCommand(mIntakeSubsystem),
         mShooterSubsystem.runKickerCommand());
     }
 

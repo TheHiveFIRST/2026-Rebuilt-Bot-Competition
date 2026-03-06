@@ -19,7 +19,8 @@ public class ArmSubsystem extends SubsystemBase {
     private final SparkMax mPivotFollower;
     private final AbsoluteEncoder mPivotFollowerEncoder;
     private final AbsoluteEncoder mPivotLeaderEncoder;
-    private final PIDController mPivotPID;
+    private final PIDController mPivotLeaderPID;
+    private final PIDController mPivotFollowerPID;
     public double mPivotOutput = 0; 
 
     //tuning 
@@ -48,22 +49,34 @@ public class ArmSubsystem extends SubsystemBase {
 
         mPivotFollowerEncoder = mPivotFollower.getAbsoluteEncoder();
         mPivotLeaderEncoder = mPivotLeader.getAbsoluteEncoder();
-        mPivotPID = new PIDController(ArmConstants.ARM_KP, ArmConstants.ARM_KI, ArmConstants.ARM_KD);
-        mPivotPID.setTolerance(ArmConstants.POSITION_TOLERANCE);
+        mPivotFollowerPID = new PIDController(ArmConstants.ARM_KP, ArmConstants.ARM_KI, ArmConstants.ARM_KD);
+        mPivotLeaderPID = new PIDController(mArmCurrentKP, mArmCurrentKI, mArmCurrentKD);
+        mPivotLeaderPID.setTolerance(ArmConstants.POSITION_TOLERANCE);
+        mPivotFollowerPID.setTolerance(ArmConstants.POSITION_TOLERANCE);
     }
 
-    public void setTargetArm(double position) {
-        mCurrentTarget = position;
-        // mPivotPID.setP(mArmCurrentKP);
-        // mPivotPID.setI(mArmCurrentKI);
-        // mPivotPID.setD(mArmCurrentKD);
-
-        double mPivotOutput = mPivotPID.calculate(mPivotFollowerEncoder.getPosition(), mCurrentTarget);
+    public void setTargetArm(double position){
+        mCurrentTarget = position; 
+        double mPivotOutput = mPivotFollowerPID.calculate(mPivotFollowerEncoder.getPosition(), mCurrentTarget);
         mPivotFollower.set(mPivotOutput);
-        double mPivotLeaderOutput = mPivotPID.calculate(mPivotLeaderEncoder.getPosition(), mCurrentTarget);
-        mPivotLeader.set(mPivotLeaderOutput);
-        
+        mPivotLeader.set(mPivotOutput);
     }
+    // public void set1stArm(double position) {
+    //     mCurrentTarget = position;
+    //     // mPivotPID.setP(mArmCurrentKP);
+    //     // mPivotPID.setI(mArmCurrentKI);
+    //     // mPivotPID.setD(mArmCurrentKD);
+
+    //     double mPivotOutput = mPivotFollowerPID.calculate(mPivotFollowerEncoder.getPosition(), mCurrentTarget);
+    //     mPivotFollower.set(mPivotOutput);
+        
+    // }
+
+    // public void set2ndArm(double position){
+    //     mPivotLeaderPID.setP(mArmCurrentKP);
+    //     double mPivotLeaderOutput = mPivotLeaderPID.calculate(mPivotLeaderEncoder.getPosition(), mCurrentTarget);
+    //     mPivotLeader.set(mPivotLeaderOutput);
+    // }
     
     public void setPivotPower(double pivotPower){
         mPivotLeader.set(pivotPower);
@@ -77,7 +90,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public boolean isAtTarget() {
-        return mPivotPID.atSetpoint();
+        return mPivotLeaderPID.atSetpoint();
     }
 
     public void stopArm() {

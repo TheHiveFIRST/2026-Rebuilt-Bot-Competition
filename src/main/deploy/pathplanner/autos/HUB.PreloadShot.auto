@@ -43,13 +43,13 @@
                           {
                             "type": "named",
                             "data": {
-                              "name": "autoalign"
+                              "name": "rampupshoot"
                             }
                           },
                           {
                             "type": "named",
                             "data": {
-                              "name": "rampupshoot"
+                              "name": "autoalign"
                             }
                           }
                         ]
