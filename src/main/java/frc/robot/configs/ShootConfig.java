@@ -13,18 +13,18 @@ public final class ShootConfig {
         static {
             // Leader configuration
             shooterLeaderConfig
-                .smartCurrentLimit(40)
+                .smartCurrentLimit(50)
                 .idleMode(IdleMode.kCoast);
             // Follower configuration - set to follow Leader (ID 14) and invert
             shooterFollowerConfig
                 //.follow(ShooterConstants.SHOOTER_LEADER_CANID, true)
                 .inverted(true)
-                .smartCurrentLimit(40)
+                .smartCurrentLimit(50)
                 .idleMode(IdleMode.kCoast);
 
             // Feeder/Kicker configuration
             shooterFeederConfig
-                .smartCurrentLimit(30);
+                .smartCurrentLimit(50);
         }
     }
 
@@ -34,11 +34,11 @@ public final class ShootConfig {
 
         static {
             intakeLeaderConfig
-                .smartCurrentLimit(40);
+                .smartCurrentLimit(50);
 
             intakeFollowerConfig
                 .follow(IntakeConstants.INTAKE_LEADER_ID, true)
-                .smartCurrentLimit(40);
+                .smartCurrentLimit(50);
         }
     }
 }

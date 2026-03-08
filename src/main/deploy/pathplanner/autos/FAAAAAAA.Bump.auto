@@ -5,123 +5,73 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
-                "type": "sequential",
+                "type": "wait",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "SidewaysTrench"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.5
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "intakepivotdown"
+                  "waitTime": 0.5
                 }
               },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "SwipeBalls"
+                  "pathName": "SidewaysTrench"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
                 }
               }
             ]
           }
         },
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "intakepivotdefault"
-                }
-              },
-              {
-                "type": "sequential",
+                "type": "parallel",
                 "data": {
                   "commands": [
                     {
-                      "type": "path",
+                      "type": "named",
                       "data": {
-                        "pathName": "Back2Future"
+                        "name": "intakepivotdown"
                       }
                     },
                     {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.5
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Turn45"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "BackOverBump"
-                      }
-                    },
-                    {
-                      "type": "parallel",
+                      "type": "sequential",
                       "data": {
                         "commands": [
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "45MoveShoot"
+                              "pathName": "OtherSidewaysTrench"
                             }
                           },
                           {
-                            "type": "named",
+                            "type": "wait",
                             "data": {
-                              "name": "rampupshoot"
+                              "waitTime": 0.5
+                            }
+                          },
+                          {
+                            "type": "path",
+                            "data": {
+                              "pathName": "Copy of SwipeBalls"
+                            }
+                          },
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 0.5
                             }
                           }
                         ]
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "shoot"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 2.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "stopshoot"
                       }
                     }
                   ]

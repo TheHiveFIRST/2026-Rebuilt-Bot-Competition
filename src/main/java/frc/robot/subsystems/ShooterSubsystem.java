@@ -171,8 +171,14 @@ public class ShooterSubsystem extends SubsystemBase {
               });
     }
     public Command toggleShooterCommand() {
-        return new InstantCommand(() -> mShooterEnabled = !mShooterEnabled);
-}
+        return new InstantCommand(() -> mShooterEnabled = !mShooterEnabled);}
+    
+    public Command toggleAutoShooterCommand() {
+       return new InstantCommand(() -> mShooterEnabled = true);}
+    
+    public Command toggleOffAutoShooterCommand() {
+       return new InstantCommand(() -> mShooterEnabled = false);}
+    
     
     
     public Command runShooterPowerCommand() {

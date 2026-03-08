@@ -75,7 +75,7 @@ public class DriveSubsystem extends SubsystemBase {
   
   private final Field2d field2d = new Field2d();
 
-  private double autoAlignPID = 0.067; 
+  public static double autoAlignPID = 0.05; 
 
   //Odometry class for tracking robot pose 
   SwerveDriveOdometry Odometry = new SwerveDriveOdometry(
@@ -106,7 +106,7 @@ public class DriveSubsystem extends SubsystemBase {
                 this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
                 new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                        new PIDConstants(10.0, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(10, 0.0, 0.0), // Translation PID constants
                         new PIDConstants(5.5, 0.0, 0.0) // Rotation PID constants
                 ),
                 config, // The robot configuration
@@ -142,6 +142,8 @@ public class DriveSubsystem extends SubsystemBase {
    //adding field map to smart dashboard 
     field2d.setRobotPose(Odometry.getPoseMeters());
     SmartDashboard.putData(field2d);
+
+    SmartDashboard.putNumber("Driving/autoalignP", autoAlignPID);
   }
 
   /**

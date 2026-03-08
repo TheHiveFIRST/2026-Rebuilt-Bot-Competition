@@ -68,16 +68,17 @@ public class RobotContainer {
   public RobotContainer() {
     // Register named commands
     NamedCommands.registerCommand("intakepivotdefault", mArmSubsystem.IntakePivotDefault());
-    NamedCommands.registerCommand("intakepivotdown", new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem));
-    NamedCommands.registerCommand("shoot", autoShoot());
-    NamedCommands.registerCommand("rampupshoot", mShooterSubsystem.runShooterAutoCommand().withTimeout(4));
+    NamedCommands.registerCommand("intakepivotup", mArmSubsystem.runIntakePivotUp());
+    NamedCommands.registerCommand("intakepivotdown", new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem).withTimeout(3));
+    NamedCommands.registerCommand("shoot", autoShoot().withTimeout(10));
+    NamedCommands.registerCommand("rampupshoot", mShooterSubsystem.toggleAutoShooterCommand().withTimeout(5));
     NamedCommands.registerCommand("stopshoot", autoStopShoot());
     NamedCommands.registerCommand("autoalign", new AutonAlignCommand(mDriveSubsystem));
 
 
-    new EventTrigger("shoot").onTrue(autoShoot());
-    new EventTrigger("stopshoot").onTrue(autoStopShoot());
-    new EventTrigger("intakepivotdefault").onTrue(mArmSubsystem.IntakePivotDefault());
+    // new EventTrigger("shoot").onTrue(autoShoot());
+    // new EventTrigger("stopshoot").onTrue(autoStopShoot());
+    // new EventTrigger("intakepivotdefault").onTrue(mArmSubsystem.IntakePivotDefault());
 
     autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
     Shuffleboard.getTab("Autonomous").add("Auto Mode", autoChooser).withSize(2, 1);
@@ -112,7 +113,7 @@ public class RobotContainer {
         mOperatorController.rightTrigger().onTrue(mShooterSubsystem.setPassingShotCommand());
         mOperatorController.b().onTrue(mShooterSubsystem.setHubShotCommand());
         mOperatorController.a().onTrue(mShooterSubsystem.setTrenchShotCommand());
-        mOperatorController.x().onTrue(mShooterSubsystem.setDefenceShotCommand());
+        mOperatorController.x().whileTrue(mArmSubsystem.toggleArmStageCommand());
         mOperatorController.rightBumper().onTrue(mShooterSubsystem.increaseShootingRPMOffsetCommand());
         mOperatorController.leftBumper().onTrue(mShooterSubsystem.decreaseShootingRPMOffsetCommand());
         mOperatorController.povLeft().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::incrementRPM));
@@ -121,7 +122,7 @@ public class RobotContainer {
 
          //DRIVER CONTROLS
         mDriverController.y().whileTrue(mShooterSubsystem.toggleShooterCommand()); 
-        mDriverController.a().whileTrue(new AutoAlignToTagCommand(mDriveSubsystem, mDriverController));
+        //mDriverController.a().whileTrue(new AutoAlignToTagCommand(mDriveSubsystem, mDriverController));
         mDriverController.x().whileTrue(new UnjamIntakeCommand(mIntakeSubsystem));
         mDriverController.b().onTrue(mIntakeSubsystem.runOuttakeCommand());
 
@@ -129,23 +130,24 @@ public class RobotContainer {
         mDriverController.rightTrigger().whileTrue(mShooterSubsystem.runKickerBackwardCommand());
         mDriverController.leftBumper().whileTrue(mArmSubsystem.runIntakePivotUp());
         mDriverController.leftTrigger().whileTrue(new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem));
+        mDriverController.leftStick().whileTrue(mDriveSubsystem.defensePosition());
 
         mDriverController.start().whileTrue(mDriveSubsystem.resetGyro()); 
         mDriverController.povLeft().onTrue(mShooterSubsystem.increaseShootingRPMOffsetCommand());
         mDriverController.povRight().onTrue(mShooterSubsystem.decreaseShootingRPMOffsetCommand());
         mDriverController.povDown().onTrue(toggleSlowMode());
         mDriverController.povUp().whileTrue(mIntakeSubsystem.runIntakeSlowCommand());
-        //mDriverController.povUp().onTrue(mShooterSubsystem.runOnce(mDriveSubsystem::incrementPalign));
-        //mDriverController.povDown().onTrue(mShooterSubsystem.runOnce(mDriveSubsystem::decrementPalign));
+       // mDriverController.povUp().onTrue(mShooterSubsystem.runOnce(mDriveSubsystem::incrementPalign));
+       // mDriverController.povDown().onTrue(mShooterSubsystem.runOnce(mDriveSubsystem::decrementPalign));
         //mDriverController.povDown().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::decrementRPM));
 
 
-         // mDriverController.a().whileTrue(new RunCommand(
-        //  () -> mDriveSubsystem.driveJoystick(
-        //    MathUtil.applyDeadband(mDriverController.getLeftY(), OperatorConstants.DRIVE_DEADBAND),
-        //    MathUtil.applyDeadband(mDriverController.getLeftX(), OperatorConstants.DRIVE_DEADBAND),
-        //   LimelightHelpers.getTX("limelight")* -DriveConstants.AUTO_ALIGN_PID, 
-        //   true), mDriveSubsystem));
+         mDriverController.a().whileTrue(new RunCommand(
+         () -> mDriveSubsystem.driveJoystick(
+           MathUtil.applyDeadband(mDriverController.getLeftY(), OperatorConstants.DRIVE_DEADBAND),
+           MathUtil.applyDeadband(mDriverController.getLeftX(), OperatorConstants.DRIVE_DEADBAND),
+          LimelightHelpers.getTX("limelight")* -DriveConstants.AUTO_ALIGN_PID, 
+          true), mDriveSubsystem));
         //intake forward align 
         // //TODO: test if this \works 
         // mDriverController.leftTrigger().whileTrue(
@@ -227,8 +229,8 @@ public class RobotContainer {
     
   public Command autoShoot(){
     return Commands.parallel(           
-    new RunCommand(() -> mShooterSubsystem.runKicker(-ShooterConstants.KICKER_SPEED)).withTimeout(5),
-    new RunCommand(() -> mShooterSubsystem.runShooterAutoCommand()).withTimeout(5));
+    new RunCommand(() -> mShooterSubsystem.runKicker(-ShooterConstants.KICKER_SPEED)),
+    new RunCommand(() -> mShooterSubsystem.toggleAutoShooterCommand()));
   }
 }
 

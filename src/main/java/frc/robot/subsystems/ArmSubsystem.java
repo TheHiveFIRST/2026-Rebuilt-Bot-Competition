@@ -8,6 +8,7 @@ import com.revrobotics.AbsoluteEncoder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 
@@ -31,17 +32,19 @@ public class ArmSubsystem extends SubsystemBase {
 
     private double mCurrentTarget = ArmConstants.PIVOT_IN;
 
+    private boolean intakeStage = false; 
+
     public ArmSubsystem() {
         mPivotLeader = new SparkMax(ArmConstants.ARM_LEADER_ID, MotorType.kBrushless);
         mPivotFollower = new SparkMax(ArmConstants.ARM_FOLLOWER_ID, MotorType.kBrushless);
         
         // Configuration for Leader
         SparkMaxConfig leaderConfig = new SparkMaxConfig();
-        leaderConfig.idleMode(IdleMode.kBrake).inverted(true);
+        leaderConfig.idleMode(IdleMode.kBrake).inverted(true).smartCurrentLimit(50);;
 
         // Configuration for Follower
         SparkMaxConfig followerConfig = new SparkMaxConfig();
-        followerConfig.idleMode(IdleMode.kBrake).inverted(false);
+        followerConfig.idleMode(IdleMode.kBrake).inverted(false).smartCurrentLimit(50);;
 
         // Applying configuration`s using 2026 REV syntax
         mPivotLeader.configure(leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -102,10 +105,15 @@ public class ArmSubsystem extends SubsystemBase {
     public void decrementKP() { mArmCurrentKP -= ArmConstants.ARM_KP_INCREMENT; }
 
     
-     public Command runIntakePivotGround() {
+     public Command runIntakePivotGround () {
          return run(
         () -> {
-            setTargetArm(ArmConstants.PIVOT_OUT);
+            if (intakeStage == true){
+             setTargetArm(ArmConstants.PIVOT_OUT_FAHH);
+            }
+            else {
+             setTargetArm(ArmConstants.PIVOT_OUT);
+            }
               });
     }
 
@@ -113,6 +121,13 @@ public class ArmSubsystem extends SubsystemBase {
          return run(
         () -> {
             setTargetArm(ArmConstants.PIVOT_DEFAULT);
+              });
+    }
+
+    public Command runIntakePivotGroundFAHH() {
+         return run(
+        () -> {
+            setTargetArm(ArmConstants.PIVOT_OUT_FAHH);
               });
     }
 
@@ -135,6 +150,19 @@ public class ArmSubsystem extends SubsystemBase {
         () -> {
             setPivotPower(0.1);
               });
+    }
+
+    public Command toggleArmStageCommand() {
+        return new InstantCommand(() -> intakeStage = !intakeStage);}
+
+    public void changeArm(boolean intakeState){
+        intakeStage = intakeState;
+        if (intakeState = true){
+            runIntakePivotGround();
+        }
+        else{
+            runIntakePivotGroundFAHH();
+        }
     }
 
 
