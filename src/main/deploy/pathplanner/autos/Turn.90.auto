@@ -9,12 +9,6 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "intakepivotdefault"
-                }
-              },
-              {
                 "type": "sequential",
                 "data": {
                   "commands": [
