@@ -109,7 +109,7 @@ public class ArmSubsystem extends SubsystemBase {
          return run(
         () -> {
             if (intakeStage == true){
-             setTargetArm(ArmConstants.PIVOT_OUT_FAHH);
+             setTargetArm(ArmConstants.PIVOT_OUT_2);
             }
             else {
              setTargetArm(ArmConstants.PIVOT_OUT);
@@ -127,7 +127,7 @@ public class ArmSubsystem extends SubsystemBase {
     public Command runIntakePivotGroundFAHH() {
          return run(
         () -> {
-            setTargetArm(ArmConstants.PIVOT_OUT_FAHH);
+            setTargetArm(ArmConstants.PIVOT_OUT_2);
               });
     }
 
