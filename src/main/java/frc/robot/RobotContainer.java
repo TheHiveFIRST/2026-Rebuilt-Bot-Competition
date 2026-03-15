@@ -71,7 +71,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("intakepivotup", mArmSubsystem.runIntakePivotUp());
     NamedCommands.registerCommand("intakepivotdown", new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem).withTimeout(3));
     NamedCommands.registerCommand("shoot", autoShoot().withTimeout(10));
-    NamedCommands.registerCommand("rampupshoot", mShooterSubsystem.toggleAutoShooterCommand().withTimeout(5));
+    NamedCommands.registerCommand("rampupshoot", mShooterSubsystem.toggleAutoShooterCommand());
     NamedCommands.registerCommand("stopshoot", autoStopShoot());
     NamedCommands.registerCommand("autoalign", new AutonAlignCommand(mDriveSubsystem));
 
@@ -215,7 +215,9 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    return new PathPlannerAuto("HumanPlayerMiddleAuto");
+
+    //return autoChooser.getSelected();
   }
 
   

@@ -39,6 +39,12 @@
           "data": {
             "pathName": "HumanPlayerMiddleAuto.BackToShoot"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
         }
       ]
     }
