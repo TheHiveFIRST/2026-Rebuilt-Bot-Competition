@@ -200,7 +200,7 @@ public class RobotContainer {
     
     public Command shootUnjam(){
         return Commands.parallel(           
-        new UnjamIntakeCommand(mIntakeSubsystem),
+        new IntakeWobbleCommand(mArmSubsystem),
         mShooterSubsystem.runKickerCommand());
     }
 
