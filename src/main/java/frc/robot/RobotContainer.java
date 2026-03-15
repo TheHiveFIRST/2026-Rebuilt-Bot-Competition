@@ -123,10 +123,10 @@ public class RobotContainer {
          //DRIVER CONTROLS
         mDriverController.y().whileTrue(mShooterSubsystem.toggleShooterCommand()); 
         //mDriverController.a().whileTrue(new AutoAlignToTagCommand(mDriveSubsystem, mDriverController));
-        mDriverController.x().whileTrue(new UnjamIntakeCommand(mIntakeSubsystem));
+        mDriverController.x().whileTrue(shootUnjam());
         mDriverController.b().onTrue(mIntakeSubsystem.runOuttakeCommand());
 
-        mDriverController.rightBumper().whileTrue(shootUnjam());
+        mDriverController.rightBumper().whileTrue(mShooterSubsystem.runKickerCommand());
         mDriverController.rightTrigger().whileTrue(mShooterSubsystem.runKickerBackwardCommand());
         mDriverController.leftBumper().whileTrue(mArmSubsystem.runIntakePivotUp());
         mDriverController.leftTrigger().whileTrue(new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem));

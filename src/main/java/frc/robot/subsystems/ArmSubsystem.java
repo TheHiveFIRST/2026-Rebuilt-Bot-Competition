@@ -32,7 +32,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     private double mCurrentTarget = ArmConstants.PIVOT_IN;
 
-    private boolean intakeStage = false; 
+    private boolean intakeGroundSecondStage = false; 
 
     public ArmSubsystem() {
         mPivotLeader = new SparkMax(ArmConstants.ARM_LEADER_ID, MotorType.kBrushless);
@@ -108,7 +108,7 @@ public class ArmSubsystem extends SubsystemBase {
      public Command runIntakePivotGround () {
          return run(
         () -> {
-            if (intakeStage == true){
+            if (intakeGroundSecondStage == true){
              setTargetArm(ArmConstants.PIVOT_OUT_2);
             }
             else {
@@ -121,13 +121,6 @@ public class ArmSubsystem extends SubsystemBase {
          return run(
         () -> {
             setTargetArm(ArmConstants.PIVOT_DEFAULT);
-              });
-    }
-
-    public Command runIntakePivotGroundFAHH() {
-         return run(
-        () -> {
-            setTargetArm(ArmConstants.PIVOT_OUT_2);
               });
     }
 
@@ -153,17 +146,9 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public Command toggleArmStageCommand() {
-        return new InstantCommand(() -> intakeStage = !intakeStage);}
+        return new InstantCommand(() -> intakeGroundSecondStage = !intakeGroundSecondStage);}
 
-    public void changeArm(boolean intakeState){
-        intakeStage = intakeState;
-        if (intakeState = true){
-            runIntakePivotGround();
-        }
-        else{
-            runIntakePivotGroundFAHH();
-        }
-    }
+
 
 
     @Override

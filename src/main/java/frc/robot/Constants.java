@@ -186,9 +186,16 @@ public final class Constants {
         public static final double ARM_KI = 0.0;
         public static final double ARM_KD = 0.0;
 
+<<<<<<< HEAD
         public static final double PIVOT_OUT = 0.7; 
         public static final double PIVOT_DEFAULT = 0.59;// was at 0.5 before 
         public static final double PIVOT_OUT_2 = 0.53; 
+=======
+        public static final double PIVOT_OUT = 0.59; 
+        public static final double PIVOT_DEFAULT = 0.59;// was at 0.5 before 
+        public static final double PIVOT_OUT_2 = 0.53; //why do we have this
+        public static final double PIVOT_WOBBLE = 0.53;// was at 0.5 before 
+>>>>>>> 6bbe18707fa8b9c6756b3b0f307b6a1e5fe698b0
 
         public static final double PIVOT_IN = 0.184;  
         public static final double ARM_KP_INCREMENT = 0.01;
