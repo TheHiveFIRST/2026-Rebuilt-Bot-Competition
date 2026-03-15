@@ -215,7 +215,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new PathPlannerAuto("HumanPlayerMiddleAuto");
+    return new PathPlannerAuto("Turn.90");
 
     //return autoChooser.getSelected();
   }
