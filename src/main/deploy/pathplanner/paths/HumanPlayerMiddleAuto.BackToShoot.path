@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.5,
-        "y": 4.4
+        "x": 7.966501298971367,
+        "y": 4.170625558731154
       },
       "isLocked": false,
       "linkedName": "HumanPlayerMiddleAuto.TurnEndpoint"
@@ -17,43 +17,43 @@
     {
       "anchor": {
         "x": 10.0,
-        "y": 5.5
+        "y": 6.5
       },
       "prevControl": {
-        "x": 10.415261594304944,
-        "y": 5.5
+        "x": 10.0,
+        "y": 6.25
       },
       "nextControl": {
-        "x": 9.742643329299787,
-        "y": 5.5
+        "x": 10.0,
+        "y": 6.75
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 11.5,
-        "y": 5.5
+        "x": 12.0,
+        "y": 6.5
       },
       "prevControl": {
-        "x": 12.205743048008348,
-        "y": 5.5
+        "x": 11.346148667909912,
+        "y": 6.5
       },
       "nextControl": {
-        "x": 11.25,
-        "y": 5.5
+        "x": 12.25,
+        "y": 6.5
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 11.7,
+        "x": 12.6,
         "y": 2.0
       },
       "prevControl": {
-        "x": 11.7,
-        "y": 1.25
+        "x": 12.694651875376152,
+        "y": 1.5780674910237769
       },
       "nextControl": null,
       "isLocked": false,
