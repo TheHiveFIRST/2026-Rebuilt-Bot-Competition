@@ -11,9 +11,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "HumanPlayerMiddleAuto.MoveToIntake"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "HumanPlayerMiddleAuto.MoveToIntake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakepivotdown"
+                }
+              }
+            ]
           }
         },
         {
@@ -43,7 +56,26 @@
         {
           "type": "named",
           "data": {
-            "name": "shoot"
+            "name": "rampupshoot"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "shoot"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 10.0
+                }
+              }
+            ]
           }
         }
       ]

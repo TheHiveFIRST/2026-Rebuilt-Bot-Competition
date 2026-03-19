@@ -158,7 +158,7 @@ public final class Constants {
 
         public static final double VELOCITY_TOLERANCE =  30; 
 
-        public static final double HUB_TARGET_RPM = 4800; //TUNED 
+        public static final double HUB_TARGET_RPM = 4900; //TUNED 
         public static final double TRENCH_TARGET_RPM = 6800; 
         public static final double LADDER_TARGET_RPM = 6300;
         public static final double PASSING_TARGET_RPM = 8000;
@@ -186,11 +186,11 @@ public final class Constants {
         public static final double ARM_KI = 0.0;
         public static final double ARM_KD = 0.0;
 
-        public static final double PIVOT_OUT = 0.7; 
-        public static final double PIVOT_DEFAULT = 0.59;// was at 0.5 before 
-        public static final double PIVOT_OUT_2 = 0.53; 
+        public static final double PIVOT_OUT = 0.75; 
+        public static final double PIVOT_DEFAULT = 0.64;// was at 0.5 before 
+        public static final double PIVOT_OUT_2 = 0.58; 
 
-        public static final double PIVOT_IN = 0.184;  
+        public static final double PIVOT_IN = 0.24;  
         public static final double ARM_KP_INCREMENT = 0.01;
 
         public static final double POSITION_TOLERANCE = 0.02;
