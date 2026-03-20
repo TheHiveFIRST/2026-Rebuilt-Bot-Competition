@@ -117,17 +117,24 @@ public class ArmSubsystem extends SubsystemBase {
               });
     }
 // hi
-    public Command IntakePivotDefault() {
-         return run(
-        () -> {
-            setTargetArm(ArmConstants.PIVOT_DEFAULT);
-              });
-    }
+    
 
     public Command runIntakePivotUp() {
          return run(
         () -> {
+            setTargetArm(ArmConstants.PIVOT_BUMP);
+              });
+    }
+    public Command runIntakePivotIn() {
+         return run(
+        () -> {
             setTargetArm(ArmConstants.PIVOT_IN);
+              });
+    }
+    public Command runIntakePivotAntiDeadspace() {
+         return run(
+        () -> {
+            setTargetArm(ArmConstants.PIVOT_ANTI_DEADSPACE);
               });
     }
 

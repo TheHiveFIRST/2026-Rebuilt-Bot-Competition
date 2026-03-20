@@ -67,7 +67,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     // Register named commands
-    NamedCommands.registerCommand("intakepivotdefault", mArmSubsystem.IntakePivotDefault());
+    //NamedCommands.registerCommand("intakepivotdefault", mArmSubsystem.IntakePivotDefault());
     NamedCommands.registerCommand("intakepivotup", mArmSubsystem.runIntakePivotUp());
     NamedCommands.registerCommand("intakepivotdown", new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem).withTimeout(3));
     NamedCommands.registerCommand("shoot", autoShoot().withTimeout(10));
@@ -129,7 +129,7 @@ public class RobotContainer {
         mDriverController.rightBumper().whileTrue(mShooterSubsystem.runKickerCommand());
         mDriverController.rightTrigger().whileTrue(mShooterSubsystem.runKickerBackwardCommand());
         mDriverController.leftBumper().whileTrue(mArmSubsystem.runIntakePivotUp());
-        mDriverController.leftTrigger().whileTrue(new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem));
+        mDriverController.leftTrigger().whileTrue(mIntakeSubsystem.runIntakeForwardCommand());
         mDriverController.leftStick().whileTrue(mDriveSubsystem.defensePosition());
 
         mDriverController.start().whileTrue(mDriveSubsystem.resetGyro()); 

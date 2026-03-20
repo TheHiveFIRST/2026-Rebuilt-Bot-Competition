@@ -186,11 +186,10 @@ public final class Constants {
         public static final double ARM_KI = 0.0;
         public static final double ARM_KD = 0.0;
 
-        public static final double PIVOT_OUT = 0.75; 
-        public static final double PIVOT_DEFAULT = 0.64;// was at 0.5 before 
-        public static final double PIVOT_OUT_2 = 0.58; 
-
-        public static final double PIVOT_IN = 0.24;  
+        public static final double PIVOT_OUT = 0.75;//needs tuning
+        public static final double PIVOT_BUMP = 0.55;  //needs tuning
+        public static final double PIVOT_ANTI_DEADSPACE = 0.4; //needs tuning
+        public static final double PIVOT_IN = 0.24;  //needs tuning
         public static final double ARM_KP_INCREMENT = 0.01;
 
         public static final double POSITION_TOLERANCE = 0.02;
