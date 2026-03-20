@@ -108,8 +108,8 @@ public class ArmSubsystem extends SubsystemBase {
      public Command runIntakePivotGround () {
          return run(
         () -> {
-            if (intakeGroundSecondStage == true){
-             setTargetArm(ArmConstants.PIVOT_OUT_2);
+            if (encoderGetValue() > 0.55 ){
+             setPivotPower(0.0);
             }
             else {
              setTargetArm(ArmConstants.PIVOT_OUT);

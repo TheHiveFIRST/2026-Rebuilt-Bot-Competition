@@ -96,7 +96,7 @@ public class RobotContainer {
                 true);},
             mDriveSubsystem));
 
-        mArmSubsystem.setDefaultCommand(mArmSubsystem.IntakePivotDefault());
+        mArmSubsystem.setDefaultCommand(mArmSubsystem.runIntakePivotGround());
         mShooterSubsystem.setDefaultCommand(new RunCommand(()-> mShooterSubsystem.runShooterPower(0), mShooterSubsystem));
         mIntakeSubsystem.setDefaultCommand(new RunCommand(()-> mIntakeSubsystem.runIntake(0), mIntakeSubsystem));
         mShooterSubsystem.setDefaultCommand(new RunCommand(()-> mShooterSubsystem.runKicker(0), mShooterSubsystem));
