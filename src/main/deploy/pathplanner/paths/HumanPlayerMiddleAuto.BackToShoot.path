@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.5,
-        "y": 3.0
+        "x": 7.8,
+        "y": 3.6
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.966501298971367,
-        "y": 4.170625558731154
+        "x": 8.266501298971367,
+        "y": 4.770625558731155
       },
       "isLocked": false,
       "linkedName": "HumanPlayerMiddleAuto.TurnEndpoint"
@@ -17,43 +17,43 @@
     {
       "anchor": {
         "x": 9.0,
-        "y": 5.6
+        "y": 6.6
       },
       "prevControl": {
         "x": 8.75,
-        "y": 5.6
+        "y": 6.6
       },
       "nextControl": {
         "x": 9.25,
-        "y": 5.6
+        "y": 6.6
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 12.0,
-        "y": 5.5
+        "x": 12.3,
+        "y": 6.6
       },
       "prevControl": {
-        "x": 11.346148667909912,
-        "y": 5.5
+        "x": 11.646148667909912,
+        "y": 6.6
       },
       "nextControl": {
-        "x": 12.25,
-        "y": 5.5
+        "x": 12.55,
+        "y": 6.6
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 12.0,
-        "y": 2.4
+        "x": 12.3,
+        "y": 3.0
       },
       "prevControl": {
-        "x": 11.75,
-        "y": 2.4
+        "x": 12.05,
+        "y": 3.0
       },
       "nextControl": null,
       "isLocked": false,
@@ -63,7 +63,14 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "rampupshoot",
+      "waypointRelativePos": 1.2678571428571406,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 1.5,
     "maxAcceleration": 3.0,

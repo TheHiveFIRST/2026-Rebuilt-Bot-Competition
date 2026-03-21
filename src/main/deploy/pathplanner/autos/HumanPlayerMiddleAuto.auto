@@ -54,12 +54,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "rampupshoot"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
