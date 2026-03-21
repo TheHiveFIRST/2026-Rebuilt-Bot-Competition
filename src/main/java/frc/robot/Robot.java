@@ -89,6 +89,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     DriveSubsystem.useInvertedGyro = true;
+    m_robotContainer.zeroGyroHeading();
   }
 
   /** This function is called periodically during operator control. */

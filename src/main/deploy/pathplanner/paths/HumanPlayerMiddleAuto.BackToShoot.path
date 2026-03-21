@@ -32,15 +32,15 @@
     },
     {
       "anchor": {
-        "x": 12.3,
+        "x": 13.0,
         "y": 6.6
       },
       "prevControl": {
-        "x": 11.646148667909912,
+        "x": 12.346148667909912,
         "y": 6.6
       },
       "nextControl": {
-        "x": 12.55,
+        "x": 13.25,
         "y": 6.6
       },
       "isLocked": false,
@@ -48,12 +48,12 @@
     },
     {
       "anchor": {
-        "x": 12.3,
-        "y": 3.0
+        "x": 13.0,
+        "y": 3.45
       },
       "prevControl": {
-        "x": 12.05,
-        "y": 3.0
+        "x": 12.75,
+        "y": 3.45
       },
       "nextControl": null,
       "isLocked": false,
@@ -65,7 +65,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "rampupshoot",
+      "name": "setshot",
       "waypointRelativePos": 1.2678571428571406,
       "endWaypointRelativePos": null,
       "command": null

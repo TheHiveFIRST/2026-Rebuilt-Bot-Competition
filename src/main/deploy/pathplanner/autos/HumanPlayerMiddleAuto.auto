@@ -42,34 +42,34 @@
           }
         },
         {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "HumanPlayerMiddleAuto.BackToShoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "setshot"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "wait",
           "data": {
             "waitTime": 0.2
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "HumanPlayerMiddleAuto.BackToShoot"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "shoot"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 10.0
-                }
-              }
-            ]
+            "name": "runkicker"
           }
         }
       ]

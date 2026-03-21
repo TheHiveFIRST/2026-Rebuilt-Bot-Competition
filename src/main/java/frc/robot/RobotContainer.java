@@ -7,6 +7,7 @@ import frc.robot.commands.AutoAlignToTagCommand;
 import frc.robot.commands.AutonAlignCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.IntakeTapCommand;
+import frc.robot.commands.IntakeUpAutoCommand;
 import frc.robot.commands.IntakeWobbleCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.math.MathUtil;
@@ -70,18 +71,16 @@ public class RobotContainer {
     //NamedCommands.registerCommand("intakepivotdefault", mArmSubsystem.IntakePivotDefault());
     NamedCommands.registerCommand("intakepivotup", mArmSubsystem.runIntakePivotUp());
     NamedCommands.registerCommand("intakepivotdown", new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem).withTimeout(3));
-    NamedCommands.registerCommand("shoot", mShooterSubsystem.setHubShotCommand().andThen(
+    NamedCommands.registerCommand("runkicker", mShooterSubsystem.setHubShotCommand().andThen(
                                                 mShooterSubsystem.toggleAutoShooterCommand().andThen(
-                                                mShooterSubsystem.runKickerCommand()
-                                                )));
-    NamedCommands.registerCommand("rampupshoot", mShooterSubsystem.toggleAutoShooterCommand().withTimeout(3));
+                                                autoWobbleShoot())));
+    NamedCommands.registerCommand("setshot", mShooterSubsystem.toggleAutoShooterCommand().withTimeout(8));
     NamedCommands.registerCommand("stopshoot", autoStopShoot());
     NamedCommands.registerCommand("autoalign", new AutonAlignCommand(mDriveSubsystem));
 
-
     // new EventTrigger("shoot").onTrue(autoShoot());
     // new EventTrigger("stopshoot").onTrue(autoStopShoot());
-    // new EventTrigger("intakepivotdefault").onTrue(mArmSubsystem.IntakePivotDefault());
+     new EventTrigger("setshot").onTrue(mShooterSubsystem.toggleAutoShooterCommand().withTimeout(3));
 
     autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
     Shuffleboard.getTab("Autonomous").add("Auto Mode", autoChooser).withSize(2, 1);
@@ -200,6 +199,10 @@ public class RobotContainer {
 
     }
 
+    public void zeroGyroHeading(){
+      mDriveSubsystem.zeroHeading();
+    }
+
     
     public Command shootWithAgitation(){
         return Commands.parallel(           
@@ -235,6 +238,12 @@ public class RobotContainer {
     return Commands.parallel(           
     new RunCommand(() -> mShooterSubsystem.runKicker(-ShooterConstants.KICKER_SPEED)),
     new RunCommand(() -> mShooterSubsystem.toggleAutoShooterCommand()));
+  }
+
+  public Command autoWobbleShoot(){
+    return Commands.parallel(           
+    mShooterSubsystem.runKickerCommand(), 
+    new IntakeUpAutoCommand(mArmSubsystem));
   }
 }
 
