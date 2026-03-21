@@ -263,7 +263,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public void periodic() {
         updateRPM(mTargetRPM);
 
-        if (mShooterEnabled) {
+        if (mShooterEnabled == true) {
         setShooterSpeeds(mTargetRPM, ShooterRPMOffset);
         } else {
         runShooterPower(0);

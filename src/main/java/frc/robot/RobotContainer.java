@@ -70,7 +70,10 @@ public class RobotContainer {
     //NamedCommands.registerCommand("intakepivotdefault", mArmSubsystem.IntakePivotDefault());
     NamedCommands.registerCommand("intakepivotup", mArmSubsystem.runIntakePivotUp());
     NamedCommands.registerCommand("intakepivotdown", new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem).withTimeout(3));
-    NamedCommands.registerCommand("shoot", autoShoot().withTimeout(10));
+    NamedCommands.registerCommand("shoot", mShooterSubsystem.setHubShotCommand().andThen(
+                                                mShooterSubsystem.toggleAutoShooterCommand().andThen(
+                                                mShooterSubsystem.runKickerCommand()
+                                                )));
     NamedCommands.registerCommand("rampupshoot", mShooterSubsystem.toggleAutoShooterCommand().withTimeout(3));
     NamedCommands.registerCommand("stopshoot", autoStopShoot());
     NamedCommands.registerCommand("autoalign", new AutonAlignCommand(mDriveSubsystem));
