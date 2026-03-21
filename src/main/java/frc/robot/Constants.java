@@ -122,7 +122,7 @@ public final class Constants {
         public static final int INTAKE_LEADER_ID = 10; 
         public static final int INTAKE_FOLLOWER_ID = 11;
         public static final double INTAKE_SPEED = 1;
-        public static final double SLOW_INTAKE_SPEED = 0.05;
+        public static final double SLOW_INTAKE_SPEED = 0.2;
         public static final double OUTTAKE_SPEED = -0.5;
     }
 
@@ -147,7 +147,7 @@ public final class Constants {
         public static final double FF_KA = 0.0;
     
         // Manual Control 
-        public static final double RPM_INCREMENT = 50.0;
+        public static final double RPM_INCREMENT = 12.5;
         public static final double KV_INCREMENT = 0.000001;
         public static final double KP_INCREMENT = 0.001;
         public static final double KI_INCREMENT = 0.0001;
@@ -182,17 +182,17 @@ public final class Constants {
         public static final int ARM_FOLLOWER_ID = 13;
 
         // PID Gains
-        public static final double ARM_KP = 0.94; 
+        public static final double ARM_KP = 1.5; 
         public static final double ARM_KI = 0.0;
         public static final double ARM_KD = 0.0;
 
-        public static final double PIVOT_OUT = 0.75;//needs tuning
+        public static final double PIVOT_OUT = 0.75;
         public static final double PIVOT_BUMP = 0.55;  //needs tuning
-        public static final double PIVOT_ANTI_DEADSPACE = 0.4; //needs tuning
+        public static final double PIVOT_AGITATE = 0.65;
         public static final double PIVOT_IN = 0.24;  //needs tuning
         public static final double ARM_KP_INCREMENT = 0.01;
 
-        public static final double POSITION_TOLERANCE = 0.02;
+        public static final double POSITION_TOLERANCE = 0.1;
     }
 
 }

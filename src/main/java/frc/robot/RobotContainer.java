@@ -123,11 +123,11 @@ public class RobotContainer {
          //DRIVER CONTROLS
         mDriverController.y().whileTrue(mShooterSubsystem.toggleShooterCommand()); 
         //mDriverController.a().whileTrue(new AutoAlignToTagCommand(mDriveSubsystem, mDriverController));
-        mDriverController.x().whileTrue(shootUnjam());
+        mDriverController.x().whileTrue(shootWithAgitation());
         mDriverController.b().onTrue(mIntakeSubsystem.runOuttakeCommand());
 
         mDriverController.rightBumper().whileTrue(mShooterSubsystem.runKickerCommand());
-        mDriverController.rightTrigger().whileTrue(mShooterSubsystem.runKickerBackwardCommand());
+        mDriverController.rightTrigger().whileTrue(shootWithAgitation());
         mDriverController.leftBumper().whileTrue(mArmSubsystem.runIntakePivotUp());
         mDriverController.leftTrigger().whileTrue(mIntakeSubsystem.runIntakeForwardCommand());
         mDriverController.leftStick().whileTrue(mDriveSubsystem.defensePosition());
@@ -198,9 +198,10 @@ public class RobotContainer {
     }
 
     
-    public Command shootUnjam(){
+    public Command shootWithAgitation(){
         return Commands.parallel(           
         new IntakeWobbleCommand(mArmSubsystem),
+        new UnjamIntakeCommand(mIntakeSubsystem),
         mShooterSubsystem.runKickerCommand());
     }
 

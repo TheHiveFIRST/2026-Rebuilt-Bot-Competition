@@ -108,12 +108,9 @@ public class ArmSubsystem extends SubsystemBase {
      public Command runIntakePivotGround () {
          return run(
         () -> {
-            if (encoderGetValue() > 0.55 ){
-             setPivotPower(0.0);
-            }
-            else {
+            
              setTargetArm(ArmConstants.PIVOT_OUT);
-            }
+            
               });
     }
 // hi
@@ -131,10 +128,10 @@ public class ArmSubsystem extends SubsystemBase {
             setTargetArm(ArmConstants.PIVOT_IN);
               });
     }
-    public Command runIntakePivotAntiDeadspace() {
+    public Command IntakeSlightlyUp() {
          return run(
         () -> {
-            setTargetArm(ArmConstants.PIVOT_ANTI_DEADSPACE);
+            setTargetArm(ArmConstants.PIVOT_AGITATE);
               });
     }
 
@@ -148,7 +145,7 @@ public class ArmSubsystem extends SubsystemBase {
     public Command runPivot(){
          return run(
         () -> {
-            setPivotPower(0.1);
+            setPivotPower(-0.2);
               });
     }
 

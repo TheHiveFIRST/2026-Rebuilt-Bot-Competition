@@ -9,12 +9,12 @@ public class IntakeWobbleCommand extends SequentialCommandGroup {
 
   public IntakeWobbleCommand(ArmSubsystem mArmSubsystem) {
     addCommands( 
-      mArmSubsystem.runIntakePivotUp().withTimeout(1),
+      mArmSubsystem.IntakeSlightlyUp().withTimeout(0.5),
       new WaitCommand(0.1),          
-      mArmSubsystem.runIntakePivotGround().withTimeout(1),
+      mArmSubsystem.runIntakePivotGround().withTimeout(0.5),
       new WaitCommand(0.1),
-      mArmSubsystem.runIntakePivotUp().withTimeout(1),
+      mArmSubsystem.IntakeSlightlyUp().withTimeout(0.5),
       new WaitCommand(0.1),
-      mArmSubsystem.runIntakePivotGround().withTimeout(1));
+      mArmSubsystem.runIntakePivotGround().withTimeout(0.5));
   }
 }
