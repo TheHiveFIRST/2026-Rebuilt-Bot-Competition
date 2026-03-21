@@ -47,6 +47,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -64,6 +65,21 @@ public class RobotContainer {
   private final CommandXboxController mOperatorController = 
       new CommandXboxController(OperatorConstants.OPERATOR_CONTROLLER);
   boolean slowMode = false;
+
+
+  public Pose2d getAllianceStartingPose() {
+    if (Constants.getCurrentAlliance() == Alliance.Blue) {
+        return new Pose2d(
+            new Translation2d(2.7432, 3.2512),   // TODO: change this 
+            Rotation2d.fromDegrees(0)
+        );
+    } else {
+        return new Pose2d(
+            new Translation2d(16.0, 4.0),  // TODO: change this to acc 
+            Rotation2d.fromDegrees(180)
+        );
+    }
+} 
 
 
   public RobotContainer() {
@@ -103,7 +119,7 @@ public class RobotContainer {
         mIntakeSubsystem.setDefaultCommand(new RunCommand(()-> mIntakeSubsystem.runIntake(0), mIntakeSubsystem));
         mShooterSubsystem.setDefaultCommand(new RunCommand(()-> mShooterSubsystem.runKicker(0), mShooterSubsystem));
 
-        SmartDashboard.putData("setShooterSpeeds", new InstantCommand(() -> mShooterSubsystem.setSpeedsSmartDashboard()));
+       //SmartDashboard.putData("setShooterSpeeds", new InstantCommand(() -> mShooterSubsystem.setSpeedsSmartDashboard()));
 
      }
 
@@ -201,6 +217,10 @@ public class RobotContainer {
 
     public void zeroGyroHeading(){
       mDriveSubsystem.zeroHeading();
+    }
+
+    public void resetVisionPose(){
+      mDriveSubsystem.resetPoseEstimator(getAllianceStartingPose());
     }
 
     

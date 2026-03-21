@@ -6,12 +6,16 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
@@ -23,28 +27,32 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.auto.CommandUtil;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
+
+import java.util.function.Supplier;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.AutoBuilderException
 ;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.config.RobotConfig;
-
-
-
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.LimelightHelpers;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.configs.DriveConfig;
+import static edu.wpi.first.units.Units.Degrees;
 
 public class DriveSubsystem extends SubsystemBase {
   //create 4 MAXSwerveModules 
@@ -76,6 +84,22 @@ public class DriveSubsystem extends SubsystemBase {
   private final Field2d field2d = new Field2d();
 
   public static double autoAlignPID = 0.05; 
+
+  public static double hubDistance = 0; 
+  
+  private final SwerveDrivePoseEstimator mPoseEstimator =
+      new SwerveDrivePoseEstimator(
+          DriveConstants.DriveKinematics,
+          getGyroRotation(),
+          new SwerveModulePosition[] {
+            mFrontLeft.getPosition(),
+            mFrontRight.getPosition(),
+            mBackLeft.getPosition(),
+            mBackRight.getPosition()
+          },
+          new Pose2d(),
+          VecBuilder.fill(DriveConstants.POSE_ESTIMATOR_N1,DriveConstants.POSE_ESTIMATOR_N2, Units.degreesToRadians(5)),
+          VecBuilder.fill(DriveConstants.POSE_ESTIMATOR_2_N1, DriveConstants.POSE_ESTIMATOR_2_N1, Units.degreesToRadians(30)));
 
   //Odometry class for tracking robot pose 
   SwerveDriveOdometry Odometry = new SwerveDriveOdometry(
@@ -139,9 +163,23 @@ public class DriveSubsystem extends SubsystemBase {
             mBackRight.getPosition()
         });
 
-   //adding field map to smart dashboard 
-    field2d.setRobotPose(Odometry.getPoseMeters());
+    updateVisionOdometry();
+
+    //adding field map to smart dashboard 
+    field2d.setRobotPose(mPoseEstimator.getEstimatedPosition());
     SmartDashboard.putData(field2d);
+
+    hubDistance = getHubDistance();
+
+    SmartDashboard.putNumber("Driving/hub distance", getHubDistance());
+    SmartDashboard.putNumber("Driving/gyro", mGyro.getAngle());
+    SmartDashboard.putNumber("Driving/heading", getHeading());
+    SmartDashboard.putNumber("Driving/Pose X", getVisionPose().getX());
+    SmartDashboard.putNumber("Driving/Pose Y", getVisionPose().getY());
+    SmartDashboard.putString("Driving/Alliance", Constants.getCurrentAlliance().toString());
+    SmartDashboard.putNumber("Driving/HubPoseX", DriveConstants.getHubPose().getX());
+    SmartDashboard.putNumber("Driving/HubPoseY", DriveConstants.getHubPose().getY());
+    SmartDashboard.putNumber("Driving/kp", DriveConstants.ROTATION_KP);
 
     SmartDashboard.putNumber("Driving/autoalignP", autoAlignPID);
   }
@@ -169,6 +207,33 @@ public class DriveSubsystem extends SubsystemBase {
         },
         pose);
   }
+  /**
+   * Returns the currentlyVISION estimated pose of the robot.
+   * @return The pose.
+   */
+  public Pose2d getVisionPose() {
+    return mPoseEstimator.getEstimatedPosition();
+  }
+  public Rotation2d getRotationPose2d() {
+    return mPoseEstimator.getEstimatedPosition().getRotation();
+  }
+
+  /**
+   * Resets the Odometry to the specified pose.
+   * @param pose The pose to which to set the Odometry.
+   */
+  public void resetPoseEstimator(Pose2d pose) {
+    mPoseEstimator.resetPosition(
+        getGyroRotation(),
+        new SwerveModulePosition[] {
+            mFrontLeft.getPosition(),
+            mFrontRight.getPosition(),
+            mBackLeft.getPosition(),
+            mBackRight.getPosition()
+        },
+        pose);
+  }
+
 
   public void driveJoystick(double xJoystick, double yJoystick, double rotJoystick, boolean fieldRelative) {
     
@@ -319,6 +384,156 @@ public class DriveSubsystem extends SubsystemBase {
   public double getTurnRate() {
     return mGyro.getRate() * (DriveConstants.GYRO_REVERSED ? -1.0 : 1.0);
   }
+
+    /** Updates the field relative position of the robot. */
+  public void updateVisionOdometry() {
+    mPoseEstimator.update(
+          getGyroRotation(),
+        new SwerveModulePosition[] {
+          mFrontLeft.getPosition(),
+          mFrontRight.getPosition(),
+          mBackLeft.getPosition(),
+          mBackRight.getPosition()
+        });
+
+
+    boolean useMegaTag2 = true; //set to false to use MegaTag1
+    boolean doRejectUpdate = false;
+    if(useMegaTag2 == false)
+    {
+ 
+      LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight"); 
+       // }
+      
+      if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
+      {
+        if(mt1.rawFiducials[0].ambiguity > .7)
+        {
+          doRejectUpdate = true;
+        }
+        if(mt1.rawFiducials[0].distToCamera > 7)
+        {
+          doRejectUpdate = true;
+        }
+      }
+      if(mt1.tagCount == 0)
+      {
+        doRejectUpdate = true;
+      }
+
+      if(!doRejectUpdate)
+      {
+        mPoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(DriveConstants.VISION_STD_MTG1_N1, 
+        DriveConstants.VISION_STD_MTG1_N2, Units.degreesToRadians(5)));
+        mPoseEstimator.addVisionMeasurement(
+            mt1.pose,
+            mt1.timestampSeconds);
+      }
+    }
+    else if (useMegaTag2 == true)
+    //mPoseEstimator.getEstimatedPosition().getRotation().getDegrees()
+    //TODO: checkif using gyro angle works 
+    {
+      LimelightHelpers.SetRobotOrientation("limelight", mPoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+      LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+         
+      if(Math.abs(mGyro.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
+      {
+        doRejectUpdate = true;
+      }
+      if(mt2.tagCount == 0)
+      {
+        doRejectUpdate = true;
+      }
+      if(!doRejectUpdate)
+      {
+        mPoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(DriveConstants.VISION_STD_MTG2_N1, DriveConstants.VISION_STD_MTG2_N2, Units.degreesToRadians(5)));
+        mPoseEstimator.addVisionMeasurement(
+            mt2.pose,
+            mt2.timestampSeconds);
+      }
+    }
+  }
+  
+  public double getFerryDistance() {
+      return getShotDistance(DriveConstants.getFerryPose(getVisionPose().getTranslation()).toPose2d().getTranslation());
+  }
+
+  public double getHubDistance() {
+        return getShotDistance(DriveConstants.getHubPose().toPose2d().getTranslation());
+    }
+
+
+  public double getShotDistance(Translation2d targetPose) {
+        Pose2d drivePose = getVisionPose();
+        double centerToTargetMeters = drivePose.getTranslation().getDistance(targetPose);
+        // double centerToShooterMeters = DriveConstants.shooterSideOffset;
+        // double shooterToTargetMeters = Math.sqrt(Math.pow(centerToTargetMeters, 2.0) - Math.pow(centerToShooterMeters, 2.0));
+        return centerToTargetMeters;
+    }
+
+ 
+  public Command alignDrive(CommandXboxController controller, Supplier<Pose2d> targetPoseSupplier) {
+
+    return run( ()-> {
+        double controllerVelX = MathUtil.applyDeadband(controller.getLeftY(),OperatorConstants.DRIVE_DEADBAND);
+        double controllerVelY = MathUtil.applyDeadband(controller.getLeftX(),OperatorConstants.DRIVE_DEADBAND);
+
+        Pose2d drivePose = getVisionPose();
+        Pose2d targetPose = targetPoseSupplier.get();
+        double shooterOffset = -DriveConstants.shooterSideOffset;
+        double targetDistance = drivePose.getTranslation().getDistance(targetPose.getTranslation());
+        double shooterAngleRads = Math.acos(shooterOffset / targetDistance); 
+        Rotation2d shooterAngle = Rotation2d.fromRadians(shooterAngleRads);
+        Rotation2d offsetAngle = Rotation2d.kCCW_90deg.minus(shooterAngle);
+        Rotation2d shooterAngleOffset = Rotation2d.fromDegrees(2);
+        Rotation2d desiredAngle = offsetAngle.plus(drivePose.relativeTo(targetPose).getTranslation().getAngle()).plus(Rotation2d.k180deg).plus(shooterAngleOffset);
+        Rotation2d currentAngle = drivePose.getRotation();
+        Rotation2d deltaAngle = currentAngle.minus(desiredAngle);
+        double wrappedAngleDeg = MathUtil.inputModulus(deltaAngle.getDegrees(), -180.0, 180.0);
+
+        if (
+            (Math.abs(wrappedAngleDeg) < DriveConstants.epsilonAngleToGoal.in(Degrees)) // if facing goal already
+            && Math.hypot(controllerVelX, controllerVelY) < OperatorConstants.DRIVE_DEADBAND) {
+               driveJoystick(controllerVelX, controllerVelY, 0, true); //TODO:IDK HOW FIELD RELATIVE WILL WOKR 
+            } else {
+            double rotationalRate = DriveConstants.rotationController.calculate(currentAngle.getRadians(), desiredAngle.getRadians());
+              driveJoystick(controllerVelX, controllerVelY, rotationalRate, true);
+        }
+      });
+  }
+
+  public Command alignTestDrive(CommandXboxController controller, Supplier<Pose2d> targetPoseSupplier) {
+
+    return run(() -> {
+
+        double controllerVelX =MathUtil.applyDeadband( controller.getLeftY(), OperatorConstants.DRIVE_DEADBAND);
+        double controllerVelY = MathUtil.applyDeadband(controller.getLeftX(),OperatorConstants.DRIVE_DEADBAND);
+
+
+        Pose2d drivePose = getVisionPose();
+        Pose2d targetPose = targetPoseSupplier.get();
+        Translation2d robotToTarget = targetPose.getTranslation().minus(drivePose.getTranslation());
+        Rotation2d desiredAngle = robotToTarget.getAngle();
+        Rotation2d currentAngle = drivePose.getRotation(); 
+        Rotation2d deltaAngle = currentAngle.minus(desiredAngle);
+        double deltaAngleDegrees = deltaAngle.getDegrees();
+        double wrappedAngleDeg = MathUtil.inputModulus(deltaAngle.getDegrees(), -180.0, 180.0);
+        if (
+                (Math.abs(deltaAngleDegrees) < DriveConstants.epsilonAngleToGoal.in(Degrees)) // if facing goal already
+                && Math.hypot(controllerVelX, controllerVelY) < OperatorConstants.DRIVE_DEADBAND) {
+                  driveJoystick(controllerVelX, controllerVelY, 0, true); //TODO:IDK HOW FIELD RELATIVE WILL WOKR 
+                } else {
+                double rotationalRate = DriveConstants.rotationController.calculate(currentAngle.getRadians(), desiredAngle.getRadians());
+                  driveJoystick(controllerVelX, controllerVelY, rotationalRate, true);
+            }
+          });
+  }
+
+  public void incrementKP(){ DriveConstants.ROTATION_KP += DriveConstants.KP_INCREMENT;};
+
+  public void decrementKP(){ DriveConstants.ROTATION_KP -= DriveConstants.KP_INCREMENT;};
+
 
   //command to set module positions to an X shape for defense 
   public Command defensePosition(){

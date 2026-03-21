@@ -71,7 +71,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public double getShooterPIDF(double setRPM, double RPMOffset) {
         double mCurrentRPM = mShooterLeaderEncoder.getVelocity();
-        //TODO: trywith getAverageVelocity() for both
         double pidOutput = mShooterPID.calculate(mCurrentRPM, setRPM + RPMOffset);
         double ffOutput = tempFF.calculate(setRPM + RPMOffset); 
         double motorPower = MathUtil.clamp(pidOutput + ffOutput, 0.0, 1.0);
@@ -111,8 +110,8 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public double runShooterForDistance(double distance){
-        double shooterRegressionRPM = (Math.pow(distance, 4) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_4)
-        + (Math.pow(distance, 3) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_3)
+        double shooterRegressionRPM = 
+          (Math.pow(distance, 3) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_3)
         + (Math.pow(distance, 2) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_2)
         + (Math.pow(distance, 1) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_1)
         +(Constants.ShooterConstants.REGRESSION_COEFFICIENT_0);
@@ -164,12 +163,19 @@ public class ShooterSubsystem extends SubsystemBase {
               }); 
         }
     
-      public Command runShooterPIDFCommand() {
+    public Command runShooterPIDFCommand() {
          return run(
         () -> {
             setShooterSpeeds(mTargetRPM, ShooterRPMOffset);
               });
     }
+     public Command runShooterRegressionCommand() {
+         return run(
+        () -> {
+            runShooterForDistance(DriveSubsystem.hubDistance);
+              });
+    }
+
     public Command toggleShooterCommand() {
         return new InstantCommand(() -> mShooterEnabled = !mShooterEnabled);}
     
@@ -273,8 +279,8 @@ public class ShooterSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Shooter/Actual RPM", mShooterLeaderEncoder.getVelocity());
         SmartDashboard.putNumber("Shooter/RPM Offset", ShooterRPMOffset);
         SmartDashboard.putString("Shooter/Shot Type", shotType);
-        SmartDashboard.putNumber("Testing/shooter current", mShooterLeader.getOutputCurrent());
-        SmartDashboard.putNumber("Testing/shooter motor 2 current", mShooterFollower.getOutputCurrent());
+        //SmartDashboard.putNumber("Testing/shooter current", mShooterLeader.getOutputCurrent());
+        //SmartDashboard.putNumber("Testing/shooter motor 2 current", mShooterFollower.getOutputCurrent());
         boolean atSpeed = Math.abs(mShooterLeaderEncoder.getVelocity() - mTargetRPM + ShooterRPMOffset) < ShooterConstants.VELOCITY_TOLERANCE;
         SmartDashboard.putBoolean("Shooter/Shooter Ready", atSpeed);
     }

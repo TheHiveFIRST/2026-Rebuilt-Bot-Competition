@@ -70,7 +70,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Intake/intake bus voltage", mIntakeLeader.getBusVoltage());
+        //SmartDashboard.putNumber("Intake/intake bus voltage", mIntakeLeader.getBusVoltage());
 
 
     }

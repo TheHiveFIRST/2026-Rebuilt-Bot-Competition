@@ -90,6 +90,7 @@ public class Robot extends TimedRobot {
     }
     DriveSubsystem.useInvertedGyro = true;
     m_robotContainer.zeroGyroHeading();
+    m_robotContainer.resetVisionPose();
   }
 
   /** This function is called periodically during operator control. */

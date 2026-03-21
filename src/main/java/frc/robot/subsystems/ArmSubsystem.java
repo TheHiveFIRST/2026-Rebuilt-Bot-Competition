@@ -157,11 +157,11 @@ public class ArmSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Arm/Encoder Value", encoderGetValue());
-        SmartDashboard.putNumber("Arm/Target Position", mCurrentTarget);
-        SmartDashboard.putBoolean("Arm/At Target", isAtTarget());
-        SmartDashboard.putNumber("Arm/pivot current", mPivotLeader.getOutputCurrent());
-        SmartDashboard.putNumber("Arm/Current kP Tuning", mArmCurrentKP);
+        // SmartDashboard.putNumber("Arm/Encoder Value", encoderGetValue());
+        // SmartDashboard.putNumber("Arm/Target Position", mCurrentTarget);
+        // SmartDashboard.putBoolean("Arm/At Target", isAtTarget());
+        // SmartDashboard.putNumber("Arm/pivot current", mPivotLeader.getOutputCurrent());
+        // SmartDashboard.putNumber("Arm/Current kP Tuning", mArmCurrentKP);
     }
 
     
