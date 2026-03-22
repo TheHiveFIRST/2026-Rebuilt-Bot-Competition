@@ -164,7 +164,7 @@ public class RobotContainer {
          () -> mDriveSubsystem.driveJoystick(
            MathUtil.applyDeadband(mDriverController.getLeftY(), OperatorConstants.DRIVE_DEADBAND),
            MathUtil.applyDeadband(mDriverController.getLeftX(), OperatorConstants.DRIVE_DEADBAND),
-          LimelightHelpers.getTX("limelight")* -DriveConstants.AUTO_ALIGN_PID, 
+          LimelightHelpers.getTX("limelight")* DriveConstants.AUTO_ALIGN_PID, 
           true), mDriveSubsystem));
         //intake forward align 
         // //TODO: test if this \works 

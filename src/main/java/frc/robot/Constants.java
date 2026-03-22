@@ -136,17 +136,17 @@ public final class Constants {
     }
 
   
-    public static final double POSE_ESTIMATOR_N1 = 1;
-    public static final double POSE_ESTIMATOR_N2 = 1;
+    public static final double POSE_ESTIMATOR_N1 = 3;
+    public static final double POSE_ESTIMATOR_N2 = 3;
 
-    public static final double POSE_ESTIMATOR_2_N1 = 0.6;
-    public static final double POSE_ESTIMATOR_2_N2 = 0.6;
+    public static final double POSE_ESTIMATOR_2_N1 = 1;
+    public static final double POSE_ESTIMATOR_2_N2 = 1;
 
     public static final double VISION_STD_MTG1_N1 = 0.1;
     public static final double VISION_STD_MTG1_N2 = 0.1;
 
-    public static final double VISION_STD_MTG2_N1 = 0.001;
-    public static final double VISION_STD_MTG2_N2 = 0.001;
+    public static final double VISION_STD_MTG2_N1 = 0.0001;
+    public static final double VISION_STD_MTG2_N2 = 0.0001;
 
 
   }
@@ -205,7 +205,7 @@ public final class Constants {
   public static final class IntakeConstants {
         public static final int INTAKE_LEADER_ID = 10; 
         public static final int INTAKE_FOLLOWER_ID = 11;
-        public static final double INTAKE_SPEED = 0.7;
+        public static final double INTAKE_SPEED = 0.8;
         public static final double SLOW_INTAKE_SPEED = 0.2;
         public static final double OUTTAKE_SPEED = -0.5;
     }
@@ -254,10 +254,10 @@ public final class Constants {
 
         //Untested Regression coefficients 
         public static final double REGRESSION_COEFFICIENT_4 = 0; 
-        public static final double REGRESSION_COEFFICIENT_3 = 0.000329801;
-        public static final double REGRESSION_COEFFICIENT_2 = -0.0142854;
-        public static final double REGRESSION_COEFFICIENT_1 = 10.14612;
-        public static final double REGRESSION_COEFFICIENT_0 = 3744.97743;
+        public static final double REGRESSION_COEFFICIENT_3 = 13.7293;
+        public static final double REGRESSION_COEFFICIENT_2 = -19.40655;
+        public static final double REGRESSION_COEFFICIENT_1 = 467.37603;
+        public static final double REGRESSION_COEFFICIENT_0 = 3603.61317;
 
     }
 

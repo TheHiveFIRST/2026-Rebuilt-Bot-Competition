@@ -112,11 +112,12 @@ public class ShooterSubsystem extends SubsystemBase {
     setShooterSpeeds(SmartDashboard.getNumber("Testing/setShooterRPM", 300), 0);
     }
 
+
     public void runShooterForDistance(double distance){
         double shooterRegressionRPM = 
-          (Math.pow(Units.metersToInches(distance), 3) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_3)
-        + (Math.pow(Units.metersToInches(distance), 2) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_2)
-        + (Math.pow(Units.metersToInches(distance), 1) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_1)
+          (Math.pow(distance, 3) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_3)
+        + (Math.pow(distance, 2) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_2)
+        + (Math.pow(distance, 1) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_1)
         +(Constants.ShooterConstants.REGRESSION_COEFFICIENT_0);
         updateRPM(shooterRegressionRPM); 
     }
