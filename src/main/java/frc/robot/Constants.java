@@ -256,8 +256,8 @@ public final class Constants {
         public static final double REGRESSION_COEFFICIENT_4 = 0; 
         public static final double REGRESSION_COEFFICIENT_3 = 13.7293;
         public static final double REGRESSION_COEFFICIENT_2 = -19.40655;
-        public static final double REGRESSION_COEFFICIENT_1 = 467.37603;
-        public static final double REGRESSION_COEFFICIENT_0 = 3603.61317;
+        public static final double REGRESSION_COEFFICIENT_1 = 537.37603;
+        public static final double REGRESSION_COEFFICIENT_0 = 3253.61317;
 
     }
 
