@@ -131,7 +131,7 @@ public class RobotContainer {
         mOperatorController.rightTrigger().onTrue(mShooterSubsystem.setPassingShotCommand());
         mOperatorController.b().onTrue(mShooterSubsystem.setHubShotCommand());
         mOperatorController.a().onTrue(mShooterSubsystem.setTrenchShotCommand());
-        mOperatorController.x().whileTrue(mArmSubsystem.toggleArmStageCommand());
+        mOperatorController.x().whileTrue(mShooterSubsystem.toggleDistanceEstimationCommand());
         mOperatorController.rightBumper().onTrue(mShooterSubsystem.increaseShootingRPMOffsetCommand());
         mOperatorController.leftBumper().onTrue(mShooterSubsystem.decreaseShootingRPMOffsetCommand());
         mOperatorController.povLeft().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::incrementRPM));

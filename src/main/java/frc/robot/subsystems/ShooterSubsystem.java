@@ -9,6 +9,7 @@ import com.revrobotics.ResetMode;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -32,7 +33,9 @@ public class ShooterSubsystem extends SubsystemBase {
     private double mTargetRPM = ShooterConstants.HUB_TARGET_RPM;
 
     private double ShooterRPMOffset = 0; 
+    private boolean mDistanceEstimation = false;
     private boolean mShooterEnabled = false;
+
     private String shotType = "HUB_SHOT";
 
 
@@ -109,13 +112,13 @@ public class ShooterSubsystem extends SubsystemBase {
     setShooterSpeeds(SmartDashboard.getNumber("Testing/setShooterRPM", 300), 0);
     }
 
-    public double runShooterForDistance(double distance){
+    public void runShooterForDistance(double distance){
         double shooterRegressionRPM = 
-          (Math.pow(distance, 3) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_3)
-        + (Math.pow(distance, 2) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_2)
-        + (Math.pow(distance, 1) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_1)
+          (Math.pow(Units.metersToInches(distance), 3) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_3)
+        + (Math.pow(Units.metersToInches(distance), 2) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_2)
+        + (Math.pow(Units.metersToInches(distance), 1) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_1)
         +(Constants.ShooterConstants.REGRESSION_COEFFICIENT_0);
-        return shooterRegressionRPM; 
+        updateRPM(shooterRegressionRPM); 
     }
 
      // Finds the average velocity of the two motors 
@@ -178,6 +181,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public Command toggleShooterCommand() {
         return new InstantCommand(() -> mShooterEnabled = !mShooterEnabled);}
+
+    public Command toggleDistanceEstimationCommand() {
+        return new InstantCommand(() -> mDistanceEstimation = !mDistanceEstimation);}
     
     public Command toggleAutoShooterCommand() {
        return new InstantCommand(() -> mShooterEnabled = true);}
@@ -267,7 +273,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        if(mDistanceEstimation == true){        
+        runShooterForDistance(DriveSubsystem.hubDistance);
+        } else{
         updateRPM(mTargetRPM);
+        }
 
         if (mShooterEnabled == true) {
         setShooterSpeeds(mTargetRPM, ShooterRPMOffset);

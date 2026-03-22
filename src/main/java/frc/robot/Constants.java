@@ -84,7 +84,7 @@ public final class Constants {
     public static final Transform2d shooterTransform = new Transform2d(Units.inchesToMeters(0.0), shooterSideOffset, new Rotation2d());
     //TODO: change to proper field 
     public static final Pose3d redHubPose = new Pose3d(Units.inchesToMeters(485.5), Units.inchesToMeters(158.32), Units.inchesToMeters(72.0), new Rotation3d());
-    public static final Pose3d blueHubPose = new Pose3d(Units.inchesToMeters(211), Units.inchesToMeters(158.32),  Units.inchesToMeters(72.0), new Rotation3d());
+    public static final Pose3d blueHubPose = new Pose3d(Units.inchesToMeters(196), Units.inchesToMeters(158.32),  Units.inchesToMeters(72.0), new Rotation3d());
 
     public static final Pose3d realRedHubPose = new Pose3d(Units.inchesToMeters(469.11), Units.inchesToMeters(158.84), Units.inchesToMeters(72.0), new Rotation3d());
     public static final Pose3d realBlueHubPose = new Pose3d(Units.inchesToMeters(182.11), Units.inchesToMeters(158.84),  Units.inchesToMeters(72.0), new Rotation3d());
@@ -100,9 +100,9 @@ public final class Constants {
       Pose3d pose; 
 
       if (Constants.getCurrentAlliance() == Alliance.Blue) {
-         pose = blueHubPose; 
+         pose = realBlueHubPose; 
       } else {
-         pose = redHubPose; 
+         pose = realRedHubPose; 
       }      
       //Pose3d pose = DriverStation.getAlliance().equals(Optional.of(Alliance.Red)) ? redHubPose : blueHubPose;
       return pose;
