@@ -180,6 +180,8 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Driving/HubPoseX", DriveConstants.getHubPose().getX());
     SmartDashboard.putNumber("Driving/HubPoseY", DriveConstants.getHubPose().getY());
     SmartDashboard.putNumber("Driving/kp", DriveConstants.ROTATION_KP);
+    SmartDashboard.putNumber("ODOM X", Odometry.getPoseMeters().getX());
+    SmartDashboard.putNumber("VISION X", mPoseEstimator.getEstimatedPosition().getX());
 
     SmartDashboard.putNumber("Driving/autoalignP", autoAlignPID);
   }
