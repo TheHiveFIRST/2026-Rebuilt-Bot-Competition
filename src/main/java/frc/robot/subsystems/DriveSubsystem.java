@@ -166,7 +166,7 @@ public class DriveSubsystem extends SubsystemBase {
     updateVisionOdometry();
 
     //adding field map to smart dashboard 
-    field2d.setRobotPose(mPoseEstimator.getEstimatedPosition());
+    field2d.setRobotPose(mPoseEstimator.getEstimatedPosition().rotateBy(Rotation2d.k180deg));
     SmartDashboard.putData(field2d);
 
     hubDistance = getHubDistance();
