@@ -55,18 +55,18 @@ import frc.robot.configs.DriveConfig;
 import static edu.wpi.first.units.Units.Degrees;
 
 public class DriveSubsystem extends SubsystemBase {
-  //create 4 MAXSwerveModules 
-  
+  //create 4 MAXSwerveModules
+
   private final MaxSwerveModule mFrontLeft = new MaxSwerveModule(
     DriveConstants.FRONT_LEFT_DRIVING_CAN_ID,
     DriveConstants.FRONT_LEFT_TURNING_CAN_ID,
     DriveConstants.FRONT_LEFT_CHASSIS_ANGULAR_OFFSET);
-  
+
   private final MaxSwerveModule mFrontRight = new MaxSwerveModule(
     DriveConstants.FRONT_RIGHT_DRIVING_CAN_ID,
     DriveConstants.FRONT_RIGHT_TURNING_CAN_ID,
     DriveConstants.FRONT_RIGHT_CHASSIS_ANGULAR_OFFSET);
-  
+
   private final MaxSwerveModule mBackLeft = new MaxSwerveModule(
     DriveConstants.BACK_LEFT_DRIVING_CAN_ID,
     DriveConstants.BACK_LEFT_TURNING_CAN_ID,
@@ -78,15 +78,15 @@ public class DriveSubsystem extends SubsystemBase {
     DriveConstants.BACK_RIGHT_CHASSIS_ANGULAR_OFFSET);
 
   //mGyro sensor/IMU (usb input type to roborio)
-  private final AHRS mGyro = new AHRS(NavXComType.kUSB1); 
+  private final AHRS mGyro = new AHRS(NavXComType.kUSB1);
   public static boolean useInvertedGyro = false;
-  
+
   private final Field2d field2d = new Field2d();
 
-  public static double autoAlignPID = 0.05; 
+  public static double autoAlignPID = 0.05;
 
-  public static double hubDistance = 0; 
-  
+  public static double hubDistance = 0;
+
   private final SwerveDrivePoseEstimator mPoseEstimator =
       new SwerveDrivePoseEstimator(
           DriveConstants.DriveKinematics,
@@ -101,7 +101,7 @@ public class DriveSubsystem extends SubsystemBase {
           VecBuilder.fill(DriveConstants.POSE_ESTIMATOR_N1,DriveConstants.POSE_ESTIMATOR_N2, Units.degreesToRadians(5)),
           VecBuilder.fill(DriveConstants.POSE_ESTIMATOR_2_N1, DriveConstants.POSE_ESTIMATOR_2_N1, Units.degreesToRadians(30)));
 
-  //Odometry class for tracking robot pose 
+  //Odometry class for tracking robot pose
   SwerveDriveOdometry Odometry = new SwerveDriveOdometry(
     DriveConstants.DriveKinematics,
     getGyroRotation(), //inversion as NavX is CCW+
@@ -112,9 +112,9 @@ public class DriveSubsystem extends SubsystemBase {
         mBackRight.getPosition()
   });
 
-  
+
   public DriveSubsystem() {
-    //usage reporting for MAXSwerve template 
+    //usage reporting for MAXSwerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
     RobotConfig config;
     try{
@@ -146,14 +146,14 @@ public class DriveSubsystem extends SubsystemBase {
                 return false;
                 },
                 this // Reference to this subsystem to set requirements
-        );   
-      
-  }  
+        );
 
-  
+  }
+
+
   @Override
   public void periodic(){
-  //updates Odometry in periodic block 
+  //updates Odometry in periodic block
     Odometry.update(
         getGyroRotation(),
         new SwerveModulePosition[] {
@@ -165,7 +165,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     updateVisionOdometry();
 
-    //adding field map to smart dashboard 
+    //adding field map to smart dashboard
     field2d.setRobotPose(mPoseEstimator.getEstimatedPosition().rotateBy(Rotation2d.k180deg));
     SmartDashboard.putData(field2d);
 
@@ -239,9 +239,9 @@ public class DriveSubsystem extends SubsystemBase {
 
 
   public void driveJoystick(double xJoystick, double yJoystick, double rotJoystick, boolean fieldRelative) {
-    
-    //convert joystick input (-1, 1) to m/s for drivetrain 
-    double xSpeedDelivered = xJoystick * DriveConstants.MAX_SPEED_METERS_PER_SECOND; 
+
+    //convert joystick input (-1, 1) to m/s for drivetrain
+    double xSpeedDelivered = xJoystick * DriveConstants.MAX_SPEED_METERS_PER_SECOND;
     double ySpeedDelivered = yJoystick * DriveConstants.MAX_SPEED_METERS_PER_SECOND;
     double rotDelivered = rotJoystick * DriveConstants.MAX_ANGULAR_SPEED;
 
@@ -283,39 +283,39 @@ public class DriveSubsystem extends SubsystemBase {
 
 
   public void driveChassisSpeeds(double xSpeed, double ySpeed, double rotValue, boolean fieldRelative){
-    // clamps speed to be within max/min range 
-    double xSpeedClamped = MathUtil.clamp(xSpeed, -DriveConstants.MAX_SPEED_METERS_PER_SECOND,DriveConstants.MAX_SPEED_METERS_PER_SECOND); 
-    double ySpeedClamped = MathUtil.clamp(ySpeed, -DriveConstants.MAX_SPEED_METERS_PER_SECOND,DriveConstants.MAX_SPEED_METERS_PER_SECOND); 
+    // clamps speed to be within max/min range
+    double xSpeedClamped = MathUtil.clamp(xSpeed, -DriveConstants.MAX_SPEED_METERS_PER_SECOND,DriveConstants.MAX_SPEED_METERS_PER_SECOND);
+    double ySpeedClamped = MathUtil.clamp(ySpeed, -DriveConstants.MAX_SPEED_METERS_PER_SECOND,DriveConstants.MAX_SPEED_METERS_PER_SECOND);
     double rotDelivered = MathUtil.clamp(rotValue, -DriveConstants.MAX_ANGULAR_SPEED, DriveConstants.MAX_ANGULAR_SPEED);
 
-    //convert chassis speed to swerve module states (motor output); field relative or robot relative 
+    //convert chassis speed to swerve module states (motor output); field relative or robot relative
     var swerveModuleStates = DriveConstants.DriveKinematics.toSwerveModuleStates(
-      fieldRelative 
-        ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedClamped, ySpeedClamped, 
+      fieldRelative
+        ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedClamped, ySpeedClamped,
           rotDelivered, getGyroRotation())
-        
+
         : new ChassisSpeeds(xSpeedClamped, ySpeedClamped, rotDelivered));
-    
+
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
-    
+
     mFrontLeft.setDesiredState(swerveModuleStates[0]);
     mFrontRight.setDesiredState(swerveModuleStates[1]);
     mBackLeft.setDesiredState(swerveModuleStates[2]);
     mBackRight.setDesiredState(swerveModuleStates[3]);
 
   }
- 
+
   public void driveRobotRelative(ChassisSpeeds speeds) {
     var swerveModuleStates = DriveConstants.DriveKinematics.toSwerveModuleStates(speeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
-    
+
     mFrontLeft.setDesiredState(swerveModuleStates[0]);
     mFrontRight.setDesiredState(swerveModuleStates[1]);
     mBackLeft.setDesiredState(swerveModuleStates[2]);
     mBackRight.setDesiredState(swerveModuleStates[3]);
-  }  
+  }
 
   public ChassisSpeeds getRobotRelativeSpeeds() {
     return DriveConstants.DriveKinematics.toChassisSpeeds(
@@ -363,7 +363,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public Rotation2d getGyroRotation(){
-    double angle = mGyro.getAngle(); 
+    double angle = mGyro.getAngle();
     return Rotation2d.fromDegrees(
       useInvertedGyro ? -angle : angle
     );
@@ -404,10 +404,10 @@ public class DriveSubsystem extends SubsystemBase {
     boolean doRejectUpdate = false;
     if(useMegaTag2 == false)
     {
- 
-      LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight"); 
+
+      LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
        // }
-      
+
       if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
       {
         if(mt1.rawFiducials[0].ambiguity > .7)
@@ -426,7 +426,7 @@ public class DriveSubsystem extends SubsystemBase {
 
       if(!doRejectUpdate)
       {
-        mPoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(DriveConstants.VISION_STD_MTG1_N1, 
+        mPoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(DriveConstants.VISION_STD_MTG1_N1,
         DriveConstants.VISION_STD_MTG1_N2, Units.degreesToRadians(5)));
         mPoseEstimator.addVisionMeasurement(
             mt1.pose,
@@ -435,16 +435,16 @@ public class DriveSubsystem extends SubsystemBase {
     }
     else if (useMegaTag2 == true)
     //mPoseEstimator.getEstimatedPosition().getRotation().getDegrees()
-    //TODO: checkif using gyro angle works 
+    //TODO: checkif using gyro angle works
     {
       LimelightHelpers.SetRobotOrientation("limelight", mPoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
       LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-         
+
       if(Math.abs(mGyro.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
       {
         doRejectUpdate = true;
       }
-      if(mt2.tagCount == 0) 
+      if(mt2.tagCount == 0)
       {
         doRejectUpdate = true;
       }
@@ -457,7 +457,7 @@ public class DriveSubsystem extends SubsystemBase {
       }
     }
   }
-  
+
   public double getFerryDistance() {
       return getShotDistance(DriveConstants.getFerryPose(getVisionPose().getTranslation()).toPose2d().getTranslation());
   }
@@ -475,7 +475,7 @@ public class DriveSubsystem extends SubsystemBase {
         return centerToTargetMeters;
     }
 
- 
+
   public Command alignDrive(CommandXboxController controller, Supplier<Pose2d> targetPoseSupplier) {
 
     return run( ()-> {
@@ -486,7 +486,7 @@ public class DriveSubsystem extends SubsystemBase {
         Pose2d targetPose = targetPoseSupplier.get();
         double shooterOffset = -DriveConstants.shooterSideOffset;
         double targetDistance = drivePose.getTranslation().getDistance(targetPose.getTranslation());
-        double shooterAngleRads = Math.acos(shooterOffset / targetDistance); 
+        double shooterAngleRads = Math.acos(shooterOffset / targetDistance);
         Rotation2d shooterAngle = Rotation2d.fromRadians(shooterAngleRads);
         Rotation2d offsetAngle = Rotation2d.kCCW_90deg.minus(shooterAngle);
         Rotation2d shooterAngleOffset = Rotation2d.fromDegrees(2);
@@ -498,7 +498,7 @@ public class DriveSubsystem extends SubsystemBase {
         if (
             (Math.abs(wrappedAngleDeg) < DriveConstants.epsilonAngleToGoal.in(Degrees)) // if facing goal already
             && Math.hypot(controllerVelX, controllerVelY) < OperatorConstants.DRIVE_DEADBAND) {
-               driveJoystick(controllerVelX, controllerVelY, 0, true); //TODO:IDK HOW FIELD RELATIVE WILL WOKR 
+               driveJoystick(controllerVelX, controllerVelY, 0, true); //TODO:IDK HOW FIELD RELATIVE WILL WOKR
             } else {
             double rotationalRate = DriveConstants.rotationController.calculate(currentAngle.getRadians(), desiredAngle.getRadians());
               driveJoystick(controllerVelX, controllerVelY, rotationalRate, true);
@@ -518,14 +518,14 @@ public class DriveSubsystem extends SubsystemBase {
         Pose2d targetPose = targetPoseSupplier.get();
         Translation2d robotToTarget = targetPose.getTranslation().minus(drivePose.getTranslation());
         Rotation2d desiredAngle = robotToTarget.getAngle();
-        Rotation2d currentAngle = drivePose.getRotation(); 
+        Rotation2d currentAngle = drivePose.getRotation();
         Rotation2d deltaAngle = currentAngle.minus(desiredAngle);
         double deltaAngleDegrees = deltaAngle.getDegrees();
         double wrappedAngleDeg = MathUtil.inputModulus(deltaAngle.getDegrees(), -180.0, 180.0);
         if (
                 (Math.abs(deltaAngleDegrees) < DriveConstants.epsilonAngleToGoal.in(Degrees)) // if facing goal already
                 && Math.hypot(controllerVelX, controllerVelY) < OperatorConstants.DRIVE_DEADBAND) {
-                  driveJoystick(controllerVelX, controllerVelY, 0, true); //TODO:IDK HOW FIELD RELATIVE WILL WOKR 
+                  driveJoystick(controllerVelX, controllerVelY, 0, true); //TODO:IDK HOW FIELD RELATIVE WILL WOKR
                 } else {
                 double rotationalRate = DriveConstants.rotationController.calculate(currentAngle.getRadians(), desiredAngle.getRadians());
                   driveJoystick(controllerVelX, controllerVelY, rotationalRate, true);
@@ -538,7 +538,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void decrementKP(){ DriveConstants.ROTATION_KP -= DriveConstants.KP_INCREMENT;};
 
 
-  //command to set module positions to an X shape for defense 
+  //command to set module positions to an X shape for defense
   public Command defensePosition(){
     return run(
       () -> {
@@ -555,5 +555,5 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
 }
-  
+
 
