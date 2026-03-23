@@ -191,23 +191,24 @@ public class DriveSubsystem extends SubsystemBase {
    * @return The pose.
    */
   public Pose2d getPose() {
-    return Odometry.getPoseMeters();
-  }
+    return mPoseEstimator.getEstimatedPosition();
+}
 
   /**
    * Resets the Odometry to the specified pose.
    * @param pose The pose to which to set the Odometry.
    */
   public void resetPose(Pose2d pose) {
-    Odometry.resetPosition(
-        getGyroRotation(),
-        new SwerveModulePosition[] {
-            mFrontLeft.getPosition(),
-            mFrontRight.getPosition(),
-            mBackLeft.getPosition(),
-            mBackRight.getPosition()
-        },
-        pose);
+    mPoseEstimator.resetPosition(
+    getGyroRotation(),
+    new SwerveModulePosition[] {
+        mFrontLeft.getPosition(),
+        mFrontRight.getPosition(),
+        mBackLeft.getPosition(),
+        mBackRight.getPosition()
+    },
+    pose
+);
   }
   /**
    * Returns the currentlyVISION estimated pose of the robot.

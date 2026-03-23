@@ -225,12 +225,10 @@ public class RobotContainer {
 
     
     public Command shootWithAgitation(){
-        return Commands.parallel(           
-        new IntakeWobbleCommand(mArmSubsystem),
-        new UnjamIntakeCommand(mIntakeSubsystem),
-        mShooterSubsystem.runKickerCommand());
+      return Commands.parallel(           
+      new IntakeWobbleCommand(mArmSubsystem),
+      mShooterSubsystem.runKickerCommand());
     }
-
     public Command toggleSlowMode(){
         return new InstantCommand(() -> slowMode = !slowMode);
     }
