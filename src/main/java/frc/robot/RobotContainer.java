@@ -48,6 +48,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -134,21 +135,22 @@ public class RobotContainer {
         mOperatorController.x().whileTrue(mShooterSubsystem.toggleDistanceEstimationCommand());
         mOperatorController.rightBumper().onTrue(mShooterSubsystem.increaseShootingRPMOffsetCommand());
         mOperatorController.leftBumper().onTrue(mShooterSubsystem.decreaseShootingRPMOffsetCommand());
-        mOperatorController.povLeft().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::incrementRPM));
-        mOperatorController.povRight().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::decrementRPM));
+        //mOperatorController.povLeft().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::incrementRPM));
+        //mOperatorController.povRight().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::decrementRPM));
+        mOperatorController.leftStick().whileTrue(mDriveSubsystem.defensePosition());
 
 
          //DRIVER CONTROLS
         mDriverController.y().whileTrue(mShooterSubsystem.toggleShooterCommand()); 
         //mDriverController.a().whileTrue(new AutoAlignToTagCommand(mDriveSubsystem, mDriverController));
-        mDriverController.x().whileTrue(shootWithAgitation());
+        mDriverController.x().whileTrue(mShooterSubsystem.runKickerBackwardCommand());
         mDriverController.b().onTrue(mIntakeSubsystem.runOuttakeCommand());
 
         mDriverController.rightBumper().whileTrue(mShooterSubsystem.runKickerCommand());
         mDriverController.rightTrigger().whileTrue(shootWithAgitation());
         mDriverController.leftBumper().whileTrue(mArmSubsystem.runIntakePivotUp());
         mDriverController.leftTrigger().whileTrue(mIntakeSubsystem.runIntakeForwardCommand());
-        mDriverController.leftStick().whileTrue(mDriveSubsystem.defensePosition());
+        
 
         mDriverController.start().whileTrue(mDriveSubsystem.resetGyro()); 
         mDriverController.povLeft().onTrue(mShooterSubsystem.increaseShootingRPMOffsetCommand());
@@ -228,6 +230,7 @@ public class RobotContainer {
       return Commands.parallel(           
       new IntakeWobbleCommand(mArmSubsystem),
       mShooterSubsystem.runKickerCommand());
+      
     }
     public Command toggleSlowMode(){
         return new InstantCommand(() -> slowMode = !slowMode);

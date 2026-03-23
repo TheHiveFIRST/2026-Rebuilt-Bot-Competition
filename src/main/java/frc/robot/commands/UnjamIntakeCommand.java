@@ -8,13 +8,14 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class UnjamIntakeCommand extends SequentialCommandGroup {
 
   public UnjamIntakeCommand(IntakeSubsystem mIntakeSubsystem) {
-    addCommands(       
+    addCommands( 
+      mIntakeSubsystem.runIntakeForwardCommand().withTimeout(1),
+      new WaitCommand(0.1),      
       mIntakeSubsystem.runOuttakeCommand().withTimeout(0.15),
       new WaitCommand(0.1),
       mIntakeSubsystem.runIntakeForwardCommand().withTimeout(1),
       new WaitCommand(0.1),
-      mIntakeSubsystem.runOuttakeCommand().withTimeout(0.15),
-      new WaitCommand(0.1),
-      mIntakeSubsystem.runIntakeForwardCommand().withTimeout(1));
+      mIntakeSubsystem.runOuttakeCommand().withTimeout(0.15));
+      
   }
 }
