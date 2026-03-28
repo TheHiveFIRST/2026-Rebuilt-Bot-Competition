@@ -298,6 +298,7 @@ public class ShooterSubsystem extends SubsystemBase {
         //SmartDashboard.putNumber("Testing/shooter motor 2 current", mShooterFollower.getOutputCurrent());
         boolean atSpeed = Math.abs(mShooterLeaderEncoder.getVelocity() - mTargetRPM + ShooterRPMOffset) < ShooterConstants.VELOCITY_TOLERANCE;
         SmartDashboard.putBoolean("Shooter/Shooter Ready", atSpeed);
+        SmartDashboard.putBoolean("Shooter/Shooter Toggled", mShooterEnabled);
     }
 
      // Tuning  
