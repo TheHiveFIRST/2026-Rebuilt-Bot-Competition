@@ -241,8 +241,8 @@ public final class Constants {
         public static final double SHOOTER_SPEED = 0.7; 
 
         public static final double VELOCITY_TOLERANCE =  30; 
-
-        public static final double HUB_TARGET_RPM = 4360; //TUNED 
+        public static final double AUTORPM = 5700;
+        public static final double HUB_TARGET_RPM = 4330; //TUNED 
         public static final double TRENCH_TARGET_RPM = 6800; 
         public static final double LADDER_TARGET_RPM = 6300;
         public static final double PASSING_TARGET_RPM = 8000;

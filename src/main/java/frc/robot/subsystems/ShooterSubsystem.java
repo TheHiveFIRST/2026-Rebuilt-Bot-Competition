@@ -217,6 +217,13 @@ public class ShooterSubsystem extends SubsystemBase {
         shotType = "BUMPER_ALIGN_SHOT";
         });
     }
+public Command setAutoShotCommand() {
+    return new InstantCommand(() -> {
+        mTargetRPM = ShooterConstants.AUTORPM;
+        ShooterRPMOffset = 0;
+        shotType = "AUTOSHOT";
+        });
+    }
 
     public Command setTrenchShotCommand() {
           return new InstantCommand(() -> {
