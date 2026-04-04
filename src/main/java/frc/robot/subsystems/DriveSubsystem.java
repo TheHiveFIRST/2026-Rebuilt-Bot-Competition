@@ -79,7 +79,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   //mGyro sensor/IMU (usb input type to roborio)
   private final AHRS mGyro = new AHRS(NavXComType.kUSB1); 
-  public static boolean useInvertedGyro = false;
+  public static boolean useInvertedGyro = true;
   
   private final Field2d field2d = new Field2d();
 
@@ -172,7 +172,8 @@ public class DriveSubsystem extends SubsystemBase {
     hubDistance = getHubDistance();
 
     SmartDashboard.putNumber("Driving/hub distance", getHubDistance());
-    SmartDashboard.putNumber("Driving/gyro", mGyro.getAngle());
+    SmartDashboard.putNumber("Position", mBackRight.getPosition().angle.getRadians());
+    SmartDashboard.putNumber("Driving/gyro", -mGyro.getAngle());
     SmartDashboard.putNumber("Driving/heading", getHeading());
     SmartDashboard.putNumber("Driving/Pose X", getVisionPose().getX());
     SmartDashboard.putNumber("Driving/Pose Y", getVisionPose().getY());
@@ -385,7 +386,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return The turn rate of the robot, in degrees per second
    */
   public double getTurnRate() {
-    return mGyro.getRate() * (DriveConstants.GYRO_REVERSED ? -1.0 : 1.0);
+    return mGyro.getRate() * (useInvertedGyro ? -1.0 : 1.0);
   }
 
     /** Updates the field relative position of the robot. */

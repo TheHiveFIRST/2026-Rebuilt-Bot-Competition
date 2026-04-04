@@ -37,9 +37,9 @@ public final class Constants {
     public static final double MAX_ANGULAR_SPEED =  2.5*Math.PI; // rad/s 
     //Chassis config - width, depth, CAN IDS and angular offset values in Designdoc.md
   
-    public static final double WHEEL_CENTER_WIDTH = Units.inchesToMeters(11.75);
+    public static final double WHEEL_CENTER_WIDTH = Units.inchesToMeters(11.25);
     // Distance between centers of right and left wheels on robot
-    public static final double WHEEL_CENTER_DEPTH = Units.inchesToMeters(11.75);
+    public static final double WHEEL_CENTER_DEPTH = Units.inchesToMeters(11.25);
     // Distance between front and back wheels on robot
     //depth/frontback distance from robot center to each wheel 
 
@@ -50,12 +50,12 @@ public final class Constants {
         new Translation2d(-WHEEL_CENTER_DEPTH, -WHEEL_CENTER_WIDTH));
       
     //angular offsets of module relative to chassis (rad)
-    public static final double FRONT_LEFT_CHASSIS_ANGULAR_OFFSET = Math.PI/2;
-    public static final double FRONT_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.PI;
-    public static final double BACK_LEFT_CHASSIS_ANGULAR_OFFSET = 0;
-    public static final double BACK_RIGHT_CHASSIS_ANGULAR_OFFSET = -Math.PI/2;
-    
-    //SPARK MAX CAN IDs 
+    public static final double FRONT_LEFT_CHASSIS_ANGULAR_OFFSET = 3*Math.PI/2; //spinning backword try: 3pi/2
+    public static final double FRONT_RIGHT_CHASSIS_ANGULAR_OFFSET = 0; //still off by pi
+    public static final double BACK_LEFT_CHASSIS_ANGULAR_OFFSET = Math.PI; //spinning backword
+    public static final double BACK_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.PI/2; // try pi/2
+    //backright old -1 * (Math.PI/2)
+    //SPARK MAX CAN IDs987ytfdxz
     public static final int FRONT_LEFT_DRIVING_CAN_ID = 4;
     public static final int FRONT_LEFT_TURNING_CAN_ID = 3;
 
@@ -68,8 +68,6 @@ public final class Constants {
    
     public static final int BACK_RIGHT_DRIVING_CAN_ID = 8;
     public static final int BACK_RIGHT_TURNING_CAN_ID = 7;
-
-    public static final boolean GYRO_REVERSED = false;
     
     public static final double INTAKE_ALIGN_KP = 0.0001;
     public static final double DIAGONAL_ALIGN_kP = 0.0001;
