@@ -1,9 +1,22 @@
 package frc.robot;
 
+import java.util.Optional;
+
+import javax.net.ssl.TrustManagerFactory;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 //import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import static edu.wpi.first.units.Units.Degrees;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -14,10 +27,14 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity (length, complexity).
  */
 public final class Constants {
+  public static Alliance getCurrentAlliance() {
+    return DriverStation.getAlliance().get();
+  }
+
   public static final class DriveConstants{ 
     //allowed max speeds
-    public static final double MAX_SPEED_METERS_PER_SECOND = 9.6; // TODO: after test change back to 4.8 and 2pi;
-    public static final double MAX_ANGULAR_SPEED =  2*Math.PI; // rad/s 
+    public static final double MAX_SPEED_METERS_PER_SECOND = 9.6; 
+    public static final double MAX_ANGULAR_SPEED =  2.5*Math.PI; // rad/s 
     //Chassis config - width, depth, CAN IDS and angular offset values in Designdoc.md
   
     public static final double WHEEL_CENTER_WIDTH = Units.inchesToMeters(11.75);
@@ -59,6 +76,79 @@ public final class Constants {
 
     public static double DRIVE_SPEED = 1;
     public static final double SLOW_MODE_MULTIPLIER = 0.5;
+    public static final double AUTO_ALIGN_PID = 0.047;
+    public static final double AUTO_ALIGN_MAX_SPEED = 1.00;
+
+    public static final double shooterSideOffset = Units.inchesToMeters(6.0);
+
+    public static final Transform2d shooterTransform = new Transform2d(Units.inchesToMeters(0.0), shooterSideOffset, new Rotation2d());
+    //TODO: change to proper field 
+    public static final Pose3d redHubPose = new Pose3d(Units.inchesToMeters(485.5), Units.inchesToMeters(158.32), Units.inchesToMeters(72.0), new Rotation3d());
+    public static final Pose3d blueHubPose = new Pose3d(Units.inchesToMeters(196), Units.inchesToMeters(158.32),  Units.inchesToMeters(72.0), new Rotation3d());
+
+    public static final Pose3d realRedHubPose = new Pose3d(Units.inchesToMeters(469.11), Units.inchesToMeters(158.84), Units.inchesToMeters(72.0), new Rotation3d());
+    public static final Pose3d realBlueHubPose = new Pose3d(Units.inchesToMeters(182.11), Units.inchesToMeters(158.84),  Units.inchesToMeters(72.0), new Rotation3d());
+    public static final Pose3d redFerryPoseDepot = new Pose3d(14.3, 6, 0, Rotation3d.kZero);
+    public static final Pose3d redFerryPoseOutpost = new Pose3d(14.3, 2, 0, Rotation3d.kZero);
+    public static final Pose3d blueFerryPoseDepot = new Pose3d(2.1, 2, 0, Rotation3d.kZero);
+    public static final Pose3d blueFerryPoseOutpost = new Pose3d(2.1, 6, 0, Rotation3d.kZero);
+
+    public static final Angle epsilonAngleToGoal = Degrees.of(1.0);
+
+    public static final Pose3d getHubPose() {
+      
+      Pose3d pose; 
+
+      if (Constants.getCurrentAlliance() == Alliance.Blue) {
+         pose = realBlueHubPose; 
+      } else {
+         pose = realRedHubPose; 
+      }      
+      //Pose3d pose = DriverStation.getAlliance().equals(Optional.of(Alliance.Red)) ? redHubPose : blueHubPose;
+      return pose;
+    }
+
+    public static final Pose3d getFerryPose(Translation2d robotPose) {
+        if(DriverStation.getAlliance().equals(Optional.of(Alliance.Red))) {
+            if (robotPose.getDistance(redFerryPoseDepot.getTranslation().toTranslation2d()) > robotPose.getDistance(redFerryPoseOutpost.getTranslation().toTranslation2d())) {
+                return redFerryPoseOutpost;
+            } else {
+                return redFerryPoseDepot;
+            }
+        } else {
+            if (robotPose.getDistance(blueFerryPoseDepot.getTranslation().toTranslation2d()) > robotPose.getDistance(blueFerryPoseOutpost.getTranslation().toTranslation2d())) {
+                return blueFerryPoseOutpost;
+            } else {
+                return blueFerryPoseDepot;
+            }
+        }
+    }
+    public static final PIDController rotationController = getRotationController();
+
+    public static double ROTATION_KP = 1.1;
+    public static final double KP_INCREMENT = 0.01;
+
+
+    private static final PIDController getRotationController() {
+        PIDController controller = new PIDController(ROTATION_KP, 0.0, 0.0);
+        controller.enableContinuousInput(-Math.PI, Math.PI);
+        return controller;
+    }
+
+  
+    public static final double POSE_ESTIMATOR_N1 = 3;
+    public static final double POSE_ESTIMATOR_N2 = 3;
+
+    public static final double POSE_ESTIMATOR_2_N1 = 1;
+    public static final double POSE_ESTIMATOR_2_N2 = 1;
+
+    public static final double VISION_STD_MTG1_N1 = 0.1;
+    public static final double VISION_STD_MTG1_N2 = 0.1;
+
+    public static final double VISION_STD_MTG2_N1 = 0.0001;
+    public static final double VISION_STD_MTG2_N2 = 0.0001;
+
+
   }
 
   public static final class ModuleConstants{
@@ -85,7 +175,7 @@ public final class Constants {
 
   public static final class AutoConstants {
     //add constants here that are not in pathplanner/limelight if needed
-    public static final double X_TAG_ALIGNMENT_P = 0.01; //TODO: tune limelight pid  
+    public static final double X_TAG_ALIGNMENT_P = 0.01; 
     public static final double Y_TAG_ALIGNMENT_P = 0.1; 
     public static final double ROT_TAG_ALIGNMENT_P = 0.1; 
 
@@ -99,7 +189,7 @@ public final class Constants {
     public static final double Y_TOLERANCE_TAG_ALIGNMENT = 0.02; 
 
     public static final double DONT_SEE_TAG_WAIT_TIME = 1;
-	  public static final double POSE_VALIDATION_TIME = 0.3;
+    public static final double POSE_VALIDATION_TIME = 0.3;
   }
 
   public static final class VisionConstants{
@@ -115,7 +205,9 @@ public final class Constants {
   public static final class IntakeConstants {
         public static final int INTAKE_LEADER_ID = 10; 
         public static final int INTAKE_FOLLOWER_ID = 11;
-        public static final double INTAKE_SPEED = 0.7;
+        public static final double INTAKE_SPEED = 0.65;
+        public static final double SLOW_INTAKE_SPEED = 0.2;
+        public static final double OUTTAKE_SPEED = -0.5;
     }
 
     public static final class ShooterConstants {
@@ -139,7 +231,7 @@ public final class Constants {
         public static final double FF_KA = 0.0;
     
         // Manual Control 
-        public static final double RPM_INCREMENT = 50.0;
+        public static final double RPM_INCREMENT = 12.5;
         public static final double KV_INCREMENT = 0.000001;
         public static final double KP_INCREMENT = 0.001;
         public static final double KI_INCREMENT = 0.0001;
@@ -149,19 +241,23 @@ public final class Constants {
         public static final double SHOOTER_SPEED = 0.7; 
 
         public static final double VELOCITY_TOLERANCE =  30; 
+        public static final double AUTORPM = 5700;
+        public static final double HUB_TARGET_RPM = 4330; //TUNED 
+        public static final double TRENCH_TARGET_RPM = 6800; 
+        public static final double LADDER_TARGET_RPM = 6300;
+        public static final double PASSING_TARGET_RPM = 8000;
+        public static final double DEFENCE_TARGET_RPM = 5200; 
 
-        public static final double HUB_TARGET_RPM = 4400; //TODO: FIND ACTUAL 
-        public static final double TRENCH_TARGET_RPM = 5700; 
-
+        public static final double AUTO_TARGET_RPM = 5400; 
 
         public static final double RPMOFFSET_INCREMENT = 200; 
 
         //Untested Regression coefficients 
         public static final double REGRESSION_COEFFICIENT_4 = 0; 
-        public static final double REGRESSION_COEFFICIENT_3 = 0;
-        public static final double REGRESSION_COEFFICIENT_2 = 0;
-        public static final double REGRESSION_COEFFICIENT_1 = 0;
-        public static final double REGRESSION_COEFFICIENT_0 = 0;
+        public static final double REGRESSION_COEFFICIENT_3 = 13.7293;
+        public static final double REGRESSION_COEFFICIENT_2 = -19.40655;
+        public static final double REGRESSION_COEFFICIENT_1 = 537.37603;
+        public static final double REGRESSION_COEFFICIENT_0 = 3253.61317;
 
     }
 
@@ -170,16 +266,17 @@ public final class Constants {
         public static final int ARM_FOLLOWER_ID = 13;
 
         // PID Gains
-        public static final double ARM_KP = 0.94; 
+        public static final double ARM_KP = 1.5; 
         public static final double ARM_KI = 0.0;
         public static final double ARM_KD = 0.0;
 
-        public static final double PIVOT_OUT = 0.60; 
-        public static final double PIVOT_DEFAULT = 0.5; 
-        public static final double PIVOT_IN = 0.3;  
+        public static final double PIVOT_OUT = 0.75;
+        public static final double PIVOT_BUMP = 0.55;  //needs tuning
+        public static final double PIVOT_AGITATE = 0.65;
+        public static final double PIVOT_IN = 0.24;  //needs tuning
         public static final double ARM_KP_INCREMENT = 0.01;
 
-        public static final double POSITION_TOLERANCE = 0.02;
+        public static final double POSITION_TOLERANCE = 0.1;
     }
 
 }

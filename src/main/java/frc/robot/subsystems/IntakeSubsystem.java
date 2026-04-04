@@ -43,11 +43,19 @@ public class IntakeSubsystem extends SubsystemBase {
             runIntake(IntakeConstants.INTAKE_SPEED);
               });
     }
+
+    public Command runIntakeSlowCommand() {
+         return run(
+        () -> {
+            runIntake(IntakeConstants.SLOW_INTAKE_SPEED);
+              });
+    }
+    
     
     public Command runOuttakeCommand() {
          return run(
         () -> {
-            runIntake(-IntakeConstants.INTAKE_SPEED);
+            runIntake(IntakeConstants.OUTTAKE_SPEED);
               });
     }
 
@@ -62,7 +70,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Intake/intake bus voltage", mIntakeLeader.getBusVoltage());
+        //SmartDashboard.putNumber("Intake/intake bus voltage", mIntakeLeader.getBusVoltage());
 
 
     }
