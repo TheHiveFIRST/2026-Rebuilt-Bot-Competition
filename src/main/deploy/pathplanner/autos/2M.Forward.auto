@@ -17,30 +17,6 @@
                       "data": {
                         "pathName": "New Path"
                       }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "rampupshoot"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "shoot"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 2.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "stopshoot"
-                      }
                     }
                   ]
                 }
