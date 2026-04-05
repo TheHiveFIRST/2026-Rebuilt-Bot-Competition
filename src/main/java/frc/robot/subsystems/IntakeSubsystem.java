@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 
@@ -15,17 +15,15 @@ import frc.robot.configs.ShootConfig.IntakeConfigs;
 
 public class IntakeSubsystem extends SubsystemBase {
 
-    private final SparkMax mIntakeLeader;
-    private final SparkMax mIntakeFollower;
+    private final SparkFlex mIntakeMotor;
+    
 
 
     public IntakeSubsystem() {
-        mIntakeLeader = new SparkMax(IntakeConstants.INTAKE_LEADER_ID, MotorType.kBrushless);
-        mIntakeFollower = new SparkMax(IntakeConstants.INTAKE_FOLLOWER_ID, MotorType.kBrushless);
-
-        mIntakeLeader.configure(IntakeConfigs.intakeLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        mIntakeFollower.configure(IntakeConfigs.intakeFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
+        mIntakeMotor = new SparkFlex(IntakeConstants.INTAKE_LEADER_ID, MotorType.kBrushless);
+        
+        mIntakeMotor.configure(IntakeConfigs.intakeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        
     }
 
     public void stopIntake() {
@@ -33,7 +31,7 @@ public class IntakeSubsystem extends SubsystemBase {
         }
 
     public void runIntake(double speed){
-            mIntakeLeader.set(speed);
+            mIntakeMotor.set(speed);
         }
 
 

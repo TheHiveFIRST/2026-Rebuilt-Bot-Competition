@@ -2,6 +2,8 @@ package frc.robot.configs;
 
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import com.revrobotics.spark.config.SparkFlexConfig;
 import frc.robot.Constants.IntakeConstants;
 
 public final class ShootConfig {
@@ -29,16 +31,14 @@ public final class ShootConfig {
     }
 
     public static final class IntakeConfigs {
-        public static final SparkMaxConfig intakeLeaderConfig = new SparkMaxConfig();
-        public static final SparkMaxConfig intakeFollowerConfig = new SparkMaxConfig();
+        public static final SparkFlexConfig intakeMotorConfig = new SparkFlexConfig();
+        
 
         static {
-            intakeLeaderConfig
+            intakeMotorConfig
                 .smartCurrentLimit(50);
 
-            intakeFollowerConfig
-                .follow(IntakeConstants.INTAKE_LEADER_ID, true)
-                .smartCurrentLimit(50);
+            
         }
     }
 }
