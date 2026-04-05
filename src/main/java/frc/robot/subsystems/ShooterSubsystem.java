@@ -145,7 +145,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void runKicker(double speed){
             mKickerLeader.set(speed);
-            mKickerFollower.set(speed);
+            mKickerFollower.set(-1 * speed);
         }
     public void incrementRPM() { mTargetRPM += ShooterConstants.RPM_INCREMENT; }
     public void decrementRPM() { mTargetRPM -= ShooterConstants.RPM_INCREMENT; }

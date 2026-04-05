@@ -203,7 +203,7 @@ public final class Constants {
   } 
   
   public static final class IntakeConstants {
-        public static final int INTAKE_MOTOR_ID = 10; 
+        public static final int INTAKE_MOTOR_ID = 20; //edited from rev hardware client 2
         
         public static final double INTAKE_SPEED = 1;
         public static final double SLOW_INTAKE_SPEED = 0.2;
@@ -214,7 +214,7 @@ public final class Constants {
         public static final int SHOOTER_LEADER_CANID = 14;
         public static final int SHOOTER_FOLLOWER_CANID = 15;
         public static final int SHOOTER_FEEDER_LEADER_CANID = 16; 
-        public static final int SHOOTER_FEEDER_FOLLOWER_CANID = 11;// actually tune this
+        public static final int SHOOTER_FEEDER_FOLLOWER_CANID = 17;// updated from rev hardware client 2
 
         // PIDF Values
         public static final double LEADER_Kp = 0.0000709999; // 0.00061;
@@ -239,6 +239,7 @@ public final class Constants {
         public static final double KD_INCREMENT = 0.0001;
 
         public static final double KICKER_SPEED = 1.0;
+        public static final double KICKERREVERSED_SPEED = -1.0;
         public static final double SHOOTER_SPEED = 0.7; 
 
         public static final double VELOCITY_TOLERANCE =  30; 
