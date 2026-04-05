@@ -24,7 +24,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private final SparkMax mShooterLeader;
     private final SparkMax mShooterFollower;
-    private final SparkMax mKicker;
+    private final SparkMax mKickerLeader;
+    private final SparkMax mKickerFollower;
 
 
     private final RelativeEncoder mShooterLeaderEncoder;
@@ -45,13 +46,14 @@ public class ShooterSubsystem extends SubsystemBase {
     
         mShooterLeader = new SparkMax(ShooterConstants.SHOOTER_LEADER_CANID, MotorType.kBrushless);
         mShooterFollower = new SparkMax(ShooterConstants.SHOOTER_FOLLOWER_CANID, MotorType.kBrushless);
-        mKicker = new SparkMax(ShooterConstants.SHOOTER_FEEDER, MotorType.kBrushless);
+        mKickerLeader = new SparkMax(ShooterConstants.SHOOTER_FEEDER, MotorType.kBrushless);
+        mKickerFollower = new SparkMax(ShooterConstants.SHOOTER_FEEDER, MotorType.kBrushless);
 
 
         mShooterLeader.configure(ShooterConfig.shooterLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         mShooterFollower.configure(ShooterConfig.shooterFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        mKicker.configure(ShooterConfig.shooterFeederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
+        mKickerLeader.configure(ShooterConfig.shooterFeederLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        mKickerFollower.configure(ShooterConfig.shooterFeederFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         mShooterLeaderEncoder = mShooterLeader.getEncoder();
         mShooterFollowerEncoder = mShooterFollower.getEncoder();
 
@@ -142,7 +144,8 @@ public class ShooterSubsystem extends SubsystemBase {
         }
 
     public void runKicker(double speed){
-            mKicker.set(speed);
+            mKickerLeader.set(speed);
+            mKickerFollower.set(speed);
         }
     public void incrementRPM() { mTargetRPM += ShooterConstants.RPM_INCREMENT; }
     public void decrementRPM() { mTargetRPM -= ShooterConstants.RPM_INCREMENT; }
