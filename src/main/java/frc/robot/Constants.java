@@ -203,9 +203,9 @@ public final class Constants {
   } 
   
   public static final class IntakeConstants {
-        public static final int INTAKE_LEADER_ID = 10; 
-        public static final int INTAKE_FOLLOWER_ID = 11;
-        public static final double INTAKE_SPEED = 0.85;
+        public static final int INTAKE_MOTOR_ID = 10; 
+        
+        public static final double INTAKE_SPEED = 1;
         public static final double SLOW_INTAKE_SPEED = 0.2;
         public static final double OUTTAKE_SPEED = -0.5;
     }
@@ -213,7 +213,8 @@ public final class Constants {
     public static final class ShooterConstants {
         public static final int SHOOTER_LEADER_CANID = 14;
         public static final int SHOOTER_FOLLOWER_CANID = 15;
-        public static final int SHOOTER_FEEDER = 16; 
+        public static final int SHOOTER_FEEDER_LEADER_CANID = 16; 
+        public static final int SHOOTER_FEEDER_FOLLOWER_CANID = 11;// actually tune this
 
         // PIDF Values
         public static final double LEADER_Kp = 0.0000709999; // 0.00061;

@@ -4,7 +4,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import com.revrobotics.spark.config.SparkFlexConfig;
-import frc.robot.Constants.IntakeConstants;
+//import frc.robot.Constants.IntakeConstants;
 
 public final class ShootConfig {
     public static final class ShooterConfig {

@@ -46,8 +46,8 @@ public class ShooterSubsystem extends SubsystemBase {
     
         mShooterLeader = new SparkMax(ShooterConstants.SHOOTER_LEADER_CANID, MotorType.kBrushless);
         mShooterFollower = new SparkMax(ShooterConstants.SHOOTER_FOLLOWER_CANID, MotorType.kBrushless);
-        mKickerLeader = new SparkMax(ShooterConstants.SHOOTER_FEEDER, MotorType.kBrushless);
-        mKickerFollower = new SparkMax(ShooterConstants.SHOOTER_FEEDER, MotorType.kBrushless);
+        mKickerLeader = new SparkMax(ShooterConstants.SHOOTER_FEEDER_LEADER_CANID, MotorType.kBrushless);
+        mKickerFollower = new SparkMax(ShooterConstants.SHOOTER_FEEDER_FOLLOWER_CANID, MotorType.kBrushless);
 
 
         mShooterLeader.configure(ShooterConfig.shooterLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
