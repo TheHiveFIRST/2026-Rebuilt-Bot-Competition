@@ -39,7 +39,8 @@ public final class ShootConfig {
 
         static {
             intakeMotorConfig
-                .smartCurrentLimit(50);
+                .smartCurrentLimit(60
+                );
 
             
         }
