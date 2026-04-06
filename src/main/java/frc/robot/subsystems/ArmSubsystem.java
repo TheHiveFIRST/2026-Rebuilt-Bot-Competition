@@ -134,7 +134,13 @@ public class ArmSubsystem extends SubsystemBase {
             setTargetArm(ArmConstants.PIVOT_AGITATE);
               });
     }
-
+    public Command IntakeToPosition(double position) {
+         return run(
+        () -> {
+            setTargetArm(position);
+              });
+    }
+    
     public Command stopPivot() {
          return run(
         () -> {

@@ -275,6 +275,12 @@ public final class Constants {
         public static final double PIVOT_OUT = 0.75;
         public static final double PIVOT_BUMP = 0.55;  //needs tuning
         public static final double PIVOT_AGITATE = 0.65;
+        public static final double PIVOT_AGITATE55 = 0.55;
+        public static final double PIVOT_AGITATE45 = 0.45;
+        public static final double PIVOT_AGITATE35 = 0.35;
+        
+      
+
         public static final double PIVOT_IN = 0.24;  //needs tuning
         public static final double ARM_KP_INCREMENT = 0.01;
 
