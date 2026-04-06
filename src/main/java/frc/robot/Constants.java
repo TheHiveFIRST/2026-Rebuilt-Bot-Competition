@@ -74,7 +74,7 @@ public final class Constants {
     public static final double INTAKE_ALIGN_KP = 0.0001;
     public static final double DIAGONAL_ALIGN_kP = 0.0001;
 
-    public static double DRIVE_SPEED = 1;
+    public static double DRIVE_SPEED = 0.3;
     public static final double SLOW_MODE_MULTIPLIER = 0.5;
     public static final double AUTO_ALIGN_PID = 0.047;
     public static final double AUTO_ALIGN_MAX_SPEED = 1.00;
@@ -238,7 +238,8 @@ public final class Constants {
         public static final double KI_INCREMENT = 0.0001;
         public static final double KD_INCREMENT = 0.0001;
 
-        public static final double KICKER_SPEED = 1.0;
+        public static final double KICKER_SPEED = 1.0
+        ;
         public static final double KICKERREVERSED_SPEED = -1.0;
         public static final double SHOOTER_SPEED = 0.7; 
 
@@ -273,7 +274,7 @@ public final class Constants {
         public static final double ARM_KD = 0.0;
 
         public static final double PIVOT_OUT = 0.75;
-        public static final double PIVOT_BUMP = 0.55;  //needs tuning
+        public static final double PIVOT_BUMP = 0.45;  //needs tuning
         public static final double PIVOT_AGITATE = 0.65;
         public static final double PIVOT_IN = 0.24;  //needs tuning
         public static final double ARM_KP_INCREMENT = 0.01;
