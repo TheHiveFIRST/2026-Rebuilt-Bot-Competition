@@ -228,7 +228,7 @@ public class RobotContainer {
     
     public Command shootWithAgitation(){
       return Commands.parallel(           
-      new IntakeWobbleCommand(mArmSubsystem).repeatedly(),
+      new IntakeWobbleCommand(mArmSubsystem, mIntakeSubsystem).repeatedly(),
       mShooterSubsystem.runKickerCommand());
       
     }
