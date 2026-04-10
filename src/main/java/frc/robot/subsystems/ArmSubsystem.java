@@ -6,7 +6,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.AbsoluteEncoder;
 import edu.wpi.first.math.controller.PIDController;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -89,7 +89,7 @@ public class ArmSubsystem extends SubsystemBase {
 
 
     public double encoderGetValue() {
-        return mPivotLeaderEncoder.getPosition();
+        return mPivotFollowerEncoder.getPosition();
     }
 
     public boolean isAtTarget() {
@@ -163,8 +163,8 @@ public class ArmSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // SmartDashboard.putNumber("Arm/Encoder Value", encoderGetValue());
-        // SmartDashboard.putNumber("Arm/Target Position", mCurrentTarget);
+        SmartDashboard.putNumber("Arm/Encoder Value", encoderGetValue());
+        SmartDashboard.putNumber("Arm/Target Position", mCurrentTarget);
         // SmartDashboard.putBoolean("Arm/At Target", isAtTarget());
         // SmartDashboard.putNumber("Arm/pivot current", mPivotLeader.getOutputCurrent());
         // SmartDashboard.putNumber("Arm/Current kP Tuning", mArmCurrentKP);

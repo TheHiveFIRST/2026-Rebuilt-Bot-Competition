@@ -269,11 +269,11 @@ public final class Constants {
         public static final int ARM_FOLLOWER_ID = 13;
 
         // PID Gains
-        public static final double ARM_KP = 1.5; 
+        public static final double ARM_KP = 2; 
         public static final double ARM_KI = 0.0;
         public static final double ARM_KD = 0.0;
 
-        public static final double PIVOT_OUT = 0.75;
+        public static final double PIVOT_OUT = 0.73;
         public static final double PIVOT_BUMP = 0.45;  //needs tuning
         public static final double PIVOT_AGITATE = 0.65;
         public static final double PIVOT_AGITATE55 = 0.55;
