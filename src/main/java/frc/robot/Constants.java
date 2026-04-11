@@ -33,8 +33,8 @@ public final class Constants {
 
   public static final class DriveConstants{ 
     //allowed max speeds
-    public static final double MAX_SPEED_METERS_PER_SECOND = 9.6; 
-    public static final double MAX_ANGULAR_SPEED =  2.5 * Math.PI; // rad/s 
+    public static final double MAX_SPEED_METERS_PER_SECOND = 4.8; 
+    public static final double MAX_ANGULAR_SPEED =  2 * Math.PI; // rad/s 
     //Chassis config - width, depth, CAN IDS and angular offset values in Designdoc.md
   
     public static final double WHEEL_CENTER_WIDTH = Units.inchesToMeters(11.25);

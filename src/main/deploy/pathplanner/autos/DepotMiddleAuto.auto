@@ -7,69 +7,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.2
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Depot to Middle"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "intakepivotdown"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.2
+            "waitTime": 1.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Middle Turn"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "setshot"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Back to shoot depot"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.2
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "runkicker"
+            "pathName": "New New New Path"
           }
         }
       ]

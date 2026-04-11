@@ -97,9 +97,9 @@ public class DriveSubsystem extends SubsystemBase {
             mBackLeft.getPosition(),
             mBackRight.getPosition()
           },
-          new Pose2d(),
-          VecBuilder.fill(DriveConstants.POSE_ESTIMATOR_N1,DriveConstants.POSE_ESTIMATOR_N2, Units.degreesToRadians(5)),
-          VecBuilder.fill(DriveConstants.POSE_ESTIMATOR_2_N1, DriveConstants.POSE_ESTIMATOR_2_N1, Units.degreesToRadians(30)));
+          new Pose2d());
+          //VecBuilder.fill(DriveConstants.POSE_ESTIMATOR_N1,DriveConstants.POSE_ESTIMATOR_N2, Units.degreesToRadians(5)),
+          //VecBuilder.fill(DriveConstants.POSE_ESTIMATOR_2_N1, DriveConstants.POSE_ESTIMATOR_2_N1, Units.degreesToRadians(30)));
 
   //Odometry class for tracking robot pose 
   SwerveDriveOdometry Odometry = new SwerveDriveOdometry(
@@ -130,8 +130,8 @@ public class DriveSubsystem extends SubsystemBase {
                 this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
                 new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                        new PIDConstants(8.5, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(50, 0, 0.0) // Rotation PID constants
+                        new PIDConstants(15, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(12, 0, 0.0) // Rotation PID constants
                 ),
                 config, // The robot configuration
                 () -> {
@@ -174,6 +174,7 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Driving/hub distance", getHubDistance());
     SmartDashboard.putNumber("Position", mBackRight.getPosition().angle.getRadians());
     SmartDashboard.putNumber("Driving/gyro", -mGyro.getAngle());
+    SmartDashboard.putNumber("Driving/newgyro", mPoseEstimator.getEstimatedPosition().getRotation().getDegrees());
     SmartDashboard.putNumber("Driving/heading", getHeading());
     SmartDashboard.putNumber("Driving/Pose X", getVisionPose().getX());
     SmartDashboard.putNumber("Driving/Pose Y", getVisionPose().getY());
@@ -365,8 +366,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   public Rotation2d getGyroRotation(){
     double angle = mGyro.getAngle(); 
-    return Rotation2d.fromDegrees(
-      useInvertedGyro ? -angle : angle
+    return Rotation2d.fromDegrees(-angle
+      /*useInvertedGyro ? -angle : angle*/
     );
   }
   /**
