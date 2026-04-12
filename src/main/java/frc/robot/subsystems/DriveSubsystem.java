@@ -407,7 +407,7 @@ public class DriveSubsystem extends SubsystemBase {
     if(useMegaTag2 == false)
     {
  
-      LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight"); 
+      LimelightHelpers.PoseEstimate mt1 = VisionSubsystem.getBotPoseEstimateBlue(); 
        // }
       
       if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
@@ -440,7 +440,7 @@ public class DriveSubsystem extends SubsystemBase {
     //TODO: checkif using gyro angle works 
     {
       LimelightHelpers.SetRobotOrientation("limelight", mPoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-      LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+      LimelightHelpers.PoseEstimate mt2 = VisionSubsystem.getBotPoseEstimateBlue();
          
       if(Math.abs(mGyro.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
       {

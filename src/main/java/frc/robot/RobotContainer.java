@@ -3,6 +3,7 @@ package frc.robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.AutoAlignToTagCommand;
 import frc.robot.commands.AutonAlignCommand;
 import frc.robot.commands.Autos;
@@ -28,6 +29,7 @@ import frc.robot.commands.UnjamIntakeCommand;
 import frc.robot.configs.DriveConfig;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
 
@@ -55,6 +57,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+  private final VisionSubsystem mVisionSubsystem = new VisionSubsystem(); 
   private final DriveSubsystem mDriveSubsystem = new DriveSubsystem(); 
   private final ArmSubsystem mArmSubsystem = new ArmSubsystem(); 
   private final ShooterSubsystem mShooterSubsystem = new ShooterSubsystem(); 
@@ -166,7 +169,7 @@ public class RobotContainer {
          () -> mDriveSubsystem.driveJoystick(
            MathUtil.applyDeadband(mDriverController.getLeftY(), OperatorConstants.DRIVE_DEADBAND),
            MathUtil.applyDeadband(mDriverController.getLeftX(), OperatorConstants.DRIVE_DEADBAND),
-          LimelightHelpers.getTX("limelight")* DriveConstants.AUTO_ALIGN_PID, 
+          mVisionSubsystem.autoAlignRotationSpeed(), 
           true), mDriveSubsystem));
         //intake forward align 
         // //TODO: test if this \works 
