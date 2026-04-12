@@ -74,7 +74,7 @@ public final class Constants {
     public static final double INTAKE_ALIGN_KP = 0.0001;
     public static final double DIAGONAL_ALIGN_kP = 0.0001;
 
-    public static double DRIVE_SPEED = 0.3;
+    public static double DRIVE_SPEED = 0.6;
     public static final double SLOW_MODE_MULTIPLIER = 0.5;
     public static final double AUTO_ALIGN_PID = 0.047;
     public static final double AUTO_ALIGN_MAX_SPEED = 1.00;
