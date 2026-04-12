@@ -255,12 +255,16 @@ public final class Constants {
 
         //Untested Regression coefficients 
         public static final double REGRESSION_COEFFICIENT_4 = 0; 
-        public static final double REGRESSION_COEFFICIENT_3 = 13.7293;
-        public static final double REGRESSION_COEFFICIENT_2 = -19.40655;
-        public static final double REGRESSION_COEFFICIENT_1 = 537.37603;
-        public static final double REGRESSION_COEFFICIENT_0 = 3253.61317;
+        public static final double REGRESSION_COEFFICIENT_3 = 0;
+        public static final double REGRESSION_COEFFICIENT_2 = -0;
+        public static final double REGRESSION_COEFFICIENT_1 = 669.76488;
+        public static final double REGRESSION_COEFFICIENT_0 = 3399.54624;
 
     }
+    //intake.retract(7s);;; [
+    //  intake.donot.goout;;;;
+    //];;;;
+    //this is nathans code, yet to be tested
 
     public static final class ArmConstants {
         public static final int ARM_LEADER_ID = 12;

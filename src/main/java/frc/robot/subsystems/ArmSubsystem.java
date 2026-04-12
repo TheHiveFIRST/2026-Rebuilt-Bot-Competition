@@ -89,7 +89,7 @@ public class ArmSubsystem extends SubsystemBase {
 
 
     public double encoderGetValue() {
-        return mPivotLeaderEncoder.getPosition();
+        return mPivotFollowerEncoder.getPosition();
     }
 
     public boolean isAtTarget() {
@@ -108,9 +108,11 @@ public class ArmSubsystem extends SubsystemBase {
      public Command runIntakePivotGround () {
          return run(
         () -> {
-            
+            if (encoderGetValue() < 0.7) {
              setTargetArm(ArmConstants.PIVOT_OUT);
-            
+            } else {
+                setPivotPower(0);
+            }
               });
     }
 // hi
