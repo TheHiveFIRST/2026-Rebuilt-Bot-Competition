@@ -86,18 +86,20 @@ public class RobotContainer {
   public RobotContainer() {
     // Register named commands
     //NamedCommands.registerCommand("intakepivotdefault", mArmSubsystem.IntakePivotDefault());
-    NamedCommands.registerCommand("intakepivotup", mArmSubsystem.runIntakePivotUp());
+    NamedCommands.registerCommand("intakepivotup", mArmSubsystem.runIntakePivotIn().withTimeout(3));
     NamedCommands.registerCommand("intakepivotdown", new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem).withTimeout(2.93));
     NamedCommands.registerCommand("runkicker", mShooterSubsystem.setHubShotCommand().andThen(
                                                 mShooterSubsystem.toggleAutoShooterCommand().andThen(
                                                 autoWobbleShoot())));
-    NamedCommands.registerCommand("setshot", mShooterSubsystem.toggleAutoShooterCommand().withTimeout(8));
+    NamedCommands.registerCommand("setshot", mShooterSubsystem.toggleAutoShooterCommand().withTimeout(3));
     NamedCommands.registerCommand("stopshoot", autoStopShoot());
     NamedCommands.registerCommand("autoalign", new AutonAlignCommand(mDriveSubsystem));
 
     // new EventTrigger("shoot").onTrue(autoShoot());
     // new EventTrigger("stopshoot").onTrue(autoStopShoot());
      new EventTrigger("setshot").onTrue(mShooterSubsystem.toggleAutoShooterCommand().withTimeout(3));
+     new EventTrigger("intakepivotdown2").whileTrue(new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem));
+
 
     autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
     Shuffleboard.getTab("Autonomous").add("Auto Mode", autoChooser).withSize(2, 1);
@@ -230,7 +232,7 @@ public class RobotContainer {
       return Commands.parallel(           
       new IntakeWobbleCommand(mArmSubsystem),
       mShooterSubsystem.runKickerCommand());
-      
+  
     }
     public Command toggleSlowMode(){
         return new InstantCommand(() -> slowMode = !slowMode);
