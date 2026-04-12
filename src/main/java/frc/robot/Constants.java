@@ -211,7 +211,8 @@ public final class Constants {
     public static final class ShooterConstants {
         public static final int SHOOTER_LEADER_CANID = 14;
         public static final int SHOOTER_FOLLOWER_CANID = 15;
-        public static final int SHOOTER_FEEDER = 16; 
+              public static final int SHOOTER_FEEDER_LEADER_CANID = 16; 
+        public static final int SHOOTER_FEEDER_FOLLOWER_CANID = 17;// updated from rev hardware client 2
 
         // PIDF Values
         public static final double LEADER_Kp = 0.0000709999; // 0.00061;
@@ -240,9 +241,11 @@ public final class Constants {
 
         public static final double VELOCITY_TOLERANCE =  30; 
 
-        public static final double HUB_TARGET_RPM = 4360; //TUNED 
+        public static final double HUB_TARGET_RPM = 6300; //TUNED //not 4440
         public static final double TRENCH_TARGET_RPM = 6800; 
         public static final double LADDER_TARGET_RPM = 6300;
+                public static final double AUTORPM = 5700;
+
         public static final double PASSING_TARGET_RPM = 8000;
         public static final double DEFENCE_TARGET_RPM = 5200; 
 
