@@ -25,7 +25,7 @@
       },
       "nextControl": {
         "x": 3.8738491626253397,
-        "y": 0.09260966593562683
+        "y": 0.09260966593562685
       },
       "isLocked": false,
       "linkedName": null
@@ -37,7 +37,7 @@
       },
       "prevControl": {
         "x": 3.5590257645768695,
-        "y": -0.022753675662391948
+        "y": -0.022753675662391892
       },
       "nextControl": {
         "x": 2.78349364905389,
@@ -97,7 +97,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 70.0
+    "rotation": 62.50000000000001
   },
   "reversed": false,
   "folder": "NEWAUTO",

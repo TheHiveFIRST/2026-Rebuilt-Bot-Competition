@@ -48,7 +48,7 @@
   "constraintZones": [
     {
       "name": "INTAKING",
-      "minWaypointRelativePos": 0.8938679245283019,
+      "minWaypointRelativePos": 0.9056603773584906,
       "maxWaypointRelativePos": 2.0,
       "constraints": {
         "maxVelocity": 1.25,

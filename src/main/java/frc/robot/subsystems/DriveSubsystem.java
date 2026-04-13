@@ -97,9 +97,9 @@ public class DriveSubsystem extends SubsystemBase {
             mBackLeft.getPosition(),
             mBackRight.getPosition()
           },
-          new Pose2d());
-          //VecBuilder.fill(DriveConstants.POSE_ESTIMATOR_N1,DriveConstants.POSE_ESTIMATOR_N2, Units.degreesToRadians(5)),
-          //VecBuilder.fill(DriveConstants.POSE_ESTIMATOR_2_N1, DriveConstants.POSE_ESTIMATOR_2_N1, Units.degreesToRadians(30)));
+          new Pose2d(),
+          VecBuilder.fill(DriveConstants.POSE_ESTIMATOR_N1,DriveConstants.POSE_ESTIMATOR_N2, Units.degreesToRadians(5)),
+          VecBuilder.fill(DriveConstants.POSE_ESTIMATOR_2_N1, DriveConstants.POSE_ESTIMATOR_2_N1, Units.degreesToRadians(30)));
 
   //Odometry class for tracking robot pose 
   SwerveDriveOdometry Odometry = new SwerveDriveOdometry(

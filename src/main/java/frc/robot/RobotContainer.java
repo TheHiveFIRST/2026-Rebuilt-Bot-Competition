@@ -86,12 +86,12 @@ public class RobotContainer {
   public RobotContainer() {
     // Register named commands
     //NamedCommands.registerCommand("intakepivotdefault", mArmSubsystem.IntakePivotDefault());
-    NamedCommands.registerCommand("intakepivotup", mArmSubsystem.runIntakePivotIn().withTimeout(3));
+    NamedCommands.registerCommand("intakepivotup", mArmSubsystem.runIntakePivotIn().withTimeout(8));
     NamedCommands.registerCommand("intakepivotdown", new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem).withTimeout(2.93));
     NamedCommands.registerCommand("runkicker", mShooterSubsystem.setHubShotCommand().andThen(
                                                 mShooterSubsystem.toggleAutoShooterCommand().andThen(
                                                 autoWobbleShoot())));
-    NamedCommands.registerCommand("setshot", mShooterSubsystem.toggleAutoShooterCommand().withTimeout(3));
+    NamedCommands.registerCommand("setshot", mShooterSubsystem.toggleAutoShooterCommand().withTimeout(8));
     NamedCommands.registerCommand("stopshoot", autoStopShoot());
     NamedCommands.registerCommand("autoalign", new AutonAlignCommand(mDriveSubsystem));
 
