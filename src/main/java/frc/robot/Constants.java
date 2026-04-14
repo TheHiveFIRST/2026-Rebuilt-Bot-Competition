@@ -72,7 +72,7 @@ public final class Constants {
     public static final double INTAKE_ALIGN_KP = 0.0001;
     public static final double DIAGONAL_ALIGN_kP = 0.0001;
 
-    public static double DRIVE_SPEED = 1;
+    public static double DRIVE_SPEED = 0.6;
     public static final double SLOW_MODE_MULTIPLIER = 0.5;
     public static final double AUTO_ALIGN_PID = 0.047;
     public static final double AUTO_ALIGN_MAX_SPEED = 1.00;
@@ -211,7 +211,7 @@ public final class Constants {
     public static final class ShooterConstants {
         public static final int SHOOTER_LEADER_CANID = 14;
         public static final int SHOOTER_FOLLOWER_CANID = 15;
-              public static final int SHOOTER_FEEDER_LEADER_CANID = 16; 
+        public static final int SHOOTER_FEEDER_LEADER_CANID = 16; 
         public static final int SHOOTER_FEEDER_FOLLOWER_CANID = 17;// updated from rev hardware client 2
 
         // PIDF Values
@@ -236,7 +236,9 @@ public final class Constants {
         public static final double KI_INCREMENT = 0.0001;
         public static final double KD_INCREMENT = 0.0001;
 
-        public static final double KICKER_SPEED = 1.0;
+        public static final double KICKER_SPEED = 1.0
+        ;
+        public static final double KICKERREVERSED_SPEED = -1.0;
         public static final double SHOOTER_SPEED = 0.7; 
 
         public static final double VELOCITY_TOLERANCE =  30; 
@@ -271,13 +273,19 @@ public final class Constants {
         public static final int ARM_FOLLOWER_ID = 13;
 
         // PID Gains
-        public static final double ARM_KP = 1.5; 
+        public static final double ARM_KP = 2; 
         public static final double ARM_KI = 0.0;
         public static final double ARM_KD = 0.0;
 
-        public static final double PIVOT_OUT = 0.75;
-        public static final double PIVOT_BUMP = 0.55;  //needs tuning
+        public static final double PIVOT_OUT = 0.73;
+        public static final double PIVOT_BUMP = 0.45;  //needs tuning
         public static final double PIVOT_AGITATE = 0.65;
+        public static final double PIVOT_AGITATE55 = 0.55;
+        public static final double PIVOT_AGITATE45 = 0.45;
+        public static final double PIVOT_AGITATE35 = 0.35;
+        
+      
+
         public static final double PIVOT_IN = 0.24;  //needs tuning
         public static final double ARM_KP_INCREMENT = 0.01;
 

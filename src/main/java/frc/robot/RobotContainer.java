@@ -10,6 +10,7 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.IntakeTapCommand;
 import frc.robot.commands.IntakeUpAutoCommand;
 import frc.robot.commands.IntakeWobbleCommand;
+import frc.robot.commands.NewIntakeWobbleCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,6 +27,8 @@ import frc.robot.Constants.OperatorConstants;
 
 import frc.robot.commands.UnjamKickerCommand;
 import frc.robot.commands.UnjamIntakeCommand;
+import frc.robot.commands.IntakeUpAutoCommand;
+
 import frc.robot.configs.DriveConfig;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -231,7 +234,7 @@ public class RobotContainer {
     
     public Command shootWithAgitation(){
       return Commands.parallel(           
-      new IntakeWobbleCommand(mArmSubsystem),
+      new NewIntakeWobbleCommand(mArmSubsystem, mIntakeSubsystem).repeatedly(),
       mShooterSubsystem.runKickerCommand());
       
     }
@@ -264,10 +267,10 @@ public class RobotContainer {
     new RunCommand(() -> mShooterSubsystem.toggleAutoShooterCommand()));
   }
 
-  public Command autoWobbleShoot(){
-    return Commands.parallel(           
-    mShooterSubsystem.runKickerCommand(), 
-    new IntakeUpAutoCommand(mArmSubsystem));
+   public Command autoWobbleShoot(){
+   return Commands.parallel(   
+    //new IntakeUpAutoCommand(mArmSubsystem, mIntakeSubsystem).repeatedly(),        
+    mShooterSubsystem.runKickerCommand());
   }
 }
 

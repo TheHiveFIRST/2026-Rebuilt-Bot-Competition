@@ -108,7 +108,9 @@ public class ArmSubsystem extends SubsystemBase {
      public Command runIntakePivotGround () {
          return run(
         () -> {
-            if (encoderGetValue() < 0.7) {
+            if (encoderGetValue() < 0.7){
+
+            
              setTargetArm(ArmConstants.PIVOT_OUT);
             } else {
                 setPivotPower(0);
@@ -136,7 +138,13 @@ public class ArmSubsystem extends SubsystemBase {
             setTargetArm(ArmConstants.PIVOT_AGITATE);
               });
     }
-
+    public Command IntakeToPosition(double position) {
+         return run(
+        () -> {
+            setTargetArm(position);
+              });
+    }
+    
     public Command stopPivot() {
          return run(
         () -> {
@@ -159,8 +167,8 @@ public class ArmSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // SmartDashboard.putNumber("Arm/Encoder Value", encoderGetValue());
-        // SmartDashboard.putNumber("Arm/Target Position", mCurrentTarget);
+        SmartDashboard.putNumber("Arm/Encoder Value", encoderGetValue());
+        SmartDashboard.putNumber("Arm/Target Position", mCurrentTarget);
         // SmartDashboard.putBoolean("Arm/At Target", isAtTarget());
         // SmartDashboard.putNumber("Arm/pivot current", mPivotLeader.getOutputCurrent());
         // SmartDashboard.putNumber("Arm/Current kP Tuning", mArmCurrentKP);
