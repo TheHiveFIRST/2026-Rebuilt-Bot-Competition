@@ -21,12 +21,6 @@
           "data": {
             "waitTime": 1.0
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Turn.90(0,2)"
-          }
         }
       ]
     }

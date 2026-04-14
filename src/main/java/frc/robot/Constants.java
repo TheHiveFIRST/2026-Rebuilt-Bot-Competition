@@ -33,13 +33,13 @@ public final class Constants {
 
   public static final class DriveConstants{ 
     //allowed max speeds
-    public static final double MAX_SPEED_METERS_PER_SECOND = 9.6; 
-    public static final double MAX_ANGULAR_SPEED =  2.5*Math.PI; // rad/s 
+    public static final double MAX_SPEED_METERS_PER_SECOND = 4.8; 
+    public static final double MAX_ANGULAR_SPEED =  2 * Math.PI; // rad/s 
     //Chassis config - width, depth, CAN IDS and angular offset values in Designdoc.md
   
-    public static final double WHEEL_CENTER_WIDTH = Units.inchesToMeters(11.75);
+    public static final double WHEEL_CENTER_WIDTH = Units.inchesToMeters(11.25);
     // Distance between centers of right and left wheels on robot
-    public static final double WHEEL_CENTER_DEPTH = Units.inchesToMeters(11.75);
+    public static final double WHEEL_CENTER_DEPTH = Units.inchesToMeters(11.25);
     // Distance between front and back wheels on robot
     //depth/frontback distance from robot center to each wheel 
 
@@ -50,12 +50,12 @@ public final class Constants {
         new Translation2d(-WHEEL_CENTER_DEPTH, -WHEEL_CENTER_WIDTH));
       
     //angular offsets of module relative to chassis (rad)
-    public static final double FRONT_LEFT_CHASSIS_ANGULAR_OFFSET = Math.PI/2;
-    public static final double FRONT_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.PI;
-    public static final double BACK_LEFT_CHASSIS_ANGULAR_OFFSET = 0;
-    public static final double BACK_RIGHT_CHASSIS_ANGULAR_OFFSET = -Math.PI/2;
-    
-    //SPARK MAX CAN IDs 
+    public static final double FRONT_LEFT_CHASSIS_ANGULAR_OFFSET = 3*Math.PI/2; //spinning backword try: 3pi/2
+    public static final double FRONT_RIGHT_CHASSIS_ANGULAR_OFFSET = 0; //still off by pi
+    public static final double BACK_LEFT_CHASSIS_ANGULAR_OFFSET = Math.PI; //spinning backword
+    public static final double BACK_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.PI/2; // try pi/2
+    //backright old -1 * (Math.PI/2)
+    //SPARK MAX CAN IDs987ytfdxz
     public static final int FRONT_LEFT_DRIVING_CAN_ID = 4;
     public static final int FRONT_LEFT_TURNING_CAN_ID = 3;
 
@@ -68,8 +68,6 @@ public final class Constants {
    
     public static final int BACK_RIGHT_DRIVING_CAN_ID = 8;
     public static final int BACK_RIGHT_TURNING_CAN_ID = 7;
-
-    public static final boolean GYRO_REVERSED = false;
     
     public static final double INTAKE_ALIGN_KP = 0.0001;
     public static final double DIAGONAL_ALIGN_kP = 0.0001;
@@ -203,9 +201,9 @@ public final class Constants {
   } 
   
   public static final class IntakeConstants {
-        public static final int INTAKE_LEADER_ID = 10; 
-        public static final int INTAKE_FOLLOWER_ID = 11;
-        public static final double INTAKE_SPEED = 0.65;
+        public static final int INTAKE_MOTOR_ID = 20; //edited from rev hardware client 2
+        
+        public static final double INTAKE_SPEED = 1;
         public static final double SLOW_INTAKE_SPEED = 0.2;
         public static final double OUTTAKE_SPEED = -0.5;
     }
@@ -213,7 +211,8 @@ public final class Constants {
     public static final class ShooterConstants {
         public static final int SHOOTER_LEADER_CANID = 14;
         public static final int SHOOTER_FOLLOWER_CANID = 15;
-        public static final int SHOOTER_FEEDER = 16; 
+              public static final int SHOOTER_FEEDER_LEADER_CANID = 16; 
+        public static final int SHOOTER_FEEDER_FOLLOWER_CANID = 17;// updated from rev hardware client 2
 
         // PIDF Values
         public static final double LEADER_Kp = 0.0000709999; // 0.00061;
@@ -242,9 +241,11 @@ public final class Constants {
 
         public static final double VELOCITY_TOLERANCE =  30; 
         public static final double AUTORPM = 5700;
-        public static final double HUB_TARGET_RPM = 4330; //TUNED 
+
+        public static final double HUB_TARGET_RPM = 6300; //TUNED //not 4440
         public static final double TRENCH_TARGET_RPM = 6800; 
         public static final double LADDER_TARGET_RPM = 6300;
+
         public static final double PASSING_TARGET_RPM = 8000;
         public static final double DEFENCE_TARGET_RPM = 5200; 
 
@@ -254,12 +255,16 @@ public final class Constants {
 
         //Untested Regression coefficients 
         public static final double REGRESSION_COEFFICIENT_4 = 0; 
-        public static final double REGRESSION_COEFFICIENT_3 = 13.7293;
-        public static final double REGRESSION_COEFFICIENT_2 = -19.40655;
-        public static final double REGRESSION_COEFFICIENT_1 = 537.37603;
-        public static final double REGRESSION_COEFFICIENT_0 = 3253.61317;
+        public static final double REGRESSION_COEFFICIENT_3 = 0;
+        public static final double REGRESSION_COEFFICIENT_2 = -0;
+        public static final double REGRESSION_COEFFICIENT_1 = 669.76488;
+        public static final double REGRESSION_COEFFICIENT_0 = 3399.54624;
 
     }
+    //intake.retract(7s);;; [
+    //  intake.donot.goout;;;;
+    //];;;;
+    //this is nathans code, yet to be tested
 
     public static final class ArmConstants {
         public static final int ARM_LEADER_ID = 12;

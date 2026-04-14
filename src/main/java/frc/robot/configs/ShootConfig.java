@@ -2,13 +2,16 @@ package frc.robot.configs;
 
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import frc.robot.Constants.IntakeConstants;
+
+import com.revrobotics.spark.config.SparkFlexConfig;
+//import frc.robot.Constants.IntakeConstants;
 
 public final class ShootConfig {
     public static final class ShooterConfig {
         public static final SparkMaxConfig shooterLeaderConfig = new SparkMaxConfig();
         public static final SparkMaxConfig shooterFollowerConfig = new SparkMaxConfig();
-        public static final SparkMaxConfig shooterFeederConfig = new SparkMaxConfig();
+        public static final SparkMaxConfig shooterFeederLeaderConfig = new SparkMaxConfig();
+        public static final SparkMaxConfig shooterFeederFollowerConfig = new SparkMaxConfig();
 
         static {
             // Leader configuration
@@ -23,22 +26,23 @@ public final class ShootConfig {
                 .idleMode(IdleMode.kCoast);
 
             // Feeder/Kicker configuration
-            shooterFeederConfig
+            shooterFeederLeaderConfig
+                .smartCurrentLimit(50);
+            shooterFeederFollowerConfig
                 .smartCurrentLimit(50);
         }
     }
 
     public static final class IntakeConfigs {
-        public static final SparkMaxConfig intakeLeaderConfig = new SparkMaxConfig();
-        public static final SparkMaxConfig intakeFollowerConfig = new SparkMaxConfig();
+        public static final SparkFlexConfig intakeMotorConfig = new SparkFlexConfig();
+        
 
         static {
-            intakeLeaderConfig
-                .smartCurrentLimit(50);
+            intakeMotorConfig
+                .smartCurrentLimit(80
+                );
 
-            intakeFollowerConfig
-                .follow(IntakeConstants.INTAKE_LEADER_ID, true)
-                .smartCurrentLimit(50);
+            
         }
     }
 }

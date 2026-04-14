@@ -21,7 +21,7 @@ public class AutonAlignCommand extends Command {
         double tx = LimelightHelpers.getTX("limelight");
 
         double rot = MathUtil.clamp(
-            tx * -DriveConstants.AUTO_ALIGN_PID,
+            tx * DriveConstants.AUTO_ALIGN_PID,
             -DriveConstants.AUTO_ALIGN_MAX_SPEED,
             DriveConstants.AUTO_ALIGN_MAX_SPEED
         );

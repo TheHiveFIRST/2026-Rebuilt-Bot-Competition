@@ -79,7 +79,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   //mGyro sensor/IMU (usb input type to roborio)
   private final AHRS mGyro = new AHRS(NavXComType.kUSB1); 
-  public static boolean useInvertedGyro = false;
+  public static boolean useInvertedGyro = true;
   
   private final Field2d field2d = new Field2d();
 
@@ -97,9 +97,9 @@ public class DriveSubsystem extends SubsystemBase {
             mBackLeft.getPosition(),
             mBackRight.getPosition()
           },
-          new Pose2d(),
-          VecBuilder.fill(DriveConstants.POSE_ESTIMATOR_N1,DriveConstants.POSE_ESTIMATOR_N2, Units.degreesToRadians(5)),
-          VecBuilder.fill(DriveConstants.POSE_ESTIMATOR_2_N1, DriveConstants.POSE_ESTIMATOR_2_N1, Units.degreesToRadians(30)));
+          new Pose2d());
+          //VecBuilder.fill(DriveConstants.POSE_ESTIMATOR_N1,DriveConstants.POSE_ESTIMATOR_N2, Units.degreesToRadians(5)),
+          //VecBuilder.fill(DriveConstants.POSE_ESTIMATOR_2_N1, DriveConstants.POSE_ESTIMATOR_2_N1, Units.degreesToRadians(30)));
 
   //Odometry class for tracking robot pose 
   SwerveDriveOdometry Odometry = new SwerveDriveOdometry(
@@ -130,8 +130,8 @@ public class DriveSubsystem extends SubsystemBase {
                 this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
                 new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                        new PIDConstants(10, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(15.2, 0, 0.0) // Rotation PID constants
+                        new PIDConstants(15, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(12, 0, 0.0) // Rotation PID constants
                 ),
                 config, // The robot configuration
                 () -> {
@@ -172,7 +172,9 @@ public class DriveSubsystem extends SubsystemBase {
     hubDistance = getHubDistance();
 
     SmartDashboard.putNumber("Driving/hub distance", getHubDistance());
-    SmartDashboard.putNumber("Driving/gyro", mGyro.getAngle());
+    SmartDashboard.putNumber("Position", mBackRight.getPosition().angle.getRadians());
+    SmartDashboard.putNumber("Driving/gyro", -mGyro.getAngle());
+    SmartDashboard.putNumber("Driving/newgyro", mPoseEstimator.getEstimatedPosition().getRotation().getDegrees());
     SmartDashboard.putNumber("Driving/heading", getHeading());
     SmartDashboard.putNumber("Driving/Pose X", getVisionPose().getX());
     SmartDashboard.putNumber("Driving/Pose Y", getVisionPose().getY());
@@ -364,8 +366,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   public Rotation2d getGyroRotation(){
     double angle = mGyro.getAngle(); 
-    return Rotation2d.fromDegrees(
-      useInvertedGyro ? -angle : angle
+    return Rotation2d.fromDegrees(-angle
+      /*useInvertedGyro ? -angle : angle*/
     );
   }
   /**
@@ -385,7 +387,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return The turn rate of the robot, in degrees per second
    */
   public double getTurnRate() {
-    return mGyro.getRate() * (DriveConstants.GYRO_REVERSED ? -1.0 : 1.0);
+    return mGyro.getRate() * (useInvertedGyro ? -1.0 : 1.0);
   }
 
     /** Updates the field relative position of the robot. */
@@ -405,7 +407,7 @@ public class DriveSubsystem extends SubsystemBase {
     if(useMegaTag2 == false)
     {
  
-      LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight"); 
+      LimelightHelpers.PoseEstimate mt1 = VisionSubsystem.getBotPoseEstimateBlue(); 
        // }
       
       if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
@@ -438,7 +440,7 @@ public class DriveSubsystem extends SubsystemBase {
     //TODO: checkif using gyro angle works 
     {
       LimelightHelpers.SetRobotOrientation("limelight", mPoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-      LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+      LimelightHelpers.PoseEstimate mt2 = VisionSubsystem.getBotPoseEstimateBlue();
          
       if(Math.abs(mGyro.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
       {
