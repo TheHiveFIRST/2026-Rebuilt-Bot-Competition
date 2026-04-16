@@ -145,7 +145,7 @@ public class RobotContainer {
         mOperatorController.leftBumper().onTrue(mShooterSubsystem.decreaseShootingRPMOffsetCommand());
         //mOperatorController.povLeft().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::incrementRPM));
         //mOperatorController.povRight().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::decrementRPM));
-        mOperatorController.leftStick().whileTrue(mDriveSubsystem.defensePosition());
+        //mOperatorController.leftStick().whileTrue(mDriveSubsystem.defensePosition());
 
 
          //DRIVER CONTROLS
@@ -237,6 +237,7 @@ public class RobotContainer {
     public Command shootWithAgitation(){
       return Commands.parallel(           
       new NewIntakeWobbleCommand(mArmSubsystem, mIntakeSubsystem).repeatedly(),
+      mDriveSubsystem.defensePosition(),
       mShooterSubsystem.runKickerCommand());
   
     }
