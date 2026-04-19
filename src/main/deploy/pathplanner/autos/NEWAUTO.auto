@@ -67,13 +67,19 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 2.0
+                  "waitTime": 3.0
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "runkicker"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "runintake"
                 }
               }
             ]
@@ -123,13 +129,25 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 2.0
+                  "waitTime": 3.0
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "runkicker"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "runintake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakepivotup"
                 }
               }
             ]
