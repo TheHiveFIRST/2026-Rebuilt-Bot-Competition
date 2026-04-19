@@ -73,9 +73,28 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "NEWAUTOINTAKEAGAIN"
+            "name": "stopshoot"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "NEWAUTOINTAKEAGAIN"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "setshot"
+                }
+              }
+            ]
           }
         },
         {
