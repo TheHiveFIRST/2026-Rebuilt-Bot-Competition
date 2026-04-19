@@ -61,22 +61,15 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "runkicker"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "intakepivotup"
-                }
-              }
-            ]
+            "name": "runkicker"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.1
           }
         },
         {

@@ -33,7 +33,7 @@ public final class Constants {
 
   public static final class DriveConstants{ 
     //allowed max speeds
-    public static final double MAX_SPEED_METERS_PER_SECOND = 4.8; 
+    public static final double MAX_SPEED_METERS_PER_SECOND = 9.6; 
     public static final double MAX_ANGULAR_SPEED =  2 * Math.PI; // rad/s 
     //Chassis config - width, depth, CAN IDS and angular offset values in Designdoc.md
   
@@ -72,7 +72,7 @@ public final class Constants {
     public static final double INTAKE_ALIGN_KP = 0.0001;
     public static final double DIAGONAL_ALIGN_kP = 0.0001;
 
-    public static double DRIVE_SPEED = 0.6;
+    public static double DRIVE_SPEED = 1;
     public static final double SLOW_MODE_MULTIPLIER = 0.5;
     public static final double AUTO_ALIGN_PID = 0.047;
     public static final double AUTO_ALIGN_MAX_SPEED = 1.00;
@@ -244,7 +244,7 @@ public final class Constants {
         public static final double VELOCITY_TOLERANCE =  30; 
         public static final double AUTORPM = 5700;
 
-        public static final double HUB_TARGET_RPM = 6240; //TUNED //not 4440
+        public static final double HUB_TARGET_RPM = 5500; //TUNED //not 4440
         public static final double TRENCH_TARGET_RPM = 6800; 
         public static final double LADDER_TARGET_RPM = 6300;
 

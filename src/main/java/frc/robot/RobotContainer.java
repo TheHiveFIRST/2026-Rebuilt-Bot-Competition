@@ -92,11 +92,12 @@ public class RobotContainer {
   public RobotContainer() {
     // Register named commands
     //NamedCommands.registerCommand("intakepivotdefault", mArmSubsystem.IntakePivotDefault());
-    NamedCommands.registerCommand("intakepivotup", mArmSubsystem.runIntakePivotIn().withTimeout(8));
+    NamedCommands.registerCommand("intakepivotup", mArmSubsystem.IntakeToPosition(0.55).withTimeout(3));
     NamedCommands.registerCommand("intakepivotdown", new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem).withTimeout(2.93));
     NamedCommands.registerCommand("shoot", mShooterSubsystem.setHubShotCommand().andThen(
                                                 mShooterSubsystem.toggleAutoShooterCommand().andThen(
                                                 autoWobbleShoot())));
+    NamedCommands.registerCommand("runkicker", mShooterSubsystem.runKickerCommand().withTimeout(3));                                             
     NamedCommands.registerCommand("setshot", mShooterSubsystem.toggleAutoShooterCommand().withTimeout(8));
     NamedCommands.registerCommand("stopshoot", autoStopShoot());
     NamedCommands.registerCommand("autoalign", new AutonAlignCommand(mDriveSubsystem));
@@ -236,8 +237,9 @@ public class RobotContainer {
     
     public Command shootWithAgitation(){
       return Commands.parallel(           
-      new NewIntakeWobbleCommand(mArmSubsystem, mIntakeSubsystem).repeatedly(),
+      new IntakeWobbleCommand(mArmSubsystem).repeatedly(),
       mDriveSubsystem.defensePosition(),
+      mIntakeSubsystem.runIntakeForwardCommand(),
       mShooterSubsystem.runKickerCommand());
   
     }
