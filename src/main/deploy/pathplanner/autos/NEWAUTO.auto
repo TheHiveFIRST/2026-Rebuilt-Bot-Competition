@@ -69,7 +69,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 3.0
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopshoot"
           }
         },
         {
@@ -85,7 +91,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "stopshoot"
+                  "name": "setshot"
                 }
               }
             ]
