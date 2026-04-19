@@ -61,9 +61,34 @@
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "runkicker"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "runkicker"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakepivotup"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "runintake"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 3.0
+                }
+              }
+            ]
           }
         }
       ]

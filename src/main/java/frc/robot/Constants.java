@@ -244,7 +244,7 @@ public final class Constants {
         public static final double VELOCITY_TOLERANCE =  30; 
         public static final double AUTORPM = 5700;
 
-        public static final double HUB_TARGET_RPM = 5700; //TUNED //not 4440
+        public static final double HUB_TARGET_RPM = 6200; //TUNED //not 4440
         public static final double TRENCH_TARGET_RPM = 6800; 
         public static final double LADDER_TARGET_RPM = 6300;
 
@@ -259,8 +259,8 @@ public final class Constants {
         public static final double REGRESSION_COEFFICIENT_4 = 0; 
         public static final double REGRESSION_COEFFICIENT_3 = 0;
         public static final double REGRESSION_COEFFICIENT_2 = -0;
-        public static final double REGRESSION_COEFFICIENT_1 = 669.76488;
-        public static final double REGRESSION_COEFFICIENT_0 = 3399.54624;
+        public static final double REGRESSION_COEFFICIENT_1 = 670;
+        public static final double REGRESSION_COEFFICIENT_0 = 3720;
 
     }
     //intake.retract(7s);;; [
