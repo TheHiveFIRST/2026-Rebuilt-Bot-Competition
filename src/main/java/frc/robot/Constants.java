@@ -244,7 +244,7 @@ public final class Constants {
         public static final double VELOCITY_TOLERANCE =  30; 
         public static final double AUTORPM = 5700;
 
-        public static final double HUB_TARGET_RPM = 5500; //TUNED //not 4440
+        public static final double HUB_TARGET_RPM = 5700; //TUNED //not 4440
         public static final double TRENCH_TARGET_RPM = 6800; 
         public static final double LADDER_TARGET_RPM = 6300;
 
