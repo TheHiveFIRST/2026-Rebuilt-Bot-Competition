@@ -73,12 +73,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "stopshoot"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -91,7 +85,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "setshot"
+                  "name": "stopshoot"
                 }
               }
             ]
