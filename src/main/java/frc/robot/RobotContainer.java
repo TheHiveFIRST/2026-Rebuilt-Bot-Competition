@@ -7,10 +7,11 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.AutoAlignToTagCommand;
 import frc.robot.commands.AutonAlignCommand;
 import frc.robot.commands.Autos;
+import frc.robot.commands.FullHopperIntakeWobbleCommand;
 import frc.robot.commands.IntakeTapCommand;
 import frc.robot.commands.IntakeUpAutoCommand;
 import frc.robot.commands.IntakeWobbleCommand;
-import frc.robot.commands.NewIntakeWobbleCommand;
+import frc.robot.commands.HalfHopperIntakeWobbleCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -155,8 +156,8 @@ public class RobotContainer {
         mDriverController.x().whileTrue(mShooterSubsystem.runKickerBackwardCommand());
         mDriverController.b().onTrue(mIntakeSubsystem.runOuttakeCommand());
 
-        mDriverController.rightBumper().whileTrue(mShooterSubsystem.runKickerCommand());
-        mDriverController.rightTrigger().whileTrue(shootWithAgitation());
+        mDriverController.rightBumper().whileTrue(shootHalfHopper());
+        mDriverController.rightTrigger().whileTrue(shootFullHopper());
         mDriverController.leftBumper().whileTrue(mArmSubsystem.runIntakePivotUp());
         mDriverController.leftTrigger(0.2).whileTrue(mIntakeSubsystem.runIntakeForwardCommand());
         
@@ -235,11 +236,19 @@ public class RobotContainer {
     }
 
     
-    public Command shootWithAgitation(){
+    public Command shootFullHopper(){
       return Commands.parallel(           
-      new IntakeWobbleCommand(mArmSubsystem).repeatedly(),
+      new FullHopperIntakeWobbleCommand(mArmSubsystem, mIntakeSubsystem),
       mDriveSubsystem.defensePosition(),
-      mIntakeSubsystem.runIntakeForwardCommand(),
+      
+      mShooterSubsystem.runKickerCommand());
+  
+    }
+    public Command shootHalfHopper(){
+      return Commands.parallel(           
+      new HalfHopperIntakeWobbleCommand(mArmSubsystem, mIntakeSubsystem),
+      mDriveSubsystem.defensePosition(),
+      
       mShooterSubsystem.runKickerCommand());
   
     }
