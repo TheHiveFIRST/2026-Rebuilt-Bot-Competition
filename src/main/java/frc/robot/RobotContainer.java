@@ -95,9 +95,7 @@ public class RobotContainer {
     //NamedCommands.registerCommand("intakepivotdefault", mArmSubsystem.IntakePivotDefault());
     NamedCommands.registerCommand("intakepivotup", mArmSubsystem.IntakeToPosition(0.55).withTimeout(3));
     NamedCommands.registerCommand("intakepivotdown", new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem).withTimeout(2.93));
-    NamedCommands.registerCommand("shoot", mShooterSubsystem.setHubShotCommand().andThen(
-                                                mShooterSubsystem.toggleAutoShooterCommand().andThen(
-                                                autoWobbleShoot())));
+    NamedCommands.registerCommand("shoot", autoShoot().withTimeout(3));
     NamedCommands.registerCommand("runkicker", mShooterSubsystem.runKickerCommand().withTimeout(3));                                             
     NamedCommands.registerCommand("setshot", mShooterSubsystem.toggleAutoShooterCommand().withTimeout(8));
     NamedCommands.registerCommand("stopshoot", autoStopShoot());
@@ -277,8 +275,9 @@ public class RobotContainer {
     
   public Command autoShoot(){
     return Commands.parallel(           
-    new RunCommand(() -> mShooterSubsystem.runKicker(-ShooterConstants.KICKER_SPEED)),
-    new RunCommand(() -> mShooterSubsystem.toggleAutoShooterCommand()));
+    mShooterSubsystem.runKickerCommand(),
+    new FullHopperIntakeWobbleCommand(mArmSubsystem, mIntakeSubsystem)
+    );
   }
 
    public Command autoWobbleShoot(){
