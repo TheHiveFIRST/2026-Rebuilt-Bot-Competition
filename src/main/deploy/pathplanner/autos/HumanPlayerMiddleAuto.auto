@@ -7,69 +7,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.2
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "HumanPlayerMiddleAuto.MoveToIntake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "intakepivotdown"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.2
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "HumanPlayerMiddleAuto.Turn90"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "HumanPlayerMiddleAuto.BackToShoot"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "setshot"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.2
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "runkicker"
+            "waitTime": 0.1
           }
         }
       ]
