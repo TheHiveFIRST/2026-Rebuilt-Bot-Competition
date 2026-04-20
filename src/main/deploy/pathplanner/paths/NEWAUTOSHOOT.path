@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 7.6,
-        "y": 3.5
+        "y": 3.8
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.6,
-        "y": 2.5
+        "x": 7.117868933319503,
+        "y": 2.800386565736656
       },
       "isLocked": false,
       "linkedName": "NEWAUTOINTAKEEND"
@@ -17,31 +17,31 @@
     {
       "anchor": {
         "x": 5.5,
-        "y": 0.5
+        "y": 0.7
       },
       "prevControl": {
-        "x": 7.4999689449539675,
-        "y": 0.5111453676346818
+        "x": 7.304757807200022,
+        "y": 0.6999999999999997
       },
       "nextControl": {
-        "x": 4.17384916262534,
-        "y": 0.49260966593562683
+        "x": 4.256154416031029,
+        "y": 0.7000000000000001
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.7,
-        "y": 0.5
+        "x": 3.5,
+        "y": 0.7
       },
       "prevControl": {
-        "x": 3.345507351324784,
-        "y": 0.4999999999999999
+        "x": 4.393274016359387,
+        "y": 0.6999999999999998
       },
       "nextControl": {
-        "x": 2.45,
-        "y": 0.5000000000000001
+        "x": 3.25,
+        "y": 0.7
       },
       "isLocked": false,
       "linkedName": null
@@ -52,8 +52,8 @@
         "y": 1.0
       },
       "prevControl": {
-        "x": 2.8,
-        "y": 0.75
+        "x": 3.0165063509461096,
+        "y": 0.875
       },
       "nextControl": null,
       "isLocked": false,
@@ -66,14 +66,14 @@
       "rotationDegrees": 0.0
     },
     {
-      "waypointRelativePos": 2.366863905325444,
-      "rotationDegrees": 20.0
+      "waypointRelativePos": 1.911530815109344,
+      "rotationDegrees": 0.0
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 2.37,
+      "minWaypointRelativePos": 2.1049528301886795,
       "maxWaypointRelativePos": 3.0,
       "constraints": {
         "maxVelocity": 1.0,
@@ -97,7 +97,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 59.99999999999999
+    "rotation": 52.50000000000001
   },
   "reversed": false,
   "folder": "NEWAUTO",

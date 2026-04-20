@@ -17,7 +17,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "NEWAUTOINTAKE"
+                  "pathName": "DEPOTINTAKE"
                 }
               },
               {
@@ -42,7 +42,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "NEWAUTOSHOOT"
+                  "pathName": "DEPOT DEPOT"
                 }
               },
               {
@@ -61,9 +61,59 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "runkicker"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "ANTI DEPOT DEPOT"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "setshot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 3.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "runkicker"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "runintake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakepivotup"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 10.0
           }
         }
       ]

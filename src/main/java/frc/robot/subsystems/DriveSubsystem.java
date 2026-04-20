@@ -478,7 +478,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
  
-  public Command alignDrive(CommandXboxController controller, Supplier<Pose2d> targetPoseSupplier) {
+  public Command alignOriginalDrive(CommandXboxController controller, Supplier<Pose2d> targetPoseSupplier) {
 
     return run( ()-> {
         double controllerVelX = MathUtil.applyDeadband(controller.getLeftY(),OperatorConstants.DRIVE_DEADBAND);
@@ -508,7 +508,7 @@ public class DriveSubsystem extends SubsystemBase {
       });
   }
 
-  public Command alignTestDrive(CommandXboxController controller, Supplier<Pose2d> targetPoseSupplier) {
+  public Command alignModifiedDrive(CommandXboxController controller, Supplier<Pose2d> targetPoseSupplier) {
 
     return run(() -> {
 
@@ -527,7 +527,7 @@ public class DriveSubsystem extends SubsystemBase {
         if (
                 (Math.abs(deltaAngleDegrees) < DriveConstants.epsilonAngleToGoal.in(Degrees)) // if facing goal already
                 && Math.hypot(controllerVelX, controllerVelY) < OperatorConstants.DRIVE_DEADBAND) {
-                  driveJoystick(controllerVelX, controllerVelY, 0, true); //TODO:IDK HOW FIELD RELATIVE WILL WOKR 
+                  driveJoystick(controllerVelX, controllerVelY, 0, true); 
                 } else {
                 double rotationalRate = DriveConstants.rotationController.calculate(currentAngle.getRadians(), desiredAngle.getRadians());
                   driveJoystick(controllerVelX, controllerVelY, rotationalRate, true);

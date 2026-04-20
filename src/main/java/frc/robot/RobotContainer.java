@@ -93,12 +93,17 @@ public class RobotContainer {
   public RobotContainer() {
     // Register named commands
     //NamedCommands.registerCommand("intakepivotdefault", mArmSubsystem.IntakePivotDefault());
-    NamedCommands.registerCommand("intakepivotup", mArmSubsystem.IntakeToPosition(0.55).withTimeout(3));
+    NamedCommands.registerCommand("intakepivotup", mArmSubsystem.IntakeToPosition(0.55).withTimeout(8));
+        NamedCommands.registerCommand("runintake", mIntakeSubsystem.runIntakeForwardCommand().withTimeout(5));
+
     NamedCommands.registerCommand("intakepivotdown", new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem).withTimeout(2.93));
-    NamedCommands.registerCommand("shoot", autoShoot().withTimeout(3));
+    
+    NamedCommands.registerCommand("shoot", mShooterSubsystem.setHubShotCommand().andThen(
+                                                mShooterSubsystem.toggleAutoShooterCommand().andThen(
+                                                autoWobbleShoot())));
     NamedCommands.registerCommand("runkicker", mShooterSubsystem.runKickerCommand().withTimeout(3));                                             
     NamedCommands.registerCommand("setshot", mShooterSubsystem.toggleAutoShooterCommand().withTimeout(8));
-    NamedCommands.registerCommand("stopshoot", autoStopShoot());
+    NamedCommands.registerCommand("stopshoot", autoStopKicker());
     NamedCommands.registerCommand("autoalign", new AutonAlignCommand(mDriveSubsystem));
 
     // new EventTrigger("shoot").onTrue(autoShoot());
@@ -138,8 +143,10 @@ public class RobotContainer {
         mOperatorController.y().whileTrue(mShooterSubsystem.toggleShooterCommand());
         mOperatorController.leftTrigger().onTrue(mShooterSubsystem.setLadderShotCommand());
         mOperatorController.rightTrigger().onTrue(mShooterSubsystem.setPassingShotCommand());
-        mOperatorController.b().onTrue(mShooterSubsystem.setHubShotCommand());
-        mOperatorController.a().onTrue(mShooterSubsystem.setTrenchShotCommand());
+        // mOperatorController.b().onTrue(mShooterSubsystem.setHubShotCommand());
+        // mOperatorController.a().onTrue(mShooterSubsystem.setTrenchShotCommand());
+        mOperatorController.b().whileTrue(mDriveSubsystem.alignOriginalDrive(mDriverController, () -> DriveConstants.getHubPose().toPose2d()));
+        mOperatorController.a().whileTrue(mDriveSubsystem.alignModifiedDrive(mDriverController, () -> DriveConstants.getHubPose().toPose2d()));
         mOperatorController.x().onTrue(mShooterSubsystem.toggleDistanceEstimationCommand());
         mOperatorController.rightBumper().onTrue(mShooterSubsystem.increaseShootingRPMOffsetCommand());
         mOperatorController.leftBumper().onTrue(mShooterSubsystem.decreaseShootingRPMOffsetCommand());
@@ -176,24 +183,7 @@ public class RobotContainer {
            MathUtil.applyDeadband(mDriverController.getLeftX(), OperatorConstants.DRIVE_DEADBAND),
           mVisionSubsystem.autoAlignRotationSpeed(), 
           true), mDriveSubsystem));
-        //intake forward align 
-        // //TODO: test if this \works 
-        // mDriverController.leftTrigger().whileTrue(
-        //     new RunCommand(
-        //        () -> mDriveSubsystem.driveIntakeAlign(
-        //          mDriverController.getLeftY(), 
-        //          mDriverController.getLeftX(),
-        //       true), mDriveSubsystem));
-
-        //diagonal bump align 
-        //TODO: test if this works 
-        // mDriverController.rightTrigger().whileTrue(
-        //     new RunCommand(
-        //        () -> mDriveSubsystem.driveDiagonalBumpAlign(
-        //          mDriverController.getLeftY(), 
-        //          mDriverController.getLeftX(),
-        //         true, 
-        //         135), mDriveSubsystem));
+    
 
        
         //PID TUNING
@@ -265,11 +255,8 @@ public class RobotContainer {
   }
 
   
-  public Command autoStopShoot(){
-    return Commands.parallel(           
-    new RunCommand(() -> mShooterSubsystem.runKicker(0)),
-    new RunCommand(() -> mShooterSubsystem.runShooterPower(0)));
-    
+  public Command autoStopKicker (){
+    return new InstantCommand(() -> mShooterSubsystem.runKicker(0));
   }
 
     

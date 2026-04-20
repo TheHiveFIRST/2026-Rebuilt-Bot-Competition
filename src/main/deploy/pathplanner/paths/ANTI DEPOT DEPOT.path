@@ -3,72 +3,70 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.4,
-        "y": 0.5
+        "x": 0.7,
+        "y": 6.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.4,
-        "y": 0.5
+        "x": 0.44999999999999996,
+        "y": 6.0
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.6,
-        "y": 1.5
+        "x": 1.2,
+        "y": 6.0
       },
       "prevControl": {
-        "x": 7.6,
-        "y": 0.6922252789298244
+        "x": 0.95,
+        "y": 6.0
       },
       "nextControl": {
-        "x": 7.6,
-        "y": 2.3077747210701753
+        "x": 1.45,
+        "y": 6.0
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.6,
-        "y": 3.8
+        "x": 2.0,
+        "y": 6.0
       },
       "prevControl": {
-        "x": 7.6,
-        "y": 2.8
+        "x": 2.25,
+        "y": 6.0
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NEWAUTOINTAKEEND"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 180.0
+    }
+  ],
   "constraintZones": [
     {
-      "name": "INTAKING",
-      "minWaypointRelativePos": 0.9056603773584906,
-      "maxWaypointRelativePos": 2.0,
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 1.25,
-        "maxAcceleration": 7.6,
+        "maxVelocity": 0.75,
+        "maxAcceleration": 5.0,
         "maxAngularVelocity": 200.0,
-        "maxAngularAcceleration": 1537.0,
+        "maxAngularAcceleration": 500.0,
         "nominalVoltage": 12.0,
         "unlimited": false
       }
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "intakepivotdown",
-      "waypointRelativePos": 0.5163551401869159,
-      "endWaypointRelativePos": 2.0,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.16,
     "maxAcceleration": 5.0,
@@ -78,14 +76,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 90.0
+    "velocity": 0.0,
+    "rotation": -40.0
   },
   "reversed": false,
   "folder": "NEWAUTO",
   "idealStartingState": {
-    "velocity": 0.0,
-    "rotation": 90.0
+    "velocity": 0,
+    "rotation": 180.0
   },
   "useDefaultConstraints": false
 }
