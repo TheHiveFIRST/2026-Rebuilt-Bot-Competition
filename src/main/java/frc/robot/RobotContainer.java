@@ -141,8 +141,10 @@ public class RobotContainer {
         mOperatorController.y().whileTrue(mShooterSubsystem.toggleShooterCommand());
         mOperatorController.leftTrigger().onTrue(mShooterSubsystem.setLadderShotCommand());
         mOperatorController.rightTrigger().onTrue(mShooterSubsystem.setPassingShotCommand());
-        mOperatorController.b().onTrue(mShooterSubsystem.setHubShotCommand());
-        mOperatorController.a().onTrue(mShooterSubsystem.setTrenchShotCommand());
+        // mOperatorController.b().onTrue(mShooterSubsystem.setHubShotCommand());
+        // mOperatorController.a().onTrue(mShooterSubsystem.setTrenchShotCommand());
+        mOperatorController.b().whileTrue(mDriveSubsystem.alignOriginalDrive(mDriverController, () -> DriveConstants.getHubPose().toPose2d()));
+        mOperatorController.a().whileTrue(mDriveSubsystem.alignModifiedDrive(mDriverController, () -> DriveConstants.getHubPose().toPose2d()));
         mOperatorController.x().onTrue(mShooterSubsystem.toggleDistanceEstimationCommand());
         mOperatorController.rightBumper().onTrue(mShooterSubsystem.increaseShootingRPMOffsetCommand());
         mOperatorController.leftBumper().onTrue(mShooterSubsystem.decreaseShootingRPMOffsetCommand());
@@ -179,24 +181,7 @@ public class RobotContainer {
            MathUtil.applyDeadband(mDriverController.getLeftX(), OperatorConstants.DRIVE_DEADBAND),
           mVisionSubsystem.autoAlignRotationSpeed(), 
           true), mDriveSubsystem));
-        //intake forward align 
-        // //TODO: test if this \works 
-        // mDriverController.leftTrigger().whileTrue(
-        //     new RunCommand(
-        //        () -> mDriveSubsystem.driveIntakeAlign(
-        //          mDriverController.getLeftY(), 
-        //          mDriverController.getLeftX(),
-        //       true), mDriveSubsystem));
-
-        //diagonal bump align 
-        //TODO: test if this works 
-        // mDriverController.rightTrigger().whileTrue(
-        //     new RunCommand(
-        //        () -> mDriveSubsystem.driveDiagonalBumpAlign(
-        //          mDriverController.getLeftY(), 
-        //          mDriverController.getLeftX(),
-        //         true, 
-        //         135), mDriveSubsystem));
+    
 
        
         //PID TUNING
