@@ -98,9 +98,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("intakepivotdown", new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem).withTimeout(2.93));
     
-    NamedCommands.registerCommand("shoot", mShooterSubsystem.setHubShotCommand().andThen(
-                                                mShooterSubsystem.toggleAutoShooterCommand().andThen(
-                                                autoWobbleShoot())));
+    NamedCommands.registerCommand("shoot", autoShoot().withTimeout(3));
     NamedCommands.registerCommand("runkicker", mShooterSubsystem.runKickerCommand().withTimeout(3));                                             
     NamedCommands.registerCommand("setshot", mShooterSubsystem.toggleAutoShooterCommand().withTimeout(8));
     NamedCommands.registerCommand("stopshoot", autoStopKicker());
@@ -157,7 +155,7 @@ public class RobotContainer {
 
          //DRIVER CONTROLS
         mDriverController.y().whileTrue(mShooterSubsystem.toggleShooterCommand()); 
-        //mDriverController.a().whileTrue(new AutoAlignToTagCommand(mDriveSubsystem, mDriverController));
+        mDriverController.a().whileTrue(new AutoAlignToTagCommand(mDriveSubsystem, mDriverController));
         mDriverController.x().whileTrue(mShooterSubsystem.runKickerBackwardCommand());
         mDriverController.b().onTrue(mIntakeSubsystem.runOuttakeCommand());
 
