@@ -176,12 +176,12 @@ public class RobotContainer {
         //mDriverController.povDown().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::decrementRPM));
 
 
-         mDriverController.a().whileTrue(new RunCommand(
-         () -> mDriveSubsystem.driveJoystick(
-           MathUtil.applyDeadband(mDriverController.getLeftY(), OperatorConstants.DRIVE_DEADBAND),
-           MathUtil.applyDeadband(mDriverController.getLeftX(), OperatorConstants.DRIVE_DEADBAND),
-          mVisionSubsystem.autoAlignRotationSpeed(), 
-          true), mDriveSubsystem));
+        //  mDriverController.a().whileTrue(new RunCommand(
+        //  () -> mDriveSubsystem.driveJoystick(
+        //    MathUtil.applyDeadband(mDriverController.getLeftY(), OperatorConstants.DRIVE_DEADBAND),
+        //    MathUtil.applyDeadband(mDriverController.getLeftX(), OperatorConstants.DRIVE_DEADBAND),
+        //   mVisionSubsystem.autoAlignRotationSpeed(), 
+        //   true), mDriveSubsystem));
     
 
        
