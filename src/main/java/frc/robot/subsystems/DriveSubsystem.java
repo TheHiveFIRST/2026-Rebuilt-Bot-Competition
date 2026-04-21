@@ -440,7 +440,7 @@ public class DriveSubsystem extends SubsystemBase {
     //TOADO: checkif using gyro angle works 
     {
       LimelightHelpers.SetRobotOrientation("limelight", mPoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-      LimelightHelpers.PoseEstimate mt2 = VisionSubsystem.getBotPoseEstimateBlue();
+      LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
          
       if(Math.abs(mGyro.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
       {
