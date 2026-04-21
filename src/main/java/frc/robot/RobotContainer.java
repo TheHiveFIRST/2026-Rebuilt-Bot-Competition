@@ -139,12 +139,13 @@ public class RobotContainer {
       
         //OPERATOR CONTROLS
         mOperatorController.y().whileTrue(mShooterSubsystem.toggleShooterCommand());
-        mOperatorController.leftTrigger().onTrue(mShooterSubsystem.setLadderShotCommand());
+        //mOperatorController.leftTrigger().onTrue(mShooterSubsystem.setLadderShotCommand());
         mOperatorController.rightTrigger().onTrue(mShooterSubsystem.setPassingShotCommand());
         // mOperatorController.b().onTrue(mShooterSubsystem.setHubShotCommand());
         // mOperatorController.a().onTrue(mShooterSubsystem.setTrenchShotCommand());
         mOperatorController.b().whileTrue(mDriveSubsystem.alignOriginalDrive(mDriverController, () -> DriveConstants.getHubPose().toPose2d()));
-        mOperatorController.a().whileTrue(mDriveSubsystem.alignModifiedDrive(mDriverController, () -> DriveConstants.getHubPose().toPose2d()));
+        mOperatorController.a().whileTrue(mDriveSubsystem.alignV1Drive(mDriverController, () -> DriveConstants.getHubPose().toPose2d()));
+        mOperatorController.leftTrigger().whileTrue(mDriveSubsystem.alignV2Drive(mDriverController, () -> DriveConstants.getHubPose().toPose2d()));
         mOperatorController.x().onTrue(mShooterSubsystem.toggleDistanceEstimationCommand());
         mOperatorController.rightBumper().onTrue(mShooterSubsystem.increaseShootingRPMOffsetCommand());
         mOperatorController.leftBumper().onTrue(mShooterSubsystem.decreaseShootingRPMOffsetCommand());

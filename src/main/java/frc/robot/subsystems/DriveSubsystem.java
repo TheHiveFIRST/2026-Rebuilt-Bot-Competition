@@ -508,7 +508,7 @@ public class DriveSubsystem extends SubsystemBase {
       });
   }
 
-  public Command alignModifiedDrive(CommandXboxController controller, Supplier<Pose2d> targetPoseSupplier) {
+  public Command alignV1Drive(CommandXboxController controller, Supplier<Pose2d> targetPoseSupplier) {
 
     return run(() -> {
 
@@ -533,6 +533,29 @@ public class DriveSubsystem extends SubsystemBase {
                   driveJoystick(controllerVelX, controllerVelY, rotationalRate, true);
             }
           });
+  }
+
+  public Command alignV2Drive(CommandXboxController controller, Supplier<Pose2d> targetPoseSupplier) {
+
+    return run(() -> {
+
+        double controllerVelX =MathUtil.applyDeadband( controller.getLeftY(), OperatorConstants.DRIVE_DEADBAND);
+        double controllerVelY = MathUtil.applyDeadband(controller.getLeftX(),OperatorConstants.DRIVE_DEADBAND);
+
+
+        Pose2d drivePose = getVisionPose();
+        Pose2d targetPose = targetPoseSupplier.get();
+        Translation2d robotToTarget = targetPose.getTranslation().minus(drivePose.getTranslation());
+        Rotation2d desiredAngle = robotToTarget.getAngle();
+        Rotation2d currentAngle = drivePose.getRotation(); 
+        Rotation2d deltaAngle = currentAngle.minus(desiredAngle);
+        double deltaAngleDegrees = deltaAngle.getDegrees();
+        double wrappedAngleDeg = MathUtil.inputModulus(deltaAngle.getDegrees(), -180.0, 180.0);
+
+        double rotationalRate = DriveConstants.rotationController.calculate(currentAngle.getRadians(), desiredAngle.getRadians());
+        driveJoystick(controllerVelX, controllerVelY, rotationalRate, true);
+   
+      });
   }
 
   public void incrementKP(){ DriveConstants.ROTATION_KP += DriveConstants.KP_INCREMENT;};
