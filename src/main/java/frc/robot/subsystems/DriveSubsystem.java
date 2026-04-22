@@ -86,6 +86,8 @@ public class DriveSubsystem extends SubsystemBase {
   public static double autoAlignPID = 0.05; 
 
   public static double hubDistance = 0; 
+
+  public double autoAlignRotationalRate = 0; 
   
   private final SwerveDrivePoseEstimator mPoseEstimator =
       new SwerveDrivePoseEstimator(
@@ -186,6 +188,7 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("VISION X", mPoseEstimator.getEstimatedPosition().getX());
 
     SmartDashboard.putNumber("Driving/autoalignP", autoAlignPID);
+    SmartDashboard.putNumber("Driving/AUTOALIGNROTATIONRATE", autoAlignRotationalRate);
   }
 
   /**
@@ -502,8 +505,8 @@ public class DriveSubsystem extends SubsystemBase {
             && Math.hypot(controllerVelX, controllerVelY) < OperatorConstants.DRIVE_DEADBAND) {
                driveJoystick(controllerVelX, controllerVelY, 0, true); //TODO:IDK HOW FIELD RELATIVE WILL WOKR 
             } else {
-            double rotationalRate = DriveConstants.rotationController.calculate(currentAngle.getRadians(), desiredAngle.getRadians());
-              driveJoystick(controllerVelX, controllerVelY, rotationalRate, true);
+            autoAlignRotationalRate = DriveConstants.rotationController.calculate(currentAngle.getRadians(), desiredAngle.getRadians());
+              driveJoystick(controllerVelX, controllerVelY, autoAlignRotationalRate, true);
         }
       });
   }
@@ -529,8 +532,8 @@ public class DriveSubsystem extends SubsystemBase {
                 && Math.hypot(controllerVelX, controllerVelY) < OperatorConstants.DRIVE_DEADBAND) {
                   driveJoystick(controllerVelX, controllerVelY, 0, true); 
                 } else {
-                double rotationalRate = DriveConstants.rotationController.calculate(currentAngle.getRadians(), desiredAngle.getRadians());
-                  driveJoystick(controllerVelX, controllerVelY, rotationalRate, true);
+                autoAlignRotationalRate = DriveConstants.rotationController.calculate(currentAngle.getRadians(), desiredAngle.getRadians());
+                  driveJoystick(controllerVelX, controllerVelY, autoAlignRotationalRate, true);
             }
           });
   }
@@ -552,8 +555,8 @@ public class DriveSubsystem extends SubsystemBase {
         double deltaAngleDegrees = deltaAngle.getDegrees();
         double wrappedAngleDeg = MathUtil.inputModulus(deltaAngle.getDegrees(), -180.0, 180.0);
 
-        double rotationalRate = DriveConstants.rotationController.calculate(currentAngle.getRadians(), desiredAngle.getRadians());
-        driveJoystick(controllerVelX, controllerVelY, rotationalRate, true);
+        autoAlignRotationalRate = DriveConstants.rotationController.calculate(currentAngle.getRadians(), desiredAngle.getRadians());
+        driveJoystick(controllerVelX, controllerVelY, autoAlignRotationalRate, true);
    
       });
   }
