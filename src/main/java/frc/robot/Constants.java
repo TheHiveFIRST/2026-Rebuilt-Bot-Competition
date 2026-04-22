@@ -123,7 +123,7 @@ public final class Constants {
     }
     public static final PIDController rotationController = getRotationController();
 
-    public static double ROTATION_KP = 1.1;
+    public static double ROTATION_KP = 20;
     public static final double KP_INCREMENT = 0.01;
 
 

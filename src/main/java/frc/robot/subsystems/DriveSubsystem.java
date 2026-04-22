@@ -481,8 +481,8 @@ public class DriveSubsystem extends SubsystemBase {
   public Command alignOriginalDrive(CommandXboxController controller, Supplier<Pose2d> targetPoseSupplier) {
 
     return run( ()-> {
-        double controllerVelX = MathUtil.applyDeadband(controller.getLeftY(),OperatorConstants.DRIVE_DEADBAND);
-        double controllerVelY = MathUtil.applyDeadband(controller.getLeftX(),OperatorConstants.DRIVE_DEADBAND);
+        double controllerVelX = -MathUtil.applyDeadband(controller.getLeftY(),OperatorConstants.DRIVE_DEADBAND);
+        double controllerVelY = -MathUtil.applyDeadband(controller.getLeftX(),OperatorConstants.DRIVE_DEADBAND);
 
         Pose2d drivePose = getVisionPose();
         Pose2d targetPose = targetPoseSupplier.get();
@@ -512,8 +512,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     return run(() -> {
 
-        double controllerVelX =MathUtil.applyDeadband( controller.getLeftY(), OperatorConstants.DRIVE_DEADBAND);
-        double controllerVelY = MathUtil.applyDeadband(controller.getLeftX(),OperatorConstants.DRIVE_DEADBAND);
+        double controllerVelX =-MathUtil.applyDeadband( controller.getLeftY(), OperatorConstants.DRIVE_DEADBAND);
+        double controllerVelY = -MathUtil.applyDeadband(controller.getLeftX(),OperatorConstants.DRIVE_DEADBAND);
 
 
         Pose2d drivePose = getVisionPose();
@@ -539,8 +539,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     return run(() -> {
 
-        double controllerVelX =MathUtil.applyDeadband( controller.getLeftY(), OperatorConstants.DRIVE_DEADBAND);
-        double controllerVelY = MathUtil.applyDeadband(controller.getLeftX(),OperatorConstants.DRIVE_DEADBAND);
+        double controllerVelX =-MathUtil.applyDeadband( controller.getLeftY(), OperatorConstants.DRIVE_DEADBAND);
+        double controllerVelY = -MathUtil.applyDeadband(controller.getLeftX(),OperatorConstants.DRIVE_DEADBAND);
 
 
         Pose2d drivePose = getVisionPose();
