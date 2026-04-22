@@ -177,8 +177,8 @@ public class RobotContainer {
 
          mDriverController.a().whileTrue(new RunCommand(
          () -> mDriveSubsystem.driveJoystick(
-           MathUtil.applyDeadband(mDriverController.getLeftY(), OperatorConstants.DRIVE_DEADBAND),
-           MathUtil.applyDeadband(mDriverController.getLeftX(), OperatorConstants.DRIVE_DEADBAND),
+           MathUtil.applyDeadband(-mDriverController.getLeftY(), OperatorConstants.DRIVE_DEADBAND),
+           MathUtil.applyDeadband(-mDriverController.getLeftX(), OperatorConstants.DRIVE_DEADBAND),
           -mVisionSubsystem.autoAlignRotationSpeed(), 
           true), mDriveSubsystem));
     
