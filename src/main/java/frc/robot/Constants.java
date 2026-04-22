@@ -74,7 +74,7 @@ public final class Constants {
 
     public static double DRIVE_SPEED = 1;
     public static final double SLOW_MODE_MULTIPLIER = 0.5;
-    public static final double AUTO_ALIGN_PID = 0.047;
+    public static final double AUTO_ALIGN_PID = 0.03;
     public static final double AUTO_ALIGN_MAX_SPEED = 1.00;
 
     public static final double shooterSideOffset = Units.inchesToMeters(6.0);
