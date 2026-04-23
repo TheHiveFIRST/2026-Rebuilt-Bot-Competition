@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.028735064319303,
-        "y": 0.8991026742136133
+        "x": 3.091283169430898,
+        "y": 0.8287126973457446
       },
       "isLocked": false,
       "linkedName": "shootnew"
@@ -17,95 +17,95 @@
     {
       "anchor": {
         "x": 3.5,
-        "y": 0.5
-      },
-      "prevControl": {
-        "x": 2.8579379352392187,
-        "y": 0.43478329638631097
-      },
-      "nextControl": {
-        "x": 3.8057147289010307,
-        "y": 0.5310526161867329
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 6.0,
-        "y": 0.7
-      },
-      "prevControl": {
-        "x": 5.660960148278308,
-        "y": 0.4014795779761344
-      },
-      "nextControl": {
-        "x": 6.187632988394873,
-        "y": 0.8652085399306263
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 7.6,
-        "y": 3.8
-      },
-      "prevControl": {
-        "x": 7.6,
-        "y": 2.8
-      },
-      "nextControl": {
-        "x": 7.6,
-        "y": 4.3
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 6.0,
-        "y": 3.8
-      },
-      "prevControl": {
-        "x": 6.125,
-        "y": 4.016506350946109
-      },
-      "nextControl": {
-        "x": 5.840495586282919,
-        "y": 3.5237302514105293
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 5.7,
-        "y": 0.7
-      },
-      "prevControl": {
-        "x": 6.635908559902794,
-        "y": 1.0891479866094582
-      },
-      "nextControl": {
-        "x": 5.360928952866031,
-        "y": 0.5590152703342626
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 3.3,
         "y": 0.6
       },
       "prevControl": {
-        "x": 3.987253926690331,
-        "y": 0.6466527004072866
+        "x": 2.8666083345795874,
+        "y": 0.6000000000000001
       },
       "nextControl": {
-        "x": 3.018304144476371,
-        "y": 0.580877704959786
+        "x": 3.878655703528678,
+        "y": 0.6
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.0,
+        "y": 0.8
+      },
+      "prevControl": {
+        "x": 5.839303097578365,
+        "y": 0.6084888892202555
+      },
+      "nextControl": {
+        "x": 6.218954855245771,
+        "y": 1.0609402353550927
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.6,
+        "y": 3.8
+      },
+      "prevControl": {
+        "x": 8.063350428858362,
+        "y": 3.2575052756204856
+      },
+      "nextControl": {
+        "x": 7.37096138378639,
+        "y": 4.068160409997266
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.5,
+        "y": 3.8
+      },
+      "prevControl": {
+        "x": 6.5,
+        "y": 4.063662074593704
+      },
+      "nextControl": {
+        "x": 6.5,
+        "y": 2.9630895881383
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.0,
+        "y": 0.7
+      },
+      "prevControl": {
+        "x": 6.496271227965545,
+        "y": 2.063493992760353
+      },
+      "nextControl": {
+        "x": 5.914494964168583,
+        "y": 0.4650768448035228
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.5,
+        "y": 0.7
+      },
+      "prevControl": {
+        "x": 2.339303097578365,
+        "y": 0.5084888892202555
+      },
+      "nextControl": {
+        "x": 2.660696902421635,
+        "y": 0.8915111107797444
       },
       "isLocked": false,
       "linkedName": null
@@ -116,8 +116,8 @@
         "y": 1.0
       },
       "prevControl": {
-        "x": 2.568504967946098,
-        "y": 0.9056069381026186
+        "x": 2.5634341973159676,
+        "y": 0.9191506277052228
       },
       "nextControl": null,
       "isLocked": false,
@@ -130,11 +130,11 @@
       "rotationDegrees": 0.0
     },
     {
-      "waypointRelativePos": 1.5,
+      "waypointRelativePos": 1.7603550295857981,
       "rotationDegrees": 0.0
     },
     {
-      "waypointRelativePos": 2.5,
+      "waypointRelativePos": 2.4852071005917145,
       "rotationDegrees": 90.0
     },
     {
@@ -142,7 +142,7 @@
       "rotationDegrees": 180.0
     },
     {
-      "waypointRelativePos": 4.140159045725646,
+      "waypointRelativePos": 3.984220907297831,
       "rotationDegrees": -90.0
     },
     {
@@ -160,7 +160,7 @@
       "minWaypointRelativePos": 2.7735849056603765,
       "maxWaypointRelativePos": 4.226415094339623,
       "constraints": {
-        "maxVelocity": 2.0,
+        "maxVelocity": 1.25,
         "maxAcceleration": 7.6,
         "maxAngularVelocity": 200.0,
         "maxAngularAcceleration": 1537.0,
@@ -171,22 +171,9 @@
     {
       "name": "Constraints Zone",
       "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0.7325581395348835,
+      "maxWaypointRelativePos": 1.25,
       "constraints": {
-        "maxVelocity": 1.0,
-        "maxAcceleration": 5.0,
-        "maxAngularVelocity": 200.0,
-        "maxAngularAcceleration": 500.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    },
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 6.2,
-      "maxWaypointRelativePos": 7.0,
-      "constraints": {
-        "maxVelocity": 1.0,
+        "maxVelocity": 2.0,
         "maxAcceleration": 5.0,
         "maxAngularVelocity": 200.0,
         "maxAngularAcceleration": 500.0,
@@ -207,13 +194,13 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 55.0
+    "rotation": 52.50000000000001
   },
   "reversed": false,
   "folder": "NEWAUTO",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 55.0
+    "rotation": 52.50000000000001
   },
   "useDefaultConstraints": false
 }
