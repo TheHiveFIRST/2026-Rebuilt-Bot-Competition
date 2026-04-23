@@ -50,6 +50,12 @@
                 "data": {
                   "name": "setshot"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "setregression"
+                }
               }
             ]
           }
@@ -67,19 +73,13 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 3.0
+                  "waitTime": 4.0
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "runkicker"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "runintake"
+                  "name": "shoot"
                 }
               }
             ]
@@ -89,12 +89,6 @@
           "type": "named",
           "data": {
             "name": "stopshoot"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.1
           }
         },
         {
@@ -112,6 +106,18 @@
                 "data": {
                   "name": "setshot"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "setregression"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakepivotdown2"
+                }
               }
             ]
           }
@@ -129,25 +135,13 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 3.0
+                  "waitTime": 4.0
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "runkicker"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "runintake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "intakepivotup"
+                  "name": "shoot"
                 }
               }
             ]

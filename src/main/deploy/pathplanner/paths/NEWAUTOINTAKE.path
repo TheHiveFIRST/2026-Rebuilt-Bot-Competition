@@ -21,11 +21,11 @@
       },
       "prevControl": {
         "x": 7.6,
-        "y": 0.6922252789298244
+        "y": 0.5
       },
       "nextControl": {
         "x": 7.6,
-        "y": 2.3077747210701753
+        "y": 1.75
       },
       "isLocked": false,
       "linkedName": null
@@ -37,7 +37,7 @@
       },
       "prevControl": {
         "x": 7.6,
-        "y": 2.8
+        "y": 3.55
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,27 +48,20 @@
   "constraintZones": [
     {
       "name": "INTAKING",
-      "minWaypointRelativePos": 0.9056603773584906,
+      "minWaypointRelativePos": 0.9,
       "maxWaypointRelativePos": 2.0,
       "constraints": {
         "maxVelocity": 1.25,
-        "maxAcceleration": 7.6,
+        "maxAcceleration": 5.0,
         "maxAngularVelocity": 200.0,
-        "maxAngularAcceleration": 1537.0,
+        "maxAngularAcceleration": 500.0,
         "nominalVoltage": 12.0,
         "unlimited": false
       }
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "intakepivotdown",
-      "waypointRelativePos": 0.5163551401869159,
-      "endWaypointRelativePos": 2.0,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.16,
     "maxAcceleration": 5.0,

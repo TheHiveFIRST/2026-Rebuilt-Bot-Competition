@@ -21,7 +21,7 @@ public final class DriveConfig {
 
             //Current limit should ALWAYS be below 50 for driving and 20 for turning 
             drivingConfig
-            .idleMode(IdleMode.kBrake).smartCurrentLimit(60)
+            .idleMode(IdleMode.kBrake).smartCurrentLimit(50)
             .closedLoopRampRate(0.6);
             drivingConfig.encoder
             .positionConversionFactor(drivingFactor)

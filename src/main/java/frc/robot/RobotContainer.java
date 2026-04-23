@@ -97,6 +97,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("runintake", mIntakeSubsystem.runIntakeForwardCommand().withTimeout(5));
 
     NamedCommands.registerCommand("intakepivotdown", new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem).withTimeout(2.93));
+        NamedCommands.registerCommand("intakepivotdown2", new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem).withTimeout(6.94));
+
     
     NamedCommands.registerCommand("shoot", autoShoot().withTimeout(3));
     NamedCommands.registerCommand("runkicker", mShooterSubsystem.runKickerCommand().withTimeout(3));                                             
