@@ -225,7 +225,7 @@ public class RobotContainer {
     public Command shootFullHopper(){
       return Commands.parallel(           
       new FullHopperIntakeWobbleCommand(mArmSubsystem, mIntakeSubsystem),
-      mDriveSubsystem.defensePosition(),
+     /*  mDriveSubsystem.defensePosition(),*/
       
       mShooterSubsystem.runKickerCommand());
   

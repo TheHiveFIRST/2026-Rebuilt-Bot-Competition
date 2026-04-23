@@ -87,8 +87,12 @@ public class DriveSubsystem extends SubsystemBase {
 
   public static double hubDistance = 0; 
 
-  public double autoAlignRotationalRate = 0; 
+  public double autoAlignRotationalRate = 10; 
+  public double targetx = 0;
+  public double targety = 0;
+  public double targetangle = 0;
   
+  public Rotation2d desiredAngle;
   private final SwerveDrivePoseEstimator mPoseEstimator =
       new SwerveDrivePoseEstimator(
           DriveConstants.DriveKinematics,
@@ -186,6 +190,9 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Driving/kp", DriveConstants.ROTATION_KP);
     SmartDashboard.putNumber("ODOM X", Odometry.getPoseMeters().getX());
     SmartDashboard.putNumber("VISION X", mPoseEstimator.getEstimatedPosition().getX());
+SmartDashboard.putNumber("Driving/x", targetx);
+    SmartDashboard.putNumber("Driving/y", targety);
+    SmartDashboard.putNumber("Driving/angle", targetangle*180/Math.PI);
 
     SmartDashboard.putNumber("Driving/autoalignP", autoAlignPID);
     SmartDashboard.putNumber("Driving/AUTOALIGNROTATIONRATE", autoAlignRotationalRate);
@@ -548,14 +555,25 @@ public class DriveSubsystem extends SubsystemBase {
 
         Pose2d drivePose = getVisionPose();
         Pose2d targetPose = targetPoseSupplier.get();
+        targetx = -(drivePose.getX() - targetPose.getX());
+        targety = -(drivePose.getY() - targetPose.getY());
+        if (targety > 0) {
+        targetangle = Math.atan2(targety, targetx) - Math.PI;
+        } else if (targety < 0) {
+        targetangle = Math.PI + Math.atan2(targety, targetx);
+        }else if (targety == 0) {
+        targetangle = 0;
+        }
         Translation2d robotToTarget = targetPose.getTranslation().minus(drivePose.getTranslation());
-        Rotation2d desiredAngle = robotToTarget.getAngle();
+        desiredAngle = robotToTarget.getAngle();
         Rotation2d currentAngle = drivePose.getRotation(); 
+        double current = MathUtil.inputModulus(mGyro.getAngle()/180*Math.PI, -Math.PI, Math.PI);
         Rotation2d deltaAngle = currentAngle.minus(desiredAngle);
         double deltaAngleDegrees = deltaAngle.getDegrees();
         double wrappedAngleDeg = MathUtil.inputModulus(deltaAngle.getDegrees(), -180.0, 180.0);
 
-        autoAlignRotationalRate = DriveConstants.rotationController.calculate(currentAngle.getRadians(), desiredAngle.getRadians());
+        double autoalignp = 20;
+        autoAlignRotationalRate = (targetangle + current) * 2;
         driveJoystick(controllerVelX, controllerVelY, autoAlignRotationalRate, true);
    
       });
