@@ -4,15 +4,15 @@
     {
       "anchor": {
         "x": 2.8,
-        "y": 7.069000000000001
+        "y": 1.0
       },
       "prevControl": null,
       "nextControl": {
         "x": 3.091283169430898,
-        "y": 6.897712697345746
+        "y": 0.828712697345745
       },
       "isLocked": false,
-      "linkedName": "shootnew"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -200,7 +200,7 @@
   "folder": "NEWAUTO",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -52.50000000000001
+    "rotation": 52.50000000000001
   },
   "useDefaultConstraints": false
 }
