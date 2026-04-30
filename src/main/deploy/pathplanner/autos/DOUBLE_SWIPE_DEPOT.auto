@@ -17,7 +17,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "DEPOTINTAKE"
+                  "pathName": "NEWNEWAUTOINTAKE"
                 }
               },
               {
@@ -42,7 +42,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "DEPOT DEPOT"
+                  "pathName": "NEWNEWAUTOSHOOT"
                 }
               },
               {
@@ -61,13 +61,50 @@
           }
         },
         {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 3.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "runkicker"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "runintake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopshoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.1
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "ANTI DEPOT DEPOT"
+                  "pathName": "NEWNEWAUTOINTAKEAGAIN"
                 }
               },
               {
@@ -77,6 +114,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.1
           }
         },
         {
@@ -120,6 +163,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Testing Autos",
+  "folder": null,
   "choreoAuto": false
 }

@@ -551,8 +551,6 @@ SmartDashboard.putNumber("Driving/x", targetx);
 
         double controllerVelX =-MathUtil.applyDeadband( controller.getLeftY(), OperatorConstants.DRIVE_DEADBAND);
         double controllerVelY = -MathUtil.applyDeadband(controller.getLeftX(),OperatorConstants.DRIVE_DEADBAND);
-
-
         Pose2d drivePose = getVisionPose();
         Pose2d targetPose = targetPoseSupplier.get();
         targetx = -(drivePose.getX() - targetPose.getX());
@@ -578,7 +576,7 @@ SmartDashboard.putNumber("Driving/x", targetx);
    
       });
   }
-
+  
   public void incrementKP(){ DriveConstants.ROTATION_KP += DriveConstants.KP_INCREMENT;};
 
   public void decrementKP(){ DriveConstants.ROTATION_KP -= DriveConstants.KP_INCREMENT;};

@@ -17,7 +17,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "DEPOTINTAKE"
+                  "pathName": "Copy of NEWAUTOINTAKE"
                 }
               },
               {
@@ -42,7 +42,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "DEPOT DEPOT"
+                  "pathName": "Copy of NEWAUTOSHOOT"
                 }
               },
               {
@@ -61,34 +61,9 @@
           }
         },
         {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "ANTI DEPOT DEPOT"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "setshot"
-                }
-              }
-            ]
-          }
-        },
-        {
           "type": "race",
           "data": {
             "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 3.0
-                }
-              },
               {
                 "type": "named",
                 "data": {
@@ -98,28 +73,28 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "runintake"
+                  "name": "intakepivotup"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "intakepivotup"
+                  "name": "runintake"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 6.0
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 10.0
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Testing Autos",
+  "folder": null,
   "choreoAuto": false
 }

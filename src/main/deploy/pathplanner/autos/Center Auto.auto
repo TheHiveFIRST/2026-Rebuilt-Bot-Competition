@@ -27,25 +27,25 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "rampupshoot"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "shoot"
+                        "name": "setshot"
                       }
                     },
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 4.0
+                        "waitTime": 2.0
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "stopshoot"
+                        "name": "runkicker"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 5.0
                       }
                     }
                   ]
