@@ -150,6 +150,9 @@ public class RobotContainer {
         mOperatorController.x().onTrue(mShooterSubsystem.toggleDistanceEstimationCommand());
         mOperatorController.rightBumper().onTrue(mShooterSubsystem.increaseShootingRPMOffsetCommand());
         mOperatorController.leftBumper().onTrue(mShooterSubsystem.decreaseShootingRPMOffsetCommand());
+          
+        mOperatorController.povDown().whileTrue(mDriveSubsystem.characterizeAngular(3));
+        mOperatorController.povUp().whileTrue(mDriveSubsystem.characterizeLinear(4));
         //mOperatorController.povLeft().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::incrementRPM));
         //mOperatorController.povRight().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::decrementRPM));
         //mOperatorController.leftStick().whileTrue(mDriveSubsystem.defensePosition());
