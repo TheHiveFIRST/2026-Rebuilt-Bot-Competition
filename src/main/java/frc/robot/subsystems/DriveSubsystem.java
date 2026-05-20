@@ -87,6 +87,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   public static double hubDistance = 0; 
 
+  public static double gyrooffset = 0;
   public double autoAlignRotationalRate = 10; 
   public double targetx = 0;
   public double targety = 0;
@@ -176,26 +177,26 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putData(field2d);
 
     hubDistance = getHubDistance();
-
     SmartDashboard.putNumber("Driving/hub distance", getHubDistance());
     SmartDashboard.putNumber("Position", mBackRight.getPosition().angle.getRadians());
     SmartDashboard.putNumber("Driving/gyro", -mGyro.getAngle());
-    SmartDashboard.putNumber("Driving/newgyro", mPoseEstimator.getEstimatedPosition().getRotation().getDegrees());
+    SmartDashboard.putNumber("Driving/poseestimatorgyro", mPoseEstimator.getEstimatedPosition().getRotation().getDegrees());
     SmartDashboard.putNumber("Driving/heading", getHeading());
     SmartDashboard.putNumber("Driving/Pose X", getVisionPose().getX());
     SmartDashboard.putNumber("Driving/Pose Y", getVisionPose().getY());
-    SmartDashboard.putString("Driving/Alliance", Constants.getCurrentAlliance().toString());
+    //SmartDashboard.putString("Driving/Alliance", Constants.getCurrentAlliance().toString());
     SmartDashboard.putNumber("Driving/HubPoseX", DriveConstants.getHubPose().getX());
     SmartDashboard.putNumber("Driving/HubPoseY", DriveConstants.getHubPose().getY());
-    SmartDashboard.putNumber("Driving/kp", DriveConstants.ROTATION_KP);
+    //SmartDashboard.putNumber("Driving/kp", DriveConstants.ROTATION_KP);
+
     SmartDashboard.putNumber("ODOM X", Odometry.getPoseMeters().getX());
     SmartDashboard.putNumber("VISION X", mPoseEstimator.getEstimatedPosition().getX());
-SmartDashboard.putNumber("Driving/x", targetx);
+    SmartDashboard.putNumber("Driving/x", targetx);
     SmartDashboard.putNumber("Driving/y", targety);
     SmartDashboard.putNumber("Driving/angle", targetangle*180/Math.PI);
 
-    SmartDashboard.putNumber("Driving/autoalignP", autoAlignPID);
-    SmartDashboard.putNumber("Driving/AUTOALIGNROTATIONRATE", autoAlignRotationalRate);
+    //SmartDashboard.putNumber("Driving/autoalignP", autoAlignPID);
+   // SmartDashboard.putNumber("Driving/AUTOALIGNROTATIONRATE", autoAlignRotationalRate);
   }
 
   /**
@@ -211,6 +212,7 @@ SmartDashboard.putNumber("Driving/x", targetx);
    * @param pose The pose to which to set the Odometry.
    */
   public void resetPose(Pose2d pose) {
+    
     mPoseEstimator.resetPosition(
     getGyroRotation(),
     new SwerveModulePosition[] {
@@ -375,7 +377,7 @@ SmartDashboard.putNumber("Driving/x", targetx);
   }
 
   public Rotation2d getGyroRotation(){
-    double angle = mGyro.getAngle(); 
+    double angle = mGyro.getAngle() - gyrooffset; 
     return Rotation2d.fromDegrees(-angle
       /*useInvertedGyro ? -angle : angle*/
     );

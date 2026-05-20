@@ -309,6 +309,7 @@ public Command setAutoShotCommand() {
         boolean atSpeed = Math.abs(mShooterLeaderEncoder.getVelocity() - mTargetRPM + ShooterRPMOffset) < ShooterConstants.VELOCITY_TOLERANCE;
         SmartDashboard.putBoolean("Shooter/Shooter Ready", atSpeed);
         SmartDashboard.putBoolean("Shooter/Shooter Toggled", mShooterEnabled);
+        SmartDashboard.putBoolean("Shooter/Regression Toggled", mDistanceEstimation);
     }
 
      // Tuning  
