@@ -217,6 +217,7 @@ public class ShooterSubsystem extends SubsystemBase {
     return new InstantCommand(() -> {
         mTargetRPM = ShooterConstants.HUB_TARGET_RPM;
         ShooterRPMOffset = 0;
+        mDistanceEstimation = false; 
         shotType = "BUMPER_ALIGN_SHOT";
         });
     }
