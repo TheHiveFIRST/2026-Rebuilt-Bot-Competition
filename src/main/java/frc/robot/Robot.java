@@ -25,6 +25,8 @@ public class Robot extends TimedRobot {
 
   private double timeToNext; 
 
+  private String m_autoName = "BLANK_AUTO";
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -68,7 +70,8 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     DriveSubsystem.useInvertedGyro = true;
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
+    m_autoName = m_autonomousCommand.getName();
+    
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -88,9 +91,9 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    DriveSubsystem.useInvertedGyro = true;
+    m_robotContainer.configureJoysticks(m_autoName);
     m_robotContainer.zeroGyroHeading();
-    m_robotContainer.resetVisionPose();
+    //m_robotContainer.resetVisionPose();
   }
 
   /** This function is called periodically during operator control. */
