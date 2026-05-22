@@ -21,21 +21,13 @@ import edu.wpi.first.math.geometry.Translation2d;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
-import com.studica.frc.AHRS;
-import com.studica.frc.AHRS.NavXComType;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.auto.CommandUtil;
-import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 
 import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.AutoBuilderException
-;
-import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.config.RobotConfig;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -51,9 +43,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.LimelightHelpers;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.configs.DriveConfig;
 import static edu.wpi.first.units.Units.Degrees;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -93,16 +83,19 @@ public class DriveSubsystem extends SubsystemBase {
   public double targetx = 0;
   public double targety = 0;
   public double targetangle = 0;
+
+  public static double gyrooffset = 0; 
   private double prevLinearVel            = 0;
-private double prevOmega                = 0;
-private double prevCharTime             = 0;
+  private double prevOmega                = 0;
+  private double prevCharTime             = 0;
  
-private double peakLinearVelocity       = 0;
-private double peakLinearAcceleration   = 0;
-private double peakAngularVelocity      = 0;
-private double peakAngularAcceleration  = 0;
+  private double peakLinearVelocity       = 0;
+  private double peakLinearAcceleration   = 0;
+  private double peakAngularVelocity      = 0;
+  private double peakAngularAcceleration  = 0;
  
   public Rotation2d desiredAngle;
+  
   private final SwerveDrivePoseEstimator mPoseEstimator =
       new SwerveDrivePoseEstimator(
           DriveConstants.DriveKinematics,
