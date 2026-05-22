@@ -75,8 +75,6 @@ public class DriveSubsystem extends SubsystemBase {
   
   private final Field2d field2d = new Field2d();
 
-  public static double autoAlignPID = 0.05; 
-
   public static double hubDistance = 0; 
 
   public double autoAlignRotationalRate = 10; 
@@ -199,7 +197,6 @@ SmartDashboard.putNumber("Driving/x", targetx);
     SmartDashboard.putNumber("Driving/y", targety);
     SmartDashboard.putNumber("Driving/angle", targetangle*180/Math.PI);
 
-    SmartDashboard.putNumber("Driving/autoalignP", autoAlignPID);
     SmartDashboard.putNumber("Driving/AUTOALIGNROTATIONRATE", autoAlignRotationalRate);
   }
 
@@ -393,9 +390,6 @@ SmartDashboard.putNumber("Driving/x", targetx);
     return getGyroRotation().getDegrees();
   }
 
-  public void incrementPalign() { autoAlignPID += ShooterConstants.KD_INCREMENT; }
-  public void decrementPalign() { autoAlignPID -= ShooterConstants.KD_INCREMENT; }
-
 
   /**
    * Returns the turn rate of the robot.
@@ -416,62 +410,21 @@ SmartDashboard.putNumber("Driving/x", targetx);
           mBackRight.getPosition()
         });
 
-
-    boolean useMegaTag2 = true; //set to false to use MegaTag1
     boolean doRejectUpdate = false;
-    if(useMegaTag2 == false)
-    {
- 
-      LimelightHelpers.PoseEstimate mt1 = VisionSubsystem.getBotPoseEstimateBlue(); 
-       // }
-      
-      if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
-      {
-        if(mt1.rawFiducials[0].ambiguity > .7)
-        {
-          doRejectUpdate = true;
-        }
-        if(mt1.rawFiducials[0].distToCamera > 7)
-        {
-          doRejectUpdate = true;
-        }
-      }
-      if(mt1.tagCount == 0)
-      {
-        doRejectUpdate = true;
-      }
-
-      if(!doRejectUpdate)
-      {
-        mPoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(DriveConstants.VISION_STD_MTG1_N1, 
-        DriveConstants.VISION_STD_MTG1_N2, Units.degreesToRadians(5)));
-        mPoseEstimator.addVisionMeasurement(
-            mt1.pose,
-            mt1.timestampSeconds);
-      }
-    }
-    else if (useMegaTag2 == true)
-    //mPoseEstimator.getEstimatedPosition().getRotation().getDegrees()
-    //TOADO: checkif using gyro angle works 
-    {
-      LimelightHelpers.SetRobotOrientation("limelight", mPoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-      LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+    LimelightHelpers.SetRobotOrientation("limelight", mPoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+    LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
          
-      if(Math.abs(mGyro.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
-      {
-        doRejectUpdate = true;
-      }
-      if(mt2.tagCount == 0) 
-      {
-        doRejectUpdate = true;
-      }
-      if(!doRejectUpdate)
-      {
-        mPoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(DriveConstants.VISION_STD_MTG2_N1, DriveConstants.VISION_STD_MTG2_N2, Units.degreesToRadians(5)));
-        mPoseEstimator.addVisionMeasurement(
-            mt2.pose,
-            mt2.timestampSeconds);
-      }
+    if(Math.abs(mGyro.getRate()) > 720) {// if our angular velocity is greater than 720 degrees per second, ignore vision updates
+      doRejectUpdate = true;
+    }
+    if(mt2.tagCount == 0) {
+      doRejectUpdate = true;
+    }
+    if(!doRejectUpdate) {
+      mPoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(DriveConstants.VISION_STD_MTG2_N1, DriveConstants.VISION_STD_MTG2_N2, Units.degreesToRadians(5)));
+      mPoseEstimator.addVisionMeasurement(
+        mt2.pose,
+        mt2.timestampSeconds);   
     }
   }
   
@@ -511,9 +464,7 @@ SmartDashboard.putNumber("Driving/x", targetx);
         }
         Translation2d robotToTarget = targetPose.getTranslation().minus(drivePose.getTranslation());
         desiredAngle = robotToTarget.getAngle();
-        Rotation2d currentAngle = drivePose.getRotation(); 
         double current = MathUtil.inputModulus(mGyro.getAngle()/180*Math.PI, -Math.PI, Math.PI);
-        Rotation2d deltaAngle = currentAngle.minus(desiredAngle);
         autoAlignRotationalRate = (targetangle + current) * 2;
         driveJoystick(controllerVelX, controllerVelY, autoAlignRotationalRate, true);
    
