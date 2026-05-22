@@ -14,7 +14,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
@@ -157,13 +158,17 @@ public class RobotContainer {
         mDriverController.rightTrigger().whileTrue(shootFullHopper());
         mDriverController.leftBumper().whileTrue(mArmSubsystem.runIntakePivotUp());
         mDriverController.leftTrigger(0.2).whileTrue(mIntakeSubsystem.runIntakeForwardCommand());
-        
-
+ 
         mDriverController.start().whileTrue(mDriveSubsystem.resetGyro()); 
-        mDriverController.povLeft().onTrue(mShooterSubsystem.increaseShootingRPMOffsetCommand());
+        
+        mDriverController.povLeft().onTrue(mShooterSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
+        mDriverController.povRight().onTrue(mShooterSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        mDriverController.povDown().onTrue(mShooterSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        mDriverController.povUp().onTrue(mShooterSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        /*mDriverController.povLeft().onTrue(mShooterSubsystem.increaseShootingRPMOffsetCommand());
         mDriverController.povRight().onTrue(mShooterSubsystem.decreaseShootingRPMOffsetCommand());
         mDriverController.povDown().onTrue(toggleSlowMode());
-        mDriverController.povUp().whileTrue(mIntakeSubsystem.runIntakeSlowCommand());
+        mDriverController.povUp().whileTrue(mIntakeSubsystem.runIntakeSlowCommand());*/
        // mDriverController.povUp().onTrue(mShooterSubsystem.runOnce(mDriveSubsystem::incrementPalign));
        // mDriverController.povDown().onTrue(mShooterSubsystem.runOnce(mDriveSubsystem::decrementPalign));
         //mDriverController.povDown().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::decrementRPM));

@@ -85,6 +85,8 @@ public class DriveSubsystem extends SubsystemBase {
   public double targetangle = 0;
 
   public static double gyrooffset = 0; 
+  
+  // constants for velocity & rotation logging
   private double prevLinearVel            = 0;
   private double prevOmega                = 0;
   private double prevCharTime             = 0;
@@ -488,64 +490,6 @@ SmartDashboard.putNumber("Driving/x", targetx);
         // double centerToShooterMeters = DriveConstants.shooterSideOffset;
         // double shooterToTargetMeters = Math.sqrt(Math.pow(centerToTargetMeters, 2.0) - Math.pow(centerToShooterMeters, 2.0));
         return centerToTargetMeters;
-    }
-
- 
-  public Command alignOriginalDrive(CommandXboxController controller, Supplier<Pose2d> targetPoseSupplier) {
-
-    return run( ()-> {
-        double controllerVelX = -MathUtil.applyDeadband(controller.getLeftY(),OperatorConstants.DRIVE_DEADBAND);
-        double controllerVelY = -MathUtil.applyDeadband(controller.getLeftX(),OperatorConstants.DRIVE_DEADBAND);
-
-        Pose2d drivePose = getVisionPose();
-        Pose2d targetPose = targetPoseSupplier.get();
-        double shooterOffset = -DriveConstants.shooterSideOffset;
-        double targetDistance = drivePose.getTranslation().getDistance(targetPose.getTranslation());
-        double shooterAngleRads = Math.acos(shooterOffset / targetDistance); 
-        Rotation2d shooterAngle = Rotation2d.fromRadians(shooterAngleRads);
-        Rotation2d offsetAngle = Rotation2d.kCCW_90deg.minus(shooterAngle);
-        Rotation2d shooterAngleOffset = Rotation2d.fromDegrees(2);
-        Rotation2d desiredAngle = offsetAngle.plus(drivePose.relativeTo(targetPose).getTranslation().getAngle()).plus(Rotation2d.k180deg).plus(shooterAngleOffset);
-        Rotation2d currentAngle = drivePose.getRotation();
-        Rotation2d deltaAngle = currentAngle.minus(desiredAngle);
-        double wrappedAngleDeg = MathUtil.inputModulus(deltaAngle.getDegrees(), -180.0, 180.0);
-
-        if (
-            (Math.abs(wrappedAngleDeg) < DriveConstants.epsilonAngleToGoal.in(Degrees)) // if facing goal already
-            && Math.hypot(controllerVelX, controllerVelY) < OperatorConstants.DRIVE_DEADBAND) {
-               driveJoystick(controllerVelX, controllerVelY, 0, true); //TODO:IDK HOW FIELD RELATIVE WILL WOKR 
-            } else {
-            autoAlignRotationalRate = DriveConstants.rotationController.calculate(currentAngle.getRadians(), desiredAngle.getRadians());
-              driveJoystick(controllerVelX, controllerVelY, autoAlignRotationalRate, true);
-        }
-      });
-  }
-
-  public Command alignV1Drive(CommandXboxController controller, Supplier<Pose2d> targetPoseSupplier) {
-
-    return run(() -> {
-
-        double controllerVelX =-MathUtil.applyDeadband( controller.getLeftY(), OperatorConstants.DRIVE_DEADBAND);
-        double controllerVelY = -MathUtil.applyDeadband(controller.getLeftX(),OperatorConstants.DRIVE_DEADBAND);
-
-
-        Pose2d drivePose = getVisionPose();
-        Pose2d targetPose = targetPoseSupplier.get();
-        Translation2d robotToTarget = targetPose.getTranslation().minus(drivePose.getTranslation());
-        Rotation2d desiredAngle = robotToTarget.getAngle();
-        Rotation2d currentAngle = drivePose.getRotation(); 
-        Rotation2d deltaAngle = currentAngle.minus(desiredAngle);
-        double deltaAngleDegrees = deltaAngle.getDegrees();
-        double wrappedAngleDeg = MathUtil.inputModulus(deltaAngle.getDegrees(), -180.0, 180.0);
-        if (
-                (Math.abs(deltaAngleDegrees) < DriveConstants.epsilonAngleToGoal.in(Degrees)) // if facing goal already
-                && Math.hypot(controllerVelX, controllerVelY) < OperatorConstants.DRIVE_DEADBAND) {
-                  driveJoystick(controllerVelX, controllerVelY, 0, true); 
-                } else {
-                autoAlignRotationalRate = DriveConstants.rotationController.calculate(currentAngle.getRadians(), desiredAngle.getRadians());
-                  driveJoystick(controllerVelX, controllerVelY, autoAlignRotationalRate, true);
-            }
-          });
   }
 
   public Command alignV2Drive(CommandXboxController controller, Supplier<Pose2d> targetPoseSupplier) {
@@ -570,10 +514,6 @@ SmartDashboard.putNumber("Driving/x", targetx);
         Rotation2d currentAngle = drivePose.getRotation(); 
         double current = MathUtil.inputModulus(mGyro.getAngle()/180*Math.PI, -Math.PI, Math.PI);
         Rotation2d deltaAngle = currentAngle.minus(desiredAngle);
-        double deltaAngleDegrees = deltaAngle.getDegrees();
-        double wrappedAngleDeg = MathUtil.inputModulus(deltaAngle.getDegrees(), -180.0, 180.0);
-
-        double autoalignp = 20;
         autoAlignRotationalRate = (targetangle + current) * 2;
         driveJoystick(controllerVelX, controllerVelY, autoAlignRotationalRate, true);
    
