@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
@@ -51,6 +52,7 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.LimelightHelpers;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.configs.DriveConfig;
 import static edu.wpi.first.units.Units.Degrees;
 
@@ -87,12 +89,19 @@ public class DriveSubsystem extends SubsystemBase {
 
   public static double hubDistance = 0; 
 
-  public static double gyrooffset = 0;
   public double autoAlignRotationalRate = 10; 
   public double targetx = 0;
   public double targety = 0;
   public double targetangle = 0;
-  
+  private double prevLinearVel            = 0;
+private double prevOmega                = 0;
+private double prevCharTime             = 0;
+ 
+private double peakLinearVelocity       = 0;
+private double peakLinearAcceleration   = 0;
+private double peakAngularVelocity      = 0;
+private double peakAngularAcceleration  = 0;
+ 
   public Rotation2d desiredAngle;
   private final SwerveDrivePoseEstimator mPoseEstimator =
       new SwerveDrivePoseEstimator(
@@ -177,26 +186,26 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putData(field2d);
 
     hubDistance = getHubDistance();
+
     SmartDashboard.putNumber("Driving/hub distance", getHubDistance());
     SmartDashboard.putNumber("Position", mBackRight.getPosition().angle.getRadians());
     SmartDashboard.putNumber("Driving/gyro", -mGyro.getAngle());
-    SmartDashboard.putNumber("Driving/poseestimatorgyro", mPoseEstimator.getEstimatedPosition().getRotation().getDegrees());
+    SmartDashboard.putNumber("Driving/newgyro", mPoseEstimator.getEstimatedPosition().getRotation().getDegrees());
     SmartDashboard.putNumber("Driving/heading", getHeading());
     SmartDashboard.putNumber("Driving/Pose X", getVisionPose().getX());
     SmartDashboard.putNumber("Driving/Pose Y", getVisionPose().getY());
-    //SmartDashboard.putString("Driving/Alliance", Constants.getCurrentAlliance().toString());
+    SmartDashboard.putString("Driving/Alliance", Constants.getCurrentAlliance().toString());
     SmartDashboard.putNumber("Driving/HubPoseX", DriveConstants.getHubPose().getX());
     SmartDashboard.putNumber("Driving/HubPoseY", DriveConstants.getHubPose().getY());
-    //SmartDashboard.putNumber("Driving/kp", DriveConstants.ROTATION_KP);
-
+    SmartDashboard.putNumber("Driving/kp", DriveConstants.ROTATION_KP);
     SmartDashboard.putNumber("ODOM X", Odometry.getPoseMeters().getX());
     SmartDashboard.putNumber("VISION X", mPoseEstimator.getEstimatedPosition().getX());
-    SmartDashboard.putNumber("Driving/x", targetx);
+SmartDashboard.putNumber("Driving/x", targetx);
     SmartDashboard.putNumber("Driving/y", targety);
     SmartDashboard.putNumber("Driving/angle", targetangle*180/Math.PI);
 
-    //SmartDashboard.putNumber("Driving/autoalignP", autoAlignPID);
-   // SmartDashboard.putNumber("Driving/AUTOALIGNROTATIONRATE", autoAlignRotationalRate);
+    SmartDashboard.putNumber("Driving/autoalignP", autoAlignPID);
+    SmartDashboard.putNumber("Driving/AUTOALIGNROTATIONRATE", autoAlignRotationalRate);
   }
 
   /**
@@ -212,7 +221,6 @@ public class DriveSubsystem extends SubsystemBase {
    * @param pose The pose to which to set the Odometry.
    */
   public void resetPose(Pose2d pose) {
-    
     mPoseEstimator.resetPosition(
     getGyroRotation(),
     new SwerveModulePosition[] {
@@ -377,7 +385,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public Rotation2d getGyroRotation(){
-    double angle = mGyro.getAngle() - gyrooffset; 
+    double angle = mGyro.getAngle(); 
     return Rotation2d.fromDegrees(-angle
       /*useInvertedGyro ? -angle : angle*/
     );
@@ -599,7 +607,116 @@ public class DriveSubsystem extends SubsystemBase {
         zeroHeading();
       });
   }
+  public Command characterizeLinear(double durationSeconds) {
+    return Commands.sequence(
+        Commands.runOnce(() -> {
+            peakLinearVelocity     = 0;
+            peakLinearAcceleration = 0;
+            prevLinearVel          = 0;
+            prevCharTime           = Timer.getFPGATimestamp();
+            resetEncoders();
+            System.out.println("[Char] Linear test started.");
+        }),
+        Commands.run(() -> {
+            driveRobotRelative(new ChassisSpeeds(DriveConstants.MAX_SPEED_METERS_PER_SECOND, 0, 0));
+            logLinearChar();
+        }, this).withTimeout(durationSeconds),
+        Commands.runOnce(() -> {
+            driveRobotRelative(new ChassisSpeeds());
+            System.out.printf(
+                "[Char] Linear done.  Peak vel=%.3f m/s   Peak accel=%.3f m/s^2%n",
+                peakLinearVelocity, peakLinearAcceleration);
+        })
+    );
+}
+ 
+/**
+ * Spins the robot in place at full rotational speed to find:
+ *   - Max angular velocity     -> "Char/Peak Angular Velocity (rad/s)"
+ *   - Max angular acceleration -> "Char/Peak Angular Accel (rad/s^2)"
+ *
+ * Robot spins in place -- 2 s is usually enough.
+ * Run 2-3 times and use a value slightly below the measured peak.
+ *
+ * @param durationSeconds How long to run (2.0 s recommended)
+ */
+public Command characterizeAngular(double durationSeconds) {
+    return Commands.sequence(
+        Commands.runOnce(() -> {
+            peakAngularVelocity     = 0;
+            peakAngularAcceleration = 0;
+            prevOmega               = 0;
+            prevCharTime            = Timer.getFPGATimestamp();
+            mGyro.reset();
+            System.out.println("[Char] Angular test started.");
+        }),
+        Commands.run(() -> {
+            driveRobotRelative(new ChassisSpeeds(0, 0, DriveConstants.MAX_ANGULAR_SPEED));
+            logAngularChar();
+        }, this).withTimeout(durationSeconds),
+        Commands.runOnce(() -> {
+            driveRobotRelative(new ChassisSpeeds());
+            System.out.printf(
+                "[Char] Angular done.  Peak omega=%.3f rad/s   Peak alpha=%.3f rad/s^2%n",
+                peakAngularVelocity, peakAngularAcceleration);
+        })
+    );
+}
+ 
+private void logLinearChar() {
+    double now = Timer.getFPGATimestamp();
+    double dt  = now - prevCharTime;
+    if (dt <= 0) return;
+ 
+    // Average speed magnitude across all four modules
+    double linearVel = (
+        Math.abs(mFrontLeft.getState().speedMetersPerSecond)  +
+        Math.abs(mFrontRight.getState().speedMetersPerSecond) +
+        Math.abs(mBackLeft.getState().speedMetersPerSecond)   +
+        Math.abs(mBackRight.getState().speedMetersPerSecond)
+    ) / 4.0;
+ 
+    double linearAccel = (linearVel - prevLinearVel) / dt;
+ 
+    peakLinearVelocity     = Math.max(peakLinearVelocity,     linearVel);
+    peakLinearAcceleration = Math.max(peakLinearAcceleration, Math.abs(linearAccel));
+ 
+    SmartDashboard.putNumber("Char/Linear Velocity (m/s)",      linearVel);
+    SmartDashboard.putNumber("Char/Linear Accel (m/s^2)",       linearAccel);
+    SmartDashboard.putNumber("Char/Peak Linear Velocity (m/s)", peakLinearVelocity);
+    SmartDashboard.putNumber("Char/Peak Linear Accel (m/s^2)",  peakLinearAcceleration);
+ 
+    prevLinearVel = linearVel;
+    prevCharTime  = now;
+}
+ 
+private void logAngularChar() {
+    double now = Timer.getFPGATimestamp();
+    double dt  = now - prevCharTime;
+    if (dt <= 0) return;
+ 
+    // Derived from wheel speeds so it agrees with your kinematics model
+    double omega = getRobotRelativeSpeeds().omegaRadiansPerSecond;
+    double alpha = (omega - prevOmega) / dt;
+ 
+    peakAngularVelocity     = Math.max(peakAngularVelocity,     Math.abs(omega));
+    peakAngularAcceleration = Math.max(peakAngularAcceleration, Math.abs(alpha));
+ 
+    SmartDashboard.putNumber("Char/Angular Velocity (rad/s)",      omega);
+    SmartDashboard.putNumber("Char/Angular Accel (rad/s^2)",       alpha);
+    SmartDashboard.putNumber("Char/Peak Angular Velocity (rad/s)", peakAngularVelocity);
+    SmartDashboard.putNumber("Char/Peak Angular Accel (rad/s^2)",  peakAngularAcceleration);
+    // NavX cross-check -- should be close to the kinematics value above;
+    // a big mismatch usually means wheel slip
+    SmartDashboard.putNumber("Char/NavX Rate (rad/s)",             Math.toRadians(mGyro.getRate()));
+ 
+    prevOmega    = omega;
+    prevCharTime = now;
+}
+ 
+
 
 }
+
   
 
