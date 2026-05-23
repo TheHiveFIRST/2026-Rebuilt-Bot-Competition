@@ -2,7 +2,6 @@ package frc.robot;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.AutonAlignCommand;
 import frc.robot.commands.FullHopperIntakeWobbleCommand;
 import frc.robot.commands.IntakeTapCommand;
 import frc.robot.commands.HalfHopperIntakeWobbleCommand;
@@ -57,7 +56,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("runkicker", mShooterSubsystem.runKickerCommand().withTimeout(3));                                             
     NamedCommands.registerCommand("setshot", mShooterSubsystem.toggleAutoShooterCommand().withTimeout(8));
     NamedCommands.registerCommand("stopshoot", autoStopKicker());
-    NamedCommands.registerCommand("autoalign", new AutonAlignCommand(mDriveSubsystem));
 
    
      new EventTrigger("setshot").onTrue(mShooterSubsystem.toggleAutoShooterCommand().withTimeout(3));
@@ -135,8 +133,8 @@ public class RobotContainer {
         mOperatorController.y().whileTrue(mShooterSubsystem.toggleShooterCommand());
         mOperatorController.rightTrigger().onTrue(mShooterSubsystem.setLadderShotCommand());
         //mOperatorController.leftTrigger().onTrue(mShooterSubsystem.setPassingShotCommand());
-         mOperatorController.b().onTrue(mShooterSubsystem.setHubShotCommand());
-         mOperatorController.a().onTrue(mShooterSubsystem.setTrenchShotCommand());
+        mOperatorController.b().onTrue(mShooterSubsystem.setHubShotCommand());
+        mOperatorController.a().onTrue(mShooterSubsystem.setTrenchShotCommand());
         mOperatorController.leftTrigger().whileTrue(mDriveSubsystem.alignV2Drive(mDriverController, () -> DriveConstants.getHubPose().toPose2d()));
         mOperatorController.x().onTrue(mShooterSubsystem.toggleDistanceEstimationCommand());
         mOperatorController.rightBumper().onTrue(mShooterSubsystem.increaseShootingRPMOffsetCommand());
