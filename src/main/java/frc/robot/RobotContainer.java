@@ -2,7 +2,6 @@ package frc.robot;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.AutonAlignCommand;
 import frc.robot.commands.FullHopperIntakeWobbleCommand;
 import frc.robot.commands.IntakeTapCommand;
 import frc.robot.commands.HalfHopperIntakeWobbleCommand;
@@ -14,7 +13,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
@@ -57,7 +57,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("runkicker", mShooterSubsystem.runKickerCommand().withTimeout(3));                                             
     NamedCommands.registerCommand("setshot", mShooterSubsystem.toggleAutoShooterCommand().withTimeout(8));
     NamedCommands.registerCommand("stopshoot", autoStopKicker());
-    NamedCommands.registerCommand("autoalign", new AutonAlignCommand(mDriveSubsystem));
 
    
      new EventTrigger("setshot").onTrue(mShooterSubsystem.toggleAutoShooterCommand().withTimeout(3));
@@ -154,11 +153,20 @@ public class RobotContainer {
         mDriverController.rightTrigger().whileTrue(shootFullHopper());
         mDriverController.leftBumper().whileTrue(mArmSubsystem.runIntakePivotBumpCommand());
         mDriverController.leftTrigger(0.2).whileTrue(mIntakeSubsystem.runIntakeForwardCommand());
+ 
         mDriverController.start().whileTrue(mDriveSubsystem.resetGyro()); 
-        mDriverController.povLeft().onTrue(mShooterSubsystem.increaseShootingRPMOffsetCommand());
+        
+        mDriverController.povLeft().onTrue(mShooterSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
+        mDriverController.povRight().onTrue(mShooterSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        mDriverController.povDown().onTrue(mShooterSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        mDriverController.povUp().onTrue(mShooterSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        /*mDriverController.povLeft().onTrue(mShooterSubsystem.increaseShootingRPMOffsetCommand());
         mDriverController.povRight().onTrue(mShooterSubsystem.decreaseShootingRPMOffsetCommand());
         mDriverController.povDown().onTrue(toggleSlowMode());
-        mDriverController.povUp().whileTrue(mIntakeSubsystem.runIntakeSlowCommand());
+        mDriverController.povUp().whileTrue(mIntakeSubsystem.runIntakeSlowCommand());*/
+       // mDriverController.povUp().onTrue(mShooterSubsystem.runOnce(mDriveSubsystem::incrementPalign));
+       // mDriverController.povDown().onTrue(mShooterSubsystem.runOnce(mDriveSubsystem::decrementPalign));
+        //mDriverController.povDown().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::decrementRPM));
 
 
         // tag based autoalign, useful for pick and place with alignment in x and y 
