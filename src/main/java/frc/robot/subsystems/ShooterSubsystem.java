@@ -29,27 +29,26 @@ public class ShooterSubsystem extends SubsystemBase {
     private final SparkMax mShooterFollower;
     private final SparkMax mKickerLeader;
     private final SparkMax mKickerFollower;
-
-
     private final RelativeEncoder mShooterLeaderEncoder;
     private final RelativeEncoder mShooterFollowerEncoder; 
     private final PIDController mShooterPID;
     private final SimpleMotorFeedforward tempFF;
 
-    private double mTargetRPM = ShooterConstants.HUB_TARGET_RPM;
 
+    //initialized variables 
+    private double mTargetRPM = ShooterConstants.HUB_TARGET_RPM;
     private double ShooterRPMOffset = 0; 
     private boolean mDistanceEstimation = true;
     private boolean mShooterEnabled = false;
+    private String shotType = "HUB_SHOT";
 
+    //sysID 
     private final MutVoltage m_appliedVoltage  = Volts.mutable(0);
     private final MutAngle m_encoderAngle    = Rotations.mutable(0);
     private final MutAngularVelocity m_encoderVelocity = RotationsPerSecond.mutable(0);
-
     private final SysIdRoutine mSysIdRoutine;
 
-    private String shotType = "HUB_SHOT";
-
+   
 
     public ShooterSubsystem() {
     
@@ -110,6 +109,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }
 
+    //methods 
+    //main PIDF for shooter speeds 
     public void setShooterSpeeds(double setRPM, double RPMOffset) {
         double mCurrentRPM = mShooterLeaderEncoder.getVelocity();
         double pidOutput = mShooterPID.calculate(mCurrentRPM, setRPM + RPMOffset);
@@ -118,46 +119,10 @@ public class ShooterSubsystem extends SubsystemBase {
         runShooterPower(motorPower); 
     }
 
-    public double getShooterPIDF(double setRPM, double RPMOffset) {
-        double mCurrentRPM = mShooterLeaderEncoder.getVelocity();
-        double pidOutput = mShooterPID.calculate(mCurrentRPM, setRPM + RPMOffset);
-        double ffOutput = tempFF.calculate(setRPM + RPMOffset); 
-        double motorPower = MathUtil.clamp(pidOutput + ffOutput, 0.0, 1.0);
-        return motorPower; 
-    }
-
-   
-   
-    //OLD TESTING ONE REVERT BACK IF IT DOESNT WORK 
-    public void runDirectShooterPIDF(double setRPM) {
-        double mCurrentRPM = mShooterLeaderEncoder.getVelocity();
-        double targetRPM = setRPM; 
-        double pidOutput = mShooterPID.calculate(mCurrentRPM, targetRPM);
-        double ffOutput = tempFF.calculate(targetRPM); 
-        double motorPower = MathUtil.clamp(pidOutput + ffOutput, 0.0, 1.0);
-        mShooterLeader.set(motorPower);
-        mShooterFollower.set(motorPower);
-
-        //TODO: test with different feedforward, boosting target RPM  
-        // double ffVelocityOutput = tempFF.calculateWithVelocities(mCurrentRPS,mTargetRPS);
-        // Temporarily boost target RPM when shooting
-       // if (mCurrentRPM < mTargetRPM - 400) {
-       //     mTargetRPM = mTargetRPM + 200; // Preemptive compensation
-       // }
- 
-
-    }
-
-    public void runShooterPower(double motorPower){
-        mShooterLeader.set(motorPower);
-        mShooterFollower.set(motorPower);
-    }
-    public void setSpeedsSmartDashboard(){
-    setShooterSpeeds(SmartDashboard.getNumber("Testing/setShooterRPM", 300), 0);
-    }
 
 
-    public void runShooterForDistance(double distance){
+    //regression equation 
+    public void runShooterRegression(double distance){
         double shooterRegressionRPM = 
           (Math.pow(distance, 3) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_3)
         + (Math.pow(distance, 2) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_2)
@@ -166,19 +131,13 @@ public class ShooterSubsystem extends SubsystemBase {
         updateRPM(shooterRegressionRPM); 
     }
 
-     // Finds the average velocity of the two motors 
-    public double getAverageVelocity() {
-        double sum = mShooterLeaderEncoder.getVelocity() + mShooterFollowerEncoder.getVelocity();
-        double average = sum / 2;
-        return average;
+    //manual mode 
+    public void runShooterPower(double motorPower){
+        mShooterLeader.set(motorPower);
+        mShooterFollower.set(motorPower);
     }
-    private void changeShootingRPMOffset(double amount){
-      ShooterRPMOffset += amount;
-    } 
-  
 
-
-    public void stopAll() {
+    public void stopShooterKicker() {
             runShooterPower(0);
             runKicker(0);
         }
@@ -187,24 +146,39 @@ public class ShooterSubsystem extends SubsystemBase {
             mKickerLeader.set(speed);
             mKickerFollower.set(-1 * speed);
         }
-    public void incrementRPM() { mTargetRPM += ShooterConstants.RPM_INCREMENT; }
-    public void decrementRPM() { mTargetRPM -= ShooterConstants.RPM_INCREMENT; }
 
+
+
+    // gets the average velocity of the two motors 
+    public double getAverageVelocity() {
+        double sum = mShooterLeaderEncoder.getVelocity() + mShooterFollowerEncoder.getVelocity();
+        double average = sum / 2;
+        return average;
+    }
+    public double getShooterPIDF(double setRPM, double RPMOffset) {
+        double mCurrentRPM = mShooterLeaderEncoder.getVelocity();
+        double pidOutput = mShooterPID.calculate(mCurrentRPM, setRPM + RPMOffset);
+        double ffOutput = tempFF.calculate(setRPM + RPMOffset); 
+        double motorPower = MathUtil.clamp(pidOutput + ffOutput, 0.0, 1.0);
+        return motorPower; 
+    }
+
+    //offsets and updates 
+    private void changeShootingRPMOffset(double amount){
+      ShooterRPMOffset += amount;
+    } 
+    
     public void updateRPM(double newRPM){
         mTargetRPM = newRPM; 
-    
     }
     
 
+    public void incrementRPM() { mTargetRPM += ShooterConstants.RPM_INCREMENT; }
+    public void decrementRPM() { mTargetRPM -= ShooterConstants.RPM_INCREMENT; }
+
+   
+
     //Commands 
-   // public Command runShooterCommand() { return run(this::runShooterPIDF); }
-    // public Command runShooterCommand() {
-    //      return run(
-    //     () -> {
-    //         runDirectShooterPIDF(mTargetRPM);
-    //           });
-    // }
-    
     public Command runShooterAutoCommand() {       
         return run(
         () -> {
@@ -221,10 +195,42 @@ public class ShooterSubsystem extends SubsystemBase {
      public Command runShooterRegressionCommand() {
          return run(
         () -> {
-            runShooterForDistance(DriveSubsystem.hubDistance);
+            runShooterRegression(DriveSubsystem.hubDistance);
+              });
+    }
+    public Command runShooterPowerCommand() {
+         return run(
+        () -> {
+            runShooterPower(ShooterConstants.SHOOTER_SPEED);
               });
     }
 
+    //kicker commands
+    public Command runKickerCommand() {
+         return run(
+        () -> {
+            runKicker(-ShooterConstants.KICKER_SPEED);
+        
+              });
+    }
+
+    public Command runKickerBackwardCommand() {
+         return run(
+        () -> {
+            runKicker(ShooterConstants.KICKER_SPEED);
+              });
+    }
+
+    public Command stop() {
+         return run(
+        () -> {
+            stopShooterKicker();
+              });
+    }
+
+
+
+    //toggles
     public Command toggleShooterCommand() {
         return new InstantCommand(() -> mShooterEnabled = !mShooterEnabled);}
 
@@ -238,21 +244,13 @@ public class ShooterSubsystem extends SubsystemBase {
        return new InstantCommand(() -> mShooterEnabled = false);}
     
     
-    
-    public Command runShooterPowerCommand() {
-         return run(
-        () -> {
-            runShooterPower(ShooterConstants.SHOOTER_SPEED);
-              });
-    }
-
-    
     public Command increaseShootingRPMOffsetCommand(){
     return new InstantCommand(() -> changeShootingRPMOffset(ShooterConstants.RPMOFFSET_INCREMENT));
     }
     public Command decreaseShootingRPMOffsetCommand(){
       return new InstantCommand(() -> changeShootingRPMOffset(-ShooterConstants.RPMOFFSET_INCREMENT));
     }
+
     public Command setHubShotCommand() {
     return new InstantCommand(() -> {
         mTargetRPM = ShooterConstants.HUB_TARGET_RPM;
@@ -273,6 +271,7 @@ public Command setAutoShotCommand() {
           return new InstantCommand(() -> {
         mTargetRPM = ShooterConstants.TRENCH_TARGET_RPM;
         ShooterRPMOffset = 0;
+        mDistanceEstimation = false; 
         shotType = "TRENCH_SHOT";
 
         });}
@@ -281,6 +280,7 @@ public Command setAutoShotCommand() {
           return new InstantCommand(() -> {
         mTargetRPM = ShooterConstants.DEFENCE_TARGET_RPM;
         ShooterRPMOffset = 0;
+        mDistanceEstimation = false; 
         shotType = "DEFENCE_SHOT";
 
         });}
@@ -289,6 +289,7 @@ public Command setAutoShotCommand() {
           return new InstantCommand(() -> {
         mTargetRPM = ShooterConstants.LADDER_TARGET_RPM;
         ShooterRPMOffset = 0;
+        mDistanceEstimation = false; 
         shotType = "TOWER_SHOT";
 
         });}
@@ -297,38 +298,16 @@ public Command setAutoShotCommand() {
           return new InstantCommand(() -> {
         mTargetRPM = ShooterConstants.PASSING_TARGET_RPM;
         ShooterRPMOffset = 0;
+        mDistanceEstimation = false; 
         shotType = "PASSING_SHOT";
         });}
 
 
 
-    public Command stop() {
-         return run(
-        () -> {
-            stopAll();
-              });
-    }
-
-    public Command runKickerCommand() {
-         return run(
-        () -> {
-            runKicker(-ShooterConstants.KICKER_SPEED);
-        
-              });
-    }
-
-    public Command runKickerBackwardCommand() {
-         return run(
-        () -> {
-            runKicker(ShooterConstants.KICKER_SPEED);
-            
-              });
-    }
-
+    //sysID tests 
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
         return mSysIdRoutine.quasistatic(direction);
     }
- 
     /**
      * Dynamic test – applies a voltage step.
      * Used to fit kA.
@@ -342,7 +321,7 @@ public Command setAutoShotCommand() {
     @Override
     public void periodic() {
         if(mDistanceEstimation == true){        
-        runShooterForDistance(DriveSubsystem.hubDistance);
+        runShooterRegression(DriveSubsystem.hubDistance);
         } else{
         updateRPM(mTargetRPM);
         }
@@ -357,15 +336,15 @@ public Command setAutoShotCommand() {
         SmartDashboard.putNumber("Shooter/Actual RPM", mShooterLeaderEncoder.getVelocity());
         SmartDashboard.putNumber("Shooter/RPM Offset", ShooterRPMOffset);
         SmartDashboard.putString("Shooter/Shot Type", shotType);
-        //SmartDashboard.putNumber("Testing/shooter current", mShooterLeader.getOutputCurrent());
-        //SmartDashboard.putNumber("Testing/shooter motor 2 current", mShooterFollower.getOutputCurrent());
         boolean atSpeed = Math.abs(mShooterLeaderEncoder.getVelocity() - mTargetRPM + ShooterRPMOffset) < ShooterConstants.VELOCITY_TOLERANCE;
         SmartDashboard.putBoolean("Shooter/Shooter Ready", atSpeed);
         SmartDashboard.putBoolean("Shooter/Shooter Toggled", mShooterEnabled);
         SmartDashboard.putBoolean("Shooter/Regression Toggled", mDistanceEstimation);
     }
 
-     // Tuning  
+
+
+    // Tuning  
     // 
     //public enum TuningMode {
     //     KP, KV, KD, 

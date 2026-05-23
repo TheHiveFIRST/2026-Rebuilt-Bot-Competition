@@ -23,8 +23,6 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  private double timeToNext; 
-
   private String m_autoName = "BLANK_AUTO";
 
   /**
@@ -36,9 +34,6 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    
-    timeToNext = 130;
-    SmartDashboard.putNumber("Driving/Shift Time", timeToNext);
 
   }
 
@@ -98,32 +93,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {
-
-    double matchTime = DriverStation.getMatchTime();
-    
-    if (matchTime > 130){
-        timeToNext = matchTime - 130;
-    }
-    else if (matchTime > 105 ){
-        timeToNext = matchTime - 105;
-    }
-    else if (matchTime > 80 ){
-        timeToNext = matchTime - 80;
-    }
-    else if (matchTime > 55 ){
-        timeToNext = matchTime - 55;
-    }
-    else if (matchTime > 30 ){
-        timeToNext = matchTime - 30;
-    }
-    else{
-        timeToNext = matchTime;
-    }
-   SmartDashboard.putNumber("Driving/Shift Time", timeToNext);
-
-    
-    
+  public void teleopPeriodic() {  
   }
 
   @Override

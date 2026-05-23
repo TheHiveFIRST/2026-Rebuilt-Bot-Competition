@@ -17,7 +17,6 @@ import frc.robot.subsystems.DriveSubsystem;
 public class VisionSubsystem extends SubsystemBase {
 
      public VisionSubsystem(){ 
-
     }
 
     public double autoAlignRotationSpeed(){
@@ -36,8 +35,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     @Override
     public void periodic(){
-    SmartDashboard.putNumber("Testing/targetX", getTX());
-          
+    SmartDashboard.putNumber("Vision/targetX", getTX());
    }
 }
     

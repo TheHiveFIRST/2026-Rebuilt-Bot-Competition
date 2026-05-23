@@ -41,7 +41,8 @@ public class RobotContainer {
       new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER);
   private final CommandXboxController mOperatorController = 
       new CommandXboxController(OperatorConstants.OPERATOR_CONTROLLER);
-  boolean slowMode = false;
+  
+      boolean slowMode = false;
 
 
   public RobotContainer() {
@@ -114,7 +115,7 @@ public class RobotContainer {
                   true);},
               mDriveSubsystem));
           break;
-        default: // started in front of the hub
+        default: // start in front of the hub
           DriveSubsystem.gyrooffset = 0;
           mDriveSubsystem.setDefaultCommand(  
             new RunCommand(() -> {
@@ -133,9 +134,8 @@ public class RobotContainer {
         //OPERATOR CONTROLS
         mOperatorController.y().whileTrue(mShooterSubsystem.toggleShooterCommand());
         mOperatorController.rightTrigger().onTrue(mShooterSubsystem.setLadderShotCommand());
-        //mOperatorController.leftTrigger().onTrue(mShooterSubsystem.setPassingShotCommand());
-         mOperatorController.b().onTrue(mShooterSubsystem.setHubShotCommand());
-         mOperatorController.a().onTrue(mShooterSubsystem.setTrenchShotCommand());
+        mOperatorController.b().onTrue(mShooterSubsystem.setHubShotCommand());
+        mOperatorController.a().onTrue(mShooterSubsystem.setTrenchShotCommand());
         mOperatorController.leftTrigger().whileTrue(mDriveSubsystem.alignV2Drive(mDriverController, () -> DriveConstants.getHubPose().toPose2d()));
         mOperatorController.x().onTrue(mShooterSubsystem.toggleDistanceEstimationCommand());
         mOperatorController.rightBumper().onTrue(mShooterSubsystem.increaseShootingRPMOffsetCommand());
@@ -143,12 +143,9 @@ public class RobotContainer {
 
         mOperatorController.povDown().whileTrue(mDriveSubsystem.characterizeAngular(3));
         mOperatorController.povUp().whileTrue(mDriveSubsystem.characterizeLinear(4));
-        //mOperatorController.povLeft().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::incrementRPM));
-        //mOperatorController.povRight().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::decrementRPM));
-        //mOperatorController.leftStick().whileTrue(mDriveSubsystem.defensePosition());
 
 
-         //DRIVER CONTROLS
+        //DRIVER CONTROLS
         mDriverController.y().whileTrue(mShooterSubsystem.toggleShooterCommand()); 
         mDriverController.x().whileTrue(mShooterSubsystem.runKickerBackwardCommand());
         mDriverController.b().onTrue(mIntakeSubsystem.runOuttakeCommand());
@@ -164,12 +161,13 @@ public class RobotContainer {
         mDriverController.povUp().whileTrue(mIntakeSubsystem.runIntakeSlowCommand());
 
 
-         mDriverController.a().whileTrue(new RunCommand(
-         () -> mDriveSubsystem.driveJoystick(
-           MathUtil.applyDeadband(-mDriverController.getLeftY(), OperatorConstants.DRIVE_DEADBAND),
-           MathUtil.applyDeadband(-mDriverController.getLeftX(), OperatorConstants.DRIVE_DEADBAND),
-          -mVisionSubsystem.autoAlignRotationSpeed(), 
-          true), mDriveSubsystem));
+        // tag based autoalign, useful for pick and place with alignment in x and y 
+        //mDriverController.a().whileTrue(new RunCommand(
+        //  () -> mDriveSubsystem.driveJoystick(
+        //    MathUtil.applyDeadband(-mDriverController.getLeftY(), OperatorConstants.DRIVE_DEADBAND),
+        //    MathUtil.applyDeadband(-mDriverController.getLeftX(), OperatorConstants.DRIVE_DEADBAND),
+        //   -mVisionSubsystem.autoAlignRotationSpeed(), 
+        //   true), mDriveSubsystem));
     
 
        
