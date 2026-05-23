@@ -10,6 +10,6 @@ public class IntakeUpAutoCommand extends SequentialCommandGroup {
   public IntakeUpAutoCommand(ArmSubsystem mArmSubsystem) {
     addCommands( 
       new WaitCommand(1),        
-      mArmSubsystem.IntakeSlightlyUp());
+      mArmSubsystem.IntakeSlightlyUpCommand());
   }
 }

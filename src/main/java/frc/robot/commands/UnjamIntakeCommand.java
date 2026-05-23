@@ -12,7 +12,7 @@ public class UnjamIntakeCommand extends ParallelCommandGroup {
   public UnjamIntakeCommand(IntakeSubsystem mIntakeSubsystem, ArmSubsystem mArmSubsystem) {
     addCommands( 
       mIntakeSubsystem.runIntakeForwardCommand(),
-      mArmSubsystem.runIntakePivotUp()
+      mArmSubsystem.runIntakePivotBumpCommand()
     );
       
   }

@@ -13,18 +13,13 @@ public class HalfHopperIntakeWobbleCommand extends SequentialCommandGroup {
   public HalfHopperIntakeWobbleCommand(ArmSubsystem mArmSubsystem, IntakeSubsystem mIntakeSubsystem) {
     addCommands( 
       new SequentialCommandGroup(
-        mArmSubsystem.runIntakePivotUp().withTimeout(0.3),
+        mArmSubsystem.runIntakePivotBumpCommand().withTimeout(0.3),
         new WaitCommand(0.1),
-        mArmSubsystem.runIntakePivotGround().withTimeout(0.3),
+        mArmSubsystem.runIntakePivotGroundCommand().withTimeout(0.3),
         new WaitCommand(0.1)
     ).deadlineWith(
         mIntakeSubsystem.runIntakeForwardCommand()
     ).repeatedly()
-      
-    
-       
-      
-      
       );
   }
 }

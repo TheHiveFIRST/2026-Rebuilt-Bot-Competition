@@ -26,6 +26,7 @@ public class IntakeSubsystem extends SubsystemBase {
         
     }
 
+    //Methods 
     public void stopIntake() {
             runIntake(0);
         }
@@ -35,6 +36,7 @@ public class IntakeSubsystem extends SubsystemBase {
         }
 
 
+    //Commands 
     public Command runIntakeForwardCommand() {
          return run(
         () -> {

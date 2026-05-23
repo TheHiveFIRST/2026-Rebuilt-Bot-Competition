@@ -9,7 +9,7 @@ public class IntakeTapCommand extends ParallelCommandGroup {
   public IntakeTapCommand(IntakeSubsystem mIntakeSubsystem, ArmSubsystem mArmSubsystem) {
     addCommands( 
       mIntakeSubsystem.runIntakeForwardCommand(),
-      mArmSubsystem.runIntakePivotGround()
+      mArmSubsystem.runIntakePivotGroundCommand()
     );
   }
 }

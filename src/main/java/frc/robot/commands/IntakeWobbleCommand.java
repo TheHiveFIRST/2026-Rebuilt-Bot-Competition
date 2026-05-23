@@ -12,20 +12,20 @@ public class IntakeWobbleCommand extends SequentialCommandGroup {
 
   public IntakeWobbleCommand(ArmSubsystem mArmSubsystem) {
     addCommands( 
-      mArmSubsystem.IntakeToPosition(ArmConstants.PIVOT_AGITATE).withTimeout(0.5),
+      mArmSubsystem.IntakeToPositionCommand(ArmConstants.PIVOT_AGITATE).withTimeout(0.5),
       new WaitCommand(0.1),          
-      mArmSubsystem.runIntakePivotGround().withTimeout(0.5),
+      mArmSubsystem.runIntakePivotGroundCommand().withTimeout(0.5),
       new WaitCommand(0.1),
-      mArmSubsystem.IntakeToPosition(ArmConstants.PIVOT_AGITATE55).withTimeout(0.5),
+      mArmSubsystem.IntakeToPositionCommand(ArmConstants.PIVOT_AGITATE55).withTimeout(0.5),
       new WaitCommand(0.1),
-      mArmSubsystem.runIntakePivotGround().withTimeout(0.5),
+      mArmSubsystem.runIntakePivotGroundCommand().withTimeout(0.5),
       new WaitCommand(0.1),
-      mArmSubsystem.IntakeToPosition(ArmConstants.PIVOT_AGITATE45).withTimeout(0.5),
+      mArmSubsystem.IntakeToPositionCommand(ArmConstants.PIVOT_AGITATE45).withTimeout(0.5),
       new WaitCommand(0.1),
-      mArmSubsystem.runIntakePivotGround().withTimeout(0.5),
+      mArmSubsystem.runIntakePivotGroundCommand().withTimeout(0.5),
       new WaitCommand(0.1),
-      mArmSubsystem.IntakeToPosition((ArmConstants.PIVOT_AGITATE35)).withTimeout(0.5),
+      mArmSubsystem.IntakeToPositionCommand((ArmConstants.PIVOT_AGITATE35)).withTimeout(0.5),
       new WaitCommand(0.1),
-      mArmSubsystem.runIntakePivotGround().withTimeout(0.5));
+      mArmSubsystem.runIntakePivotGroundCommand().withTimeout(0.5));
   }
 }

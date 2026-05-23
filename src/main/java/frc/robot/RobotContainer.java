@@ -45,8 +45,8 @@ public class RobotContainer {
 
 
   public RobotContainer() {
-    NamedCommands.registerCommand("intakepivotslightlyup", mArmSubsystem.IntakeSlightlyUp().withTimeout(1.80));
-    NamedCommands.registerCommand("intakepivotup", mArmSubsystem.IntakeToPosition(0.55).withTimeout(8));
+    NamedCommands.registerCommand("intakepivotslightlyup", mArmSubsystem.IntakeSlightlyUpCommand().withTimeout(1.80));
+    NamedCommands.registerCommand("intakepivotup", mArmSubsystem.IntakeToPositionCommand(0.55).withTimeout(8));
     NamedCommands.registerCommand("runintake", mIntakeSubsystem.runIntakeForwardCommand().withTimeout(5));
 
     NamedCommands.registerCommand("intakepivotdown", new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem).withTimeout(2.93));
@@ -79,7 +79,7 @@ public class RobotContainer {
                 true);},
             mDriveSubsystem));
 
-        mArmSubsystem.setDefaultCommand(mArmSubsystem.runIntakePivotGround());
+        mArmSubsystem.setDefaultCommand(mArmSubsystem.runIntakePivotGroundCommand());
         mShooterSubsystem.setDefaultCommand(new RunCommand(()-> mShooterSubsystem.runShooterPower(0), mShooterSubsystem));
         mIntakeSubsystem.setDefaultCommand(new RunCommand(()-> mIntakeSubsystem.runIntake(0), mIntakeSubsystem));
         mShooterSubsystem.setDefaultCommand(new RunCommand(()-> mShooterSubsystem.runKicker(0), mShooterSubsystem));
@@ -155,18 +155,13 @@ public class RobotContainer {
 
         mDriverController.rightBumper().whileTrue(shootHalfHopper());
         mDriverController.rightTrigger().whileTrue(shootFullHopper());
-        mDriverController.leftBumper().whileTrue(mArmSubsystem.runIntakePivotUp());
+        mDriverController.leftBumper().whileTrue(mArmSubsystem.runIntakePivotBumpCommand());
         mDriverController.leftTrigger(0.2).whileTrue(mIntakeSubsystem.runIntakeForwardCommand());
-        
-
         mDriverController.start().whileTrue(mDriveSubsystem.resetGyro()); 
         mDriverController.povLeft().onTrue(mShooterSubsystem.increaseShootingRPMOffsetCommand());
         mDriverController.povRight().onTrue(mShooterSubsystem.decreaseShootingRPMOffsetCommand());
         mDriverController.povDown().onTrue(toggleSlowMode());
         mDriverController.povUp().whileTrue(mIntakeSubsystem.runIntakeSlowCommand());
-       // mDriverController.povUp().onTrue(mShooterSubsystem.runOnce(mDriveSubsystem::incrementPalign));
-       // mDriverController.povDown().onTrue(mShooterSubsystem.runOnce(mDriveSubsystem::decrementPalign));
-        //mDriverController.povDown().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::decrementRPM));
 
 
          mDriverController.a().whileTrue(new RunCommand(
@@ -179,7 +174,7 @@ public class RobotContainer {
 
        
         //PID TUNING
-        // Back Button (double tap to cycle)
+        // Back Button
        //mDriverController.back()
            // .whileTrue(mShooterSubsystem.run(mShooterSubsystem::cycleTuningMode))
            // .debounce(0.3); // Prevents accidental double presses
@@ -189,33 +184,12 @@ public class RobotContainer {
         //mDriverController.povUp().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::incrementKP));
         //mDriverController.povDown().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::decrementKP));
 
-        
-
-        // --- ARM / STINGER (A Button Toggle) ---
-        /* 
-        mDriverController.a().onTrue(
-            Commands.runOnce(() -> {
-                // If current position is near the OUT setpoint, move to IN. Otherwise, move OUT.
-                if (Math.abs(mArmSubsystem.encoderGetValue() - ArmConstants.PIVOT_OUT) < 0.05) {
-                    mArmSubsystem.setTargetArm(ArmConstants.PIVOT_IN);
-                } else {
-                    mArmSubsystem.setTargetArm(ArmConstants.PIVOT_OUT);
-                }
-            }, mArmSubsystem)
-        );
-        */
-
     }
 
     public void zeroGyroHeading(){
       mDriveSubsystem.zeroHeading();
     }
 
-    // public void resetVisionPose(){
-    //   mDriveSubsystem.resetPoseEstimator(getAllianceStartingPose());
-    // }
-
-    
     public Command shootFullHopper(){
       return Commands.parallel(           
       new FullHopperIntakeWobbleCommand(mArmSubsystem, mIntakeSubsystem),

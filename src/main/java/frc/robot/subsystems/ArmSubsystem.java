@@ -22,17 +22,11 @@ public class ArmSubsystem extends SubsystemBase {
     private final AbsoluteEncoder mPivotLeaderEncoder;
     private final PIDController mPivotLeaderPID;
     private final PIDController mPivotFollowerPID;
-    public double mPivotOutput = 0; 
-
-    //tuning 
+   
+    public double mPivotOutputPower = 0; 
     private double mArmCurrentKP = ArmConstants.ARM_KP;
-    private double mArmCurrentKI = ArmConstants.ARM_KI;
-    private double mArmCurrentKD = ArmConstants.ARM_KD;
-
-
     private double mCurrentTarget = ArmConstants.PIVOT_IN;
-
-    private boolean intakeGroundSecondStage = false; 
+    private boolean mIntakeGroundSecondStage = false; 
 
     public ArmSubsystem() {
         mPivotLeader = new SparkMax(ArmConstants.ARM_LEADER_ID, MotorType.kBrushless);
@@ -49,46 +43,32 @@ public class ArmSubsystem extends SubsystemBase {
         // Applying configuration`s using 2026 REV syntax
         mPivotLeader.configure(leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         mPivotFollower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
+        
         mPivotFollowerEncoder = mPivotFollower.getAbsoluteEncoder();
         mPivotLeaderEncoder = mPivotLeader.getAbsoluteEncoder();
+
+        //PID constants for arm 
         mPivotFollowerPID = new PIDController(ArmConstants.ARM_KP, ArmConstants.ARM_KI, ArmConstants.ARM_KD);
-        mPivotLeaderPID = new PIDController(mArmCurrentKP, mArmCurrentKI, mArmCurrentKD);
+        mPivotLeaderPID = new PIDController(ArmConstants.ARM_KP, ArmConstants.ARM_KI,ArmConstants.ARM_KD);
         mPivotLeaderPID.setTolerance(ArmConstants.POSITION_TOLERANCE);
         mPivotFollowerPID.setTolerance(ArmConstants.POSITION_TOLERANCE);
     }
 
-    public void setTargetArm(double position){
+    //Methods 
+    public void setTargetArmPosition(double position){
         mCurrentTarget = position; 
-        double mPivotOutput = mPivotFollowerPID.calculate(mPivotFollowerEncoder.getPosition(), mCurrentTarget);
-        mPivotFollower.set(mPivotOutput);
-        mPivotLeader.set(mPivotOutput);
+        double mPivotOutputPower = mPivotFollowerPID.calculate(mPivotFollowerEncoder.getPosition(), mCurrentTarget);
+        mPivotFollower.set(mPivotOutputPower);
+        mPivotLeader.set(mPivotOutputPower);
     }
-    // public void set1stArm(double position) {
-    //     mCurrentTarget = position;
-    //     // mPivotPID.setP(mArmCurrentKP);
-    //     // mPivotPID.setI(mArmCurrentKI);
-    //     // mPivotPID.setD(mArmCurrentKD);
-
-    //     double mPivotOutput = mPivotFollowerPID.calculate(mPivotFollowerEncoder.getPosition(), mCurrentTarget);
-    //     mPivotFollower.set(mPivotOutput);
-        
-    // }
-
-    // public void set2ndArm(double position){
-    //     mPivotLeaderPID.setP(mArmCurrentKP);
-    //     double mPivotLeaderOutput = mPivotLeaderPID.calculate(mPivotLeaderEncoder.getPosition(), mCurrentTarget);
-    //     mPivotLeader.set(mPivotLeaderOutput);
-    // }
-    
-    public void setPivotPower(double pivotPower){
+ 
+    public void setArmPower(double pivotPower){
         mPivotLeader.set(pivotPower);
         mPivotFollower.set(pivotPower);
 
     }
 
-
-    public double encoderGetValue() {
+    public double getEncoderValue() {
         return mPivotFollowerEncoder.getPosition();
     }
 
@@ -101,77 +81,75 @@ public class ArmSubsystem extends SubsystemBase {
             mCurrentTarget = mPivotLeaderEncoder.getPosition(); // Hold current spot
         }
 
-    public void incrementKP() { mArmCurrentKP += ArmConstants.ARM_KP_INCREMENT; } // Increments by 0.01 for fine tuning
+    public void incrementKP() { mArmCurrentKP += ArmConstants.ARM_KP_INCREMENT; }
     public void decrementKP() { mArmCurrentKP -= ArmConstants.ARM_KP_INCREMENT; }
 
     
-     public Command runIntakePivotGround () {
+
+    //Commands 
+    public Command IntakeToPositionCommand(double position) {
          return run(
         () -> {
-            if (encoderGetValue() < 0.7){
-
-            
-             setTargetArm(ArmConstants.PIVOT_OUT);
+            setTargetArmPosition(position);
+              });
+    }
+    
+    public Command runIntakePivotGroundCommand() {
+         return run(
+        () -> {
+            if (getEncoderValue() < 0.7){
+             setTargetArmPosition(ArmConstants.PIVOT_OUT);
             } else {
-                setPivotPower(0);
+                setArmPower(0);
             }
               });
     }
-// hi
     
-
-    public Command runIntakePivotUp() {
+    
+    public Command runIntakePivotBumpCommand() {
          return run(
         () -> {
-            setTargetArm(ArmConstants.PIVOT_BUMP);
-              });
-    }
-    public Command runIntakePivotIn() {
-         return run(
-        () -> {
-            setTargetArm(ArmConstants.PIVOT_IN);
-              });
-    }
-    public Command IntakeSlightlyUp() {
-         return run(
-        () -> {
-            setTargetArm(ArmConstants.PIVOT_AGITATE);
-              });
-    }
-    public Command IntakeToPosition(double position) {
-         return run(
-        () -> {
-            setTargetArm(position);
+            setTargetArmPosition(ArmConstants.PIVOT_BUMP);
               });
     }
     
-    public Command stopPivot() {
+    public Command runIntakePivotInCommand() {
          return run(
         () -> {
-            setPivotPower(0.0);
+            setTargetArmPosition(ArmConstants.PIVOT_IN);
+              });
+    }
+    
+    public Command IntakeSlightlyUpCommand() {
+         return run(
+        () -> {
+            setTargetArmPosition(ArmConstants.PIVOT_AGITATE);
+              });
+    }
+   
+
+    public Command stopPivotCommand() {
+         return run(
+        () -> {
+            setArmPower(0.0);
               });
     }
 
-    public Command runPivot(){
+    public Command runPivotCommand(){
          return run(
         () -> {
-            setPivotPower(-0.2);
+            setArmPower(-0.2);
               });
     }
 
     public Command toggleArmStageCommand() {
-        return new InstantCommand(() -> intakeGroundSecondStage = !intakeGroundSecondStage);}
-
-
+        return new InstantCommand(() -> mIntakeGroundSecondStage = !mIntakeGroundSecondStage);}
 
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Arm/Encoder Value", encoderGetValue());
+        SmartDashboard.putNumber("Arm/Pivot Encoder Value", getEncoderValue());
         SmartDashboard.putNumber("Arm/Target Position", mCurrentTarget);
-        // SmartDashboard.putBoolean("Arm/At Target", isAtTarget());
-        // SmartDashboard.putNumber("Arm/pivot current", mPivotLeader.getOutputCurrent());
-        // SmartDashboard.putNumber("Arm/Current kP Tuning", mArmCurrentKP);
     }
 
     
