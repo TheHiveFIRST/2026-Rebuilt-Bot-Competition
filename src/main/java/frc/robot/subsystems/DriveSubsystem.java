@@ -597,7 +597,62 @@ private void logAngularChar() {
     prevOmega    = omega;
     prevCharTime = now;
 }
- 
+ /**
+ * Calculates the estimated robot pose at the moment the game piece reaches the hub,
+ * accounting for current velocity. Ball flight time model: t = 2.53x - 1.03 (seconds),
+ * where x is distance from hub in meters.
+ *
+ * @return The predicted Pose2d of the robot when the ball arrives at the hub.
+ */
+public Pose2d getShootOnTheMovePosition() {
+    Pose2d currentPose = getVisionPose();
+    ChassisSpeeds speeds = getRobotRelativeSpeeds();
+
+    // Convert robot-relative speeds to field-relative
+    Rotation2d heading = currentPose.getRotation();
+    double fieldVx = speeds.vxMetersPerSecond * heading.getCos()
+                   - speeds.vyMetersPerSecond * heading.getSin();
+    double fieldVy = speeds.vxMetersPerSecond * heading.getSin()
+                   + speeds.vyMetersPerSecond * heading.getCos();
+
+    // Ball flight time based on current distance: t = 2.53x - 1.03
+    double distanceToHub = getHubDistance();
+    double flightTime = 2.53 * distanceToHub - 1.03;
+    flightTime = Math.max(0, flightTime); // Clamp — no negative time
+
+    // Project position forward by flight time
+    double futureX = currentPose.getX() + fieldVx * flightTime;
+    double futureY = currentPose.getY() + fieldVy * flightTime;
+
+    return new Pose2d(futureX, futureY, currentPose.getRotation());
+}
+
+public Command shootOnTheMove(CommandXboxController controller, Supplier<Pose2d> targetPoseSupplier) {
+
+    return run(() -> {
+
+        double controllerVelX =-MathUtil.applyDeadband( controller.getLeftY(), OperatorConstants.DRIVE_DEADBAND);
+        double controllerVelY = -MathUtil.applyDeadband(controller.getLeftX(),OperatorConstants.DRIVE_DEADBAND);
+        Pose2d drivePose = getShootOnTheMovePosition();
+        Pose2d targetPose = targetPoseSupplier.get();
+        targetx = -(drivePose.getX() - targetPose.getX());
+        targety = -(drivePose.getY() - targetPose.getY());
+        if (targety > 0) {
+        targetangle = Math.atan2(targety, targetx) - Math.PI;
+        } else if (targety < 0) {
+        targetangle = Math.PI + Math.atan2(targety, targetx);
+        }else if (targety == 0) {
+        targetangle = 0;
+        }
+        Translation2d robotToTarget = targetPose.getTranslation().minus(drivePose.getTranslation());
+        desiredAngle = robotToTarget.getAngle();
+        double current = MathUtil.inputModulus(mGyro.getAngle()/180*Math.PI, -Math.PI, Math.PI);
+        autoAlignRotationalRate = (targetangle + current) * 2;
+        driveJoystick(controllerVelX, controllerVelY, autoAlignRotationalRate, true);
+   
+      });
+  }
+  
 
 
 }
