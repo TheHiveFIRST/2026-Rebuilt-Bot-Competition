@@ -41,6 +41,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private boolean mDistanceEstimation = true;
     private boolean mShooterEnabled = false;
     private String shotType = "HUB_SHOT";
+    private double shooterKinematicsRPM = 0; 
 
     //sysID 
     private final MutVoltage m_appliedVoltage  = Volts.mutable(0);
@@ -123,13 +124,49 @@ public class ShooterSubsystem extends SubsystemBase {
 
     //regression equation 
     public void runShooterRegression(double distance){
-        double shooterRegressionRPM = 
+    double shooterRegressionRPM = 
           (Math.pow(distance, 3) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_3)
         + (Math.pow(distance, 2) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_2)
         + (Math.pow(distance, 1) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_1)
         +(Constants.ShooterConstants.REGRESSION_COEFFICIENT_0);
-        updateRPM(shooterRegressionRPM); 
+    if (shooterRegressionRPM <= 4500) {
+        // Distance is too short fall back 
+        updateRPM(ShooterConstants.HUB_TARGET_RPM);
+        return;
+        }
+    updateRPM(shooterRegressionRPM); 
     }
+
+    public void runShooterKinematics(double distanceMeters) {
+    double theta = ShooterConstants.LAUNCH_ANGLE_RAD;
+    double deltaH = ShooterConstants.HEIGHT_DIFF_METERS;
+    double r = ShooterConstants.WHEEL_RADIUS_METERS;
+    double eta = ShooterConstants.LAUNCH_EFFICIENCY;
+    double gravityConstant = 9.81;
+
+    double tanTheta = Math.tan(theta);
+    double cosTheta = Math.cos(theta);
+    double denom = 2.0 * cosTheta * cosTheta * (distanceMeters * tanTheta - deltaH);
+
+    if (denom <= 0) {
+        // Distance is too short for this angle/height combo 
+        // Fall back to a safe minimum RPM or log a warning
+        updateRPM(ShooterConstants.HUB_TARGET_RPM);
+        return;
+    }
+
+    double v0 = Math.sqrt((gravityConstant * distanceMeters * distanceMeters) / denom);
+
+    // Surface speed of wheel = eta * v0, convert to RPM
+     shooterKinematicsRPM = (v0 / (eta * r)) * (60.0 / (2.0 * Math.PI));
+
+    updateRPM(shooterKinematicsRPM);
+    }
+
+    public double getShooterKinematicsRPM(double kinematicsRPM){
+        return shooterKinematicsRPM;
+    }
+    
 
     //manual mode 
     public void runShooterPower(double motorPower){
@@ -196,6 +233,12 @@ public class ShooterSubsystem extends SubsystemBase {
          return run(
         () -> {
             runShooterRegression(DriveSubsystem.hubDistance);
+              });
+    }
+    public Command runShooterKinematicsCommand() {
+         return run(
+        () -> {
+            runShooterKinematics(DriveSubsystem.hubDistance);
               });
     }
     public Command runShooterPowerCommand() {
@@ -340,6 +383,7 @@ public Command setAutoShotCommand() {
         SmartDashboard.putBoolean("Shooter/Shooter Ready", atSpeed);
         SmartDashboard.putBoolean("Shooter/Shooter Toggled", mShooterEnabled);
         SmartDashboard.putBoolean("Shooter/Regression Toggled", mDistanceEstimation);
+        SmartDashboard.putNumber("Shooter/Kinematics RPM", getShooterKinematicsRPM(shooterKinematicsRPM));
     }
 
 
