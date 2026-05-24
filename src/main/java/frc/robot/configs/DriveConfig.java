@@ -30,10 +30,7 @@ public final class DriveConfig {
             .pid(0.17, 0,0.1)  
             .outputRange(-1,1)  //speed setpoint to actual velocity  
             .feedForward.kV(drivingVelocityFeedForward);
-            
-
-            //TODO: add 
-            
+                        
             turningConfig
             .idleMode(IdleMode.kBrake).smartCurrentLimit(20);
             turningConfig.absoluteEncoder

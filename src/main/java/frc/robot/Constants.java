@@ -80,7 +80,6 @@ public final class Constants {
     public static final double shooterSideOffset = Units.inchesToMeters(6.0);
 
     public static final Transform2d shooterTransform = new Transform2d(Units.inchesToMeters(0.0), shooterSideOffset, new Rotation2d());
-    //TODO: change to proper field 
     public static final Pose3d redHubPose = new Pose3d(Units.inchesToMeters(485.5), Units.inchesToMeters(158.32), Units.inchesToMeters(72.0), new Rotation3d());
     public static final Pose3d blueHubPose = new Pose3d(Units.inchesToMeters(196), Units.inchesToMeters(158.32),  Units.inchesToMeters(72.0), new Rotation3d());
 
@@ -255,12 +254,18 @@ public final class Constants {
 
         public static final double RPMOFFSET_INCREMENT = 200; 
 
-        //Untested Regression coefficients 
+        //Regression coefficients 
         public static final double REGRESSION_COEFFICIENT_4 = 0; 
         public static final double REGRESSION_COEFFICIENT_3 = 0;
         public static final double REGRESSION_COEFFICIENT_2 = -0;
         public static final double REGRESSION_COEFFICIENT_1 = 670;
         public static final double REGRESSION_COEFFICIENT_0 = 3520;
+
+        //untested kinematics equation
+        public static final double LAUNCH_ANGLE_RAD = Math.toRadians(25.0);  
+        public static final double HEIGHT_DIFF_METERS = 1.296867993;                 // shooter height to target height, tune this
+        public static final double WHEEL_RADIUS_METERS = 0.0508;             //tune this
+        public static final double LAUNCH_EFFICIENCY = 0.85;                 // 0.80–0.95, tune this
 
     }
     //intake.retract(7s);;; [
