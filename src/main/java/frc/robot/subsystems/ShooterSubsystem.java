@@ -74,8 +74,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
         mSysIdRoutine = new SysIdRoutine(
             new SysIdRoutine.Config(
-                Volts.of(1).per(Second),   // ramp rate  – 1 V/s (quasistatic)
-                Volts.of(4),               // step voltage – 4 V  (dynamic)
+                Volts.of(2).per(Second),   // ramp rate  – 1 V/s (quasistatic)
+                Volts.of(6),               // step voltage – 4 V  (dynamic)
                 Seconds.of(5)              // timeout per direction
             ),
             new SysIdRoutine.Mechanism(

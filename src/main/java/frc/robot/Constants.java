@@ -203,9 +203,9 @@ public final class Constants {
   public static final class IntakeConstants {
         public static final int INTAKE_MOTOR_ID = 20; //edited from rev hardware client 2
         
-        public static final double INTAKE_SPEED = 1;
-        public static final double SLOW_INTAKE_SPEED = 0.2;
-        public static final double OUTTAKE_SPEED = -0.5;
+        public static final double INTAKE_SPEED = -1;
+        public static final double SLOW_INTAKE_SPEED = -0.2;
+        public static final double OUTTAKE_SPEED = 0.5;
     }
 
     public static final class ShooterConstants {
