@@ -54,35 +54,66 @@ public class ArmSubsystem extends SubsystemBase {
         mPivotFollowerPID.setTolerance(ArmConstants.POSITION_TOLERANCE);
     }
 
-    //Methods 
-    public void setTargetArmPosition(double position){
-        mCurrentTarget = position; 
-        double mPivotOutputPower = mPivotFollowerPID.calculate(mPivotFollowerEncoder.getPosition(), mCurrentTarget);
+    // Methods
+
+    /**
+     * Set the desired pivot position and drive the motors with the follower PID.
+     *
+     * @param position desired pivot position (encoder units)
+     */
+    public void setTargetArmPosition(double position) {
+        mCurrentTarget = position;
+        // Use the field mPivotOutputPower (avoid shadowing a local variable)
+        mPivotOutputPower = mPivotFollowerPID.calculate(mPivotFollowerEncoder.getPosition(), mCurrentTarget);
         mPivotFollower.set(mPivotOutputPower);
         mPivotLeader.set(mPivotOutputPower);
     }
- 
-    public void setArmPower(double pivotPower){
+
+    /**
+     * Set arm pivot motor power directly (open-loop).
+     *
+     * @param pivotPower motor power in range [-1.0, 1.0]
+     */
+    public void setArmPower(double pivotPower) {
         mPivotLeader.set(pivotPower);
         mPivotFollower.set(pivotPower);
-
     }
 
+    /**
+     * Get the follower absolute encoder position.
+     *
+     * @return encoder position
+     */
     public double getEncoderValue() {
         return mPivotFollowerEncoder.getPosition();
     }
 
+    /**
+     * Query whether the leader PID controller is at its setpoint.
+     *
+     * @return true if at setpoint
+     */
     public boolean isAtTarget() {
         return mPivotLeaderPID.atSetpoint();
     }
 
+    /**
+     * Stop the arm motors and hold current position by updating the target.
+     */
     public void stopArm() {
-            mPivotLeader.set(0);
-            mCurrentTarget = mPivotLeaderEncoder.getPosition(); // Hold current spot
-        }
+        mPivotLeader.set(0);
+        mCurrentTarget = mPivotLeaderEncoder.getPosition(); // Hold current spot
+    }
 
-    public void incrementKP() { mArmCurrentKP += ArmConstants.ARM_KP_INCREMENT; }
-    public void decrementKP() { mArmCurrentKP -= ArmConstants.ARM_KP_INCREMENT; }
+    /** Increase the internal KP tuning value by the configured increment. */
+    public void incrementKP() {
+        mArmCurrentKP += ArmConstants.ARM_KP_INCREMENT;
+    }
+
+    /** Decrease the internal KP tuning value by the configured increment. */
+    public void decrementKP() {
+        mArmCurrentKP -= ArmConstants.ARM_KP_INCREMENT;
+    }
 
     
 

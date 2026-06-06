@@ -110,108 +110,166 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }
 
-    //methods 
-    //main PIDF for shooter speeds 
+    // Methods
+
+    /**
+     * Main PID+feedforward controller that computes and applies motor output.
+     *
+     * @param setRPM desired shooter speed (RPM)
+     * @param RPMOffset offset to add to the desired RPM
+     */
     public void setShooterSpeeds(double setRPM, double RPMOffset) {
         double mCurrentRPM = mShooterLeaderEncoder.getVelocity();
         double pidOutput = mShooterPID.calculate(mCurrentRPM, setRPM + RPMOffset);
-        double ffOutput = tempFF.calculate(setRPM + RPMOffset); 
+        double ffOutput = tempFF.calculate(setRPM + RPMOffset);
         double motorPower = MathUtil.clamp(pidOutput + ffOutput, 0.0, 1.0);
-        runShooterPower(motorPower); 
+        runShooterPower(motorPower);
     }
 
-
-
-    //regression equation 
-    public void runShooterRegression(double distance){
-    double shooterRegressionRPM = 
-          (Math.pow(distance, 3) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_3)
-        + (Math.pow(distance, 2) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_2)
-        + (Math.pow(distance, 1) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_1)
-        +(Constants.ShooterConstants.REGRESSION_COEFFICIENT_0);
-    if (shooterRegressionRPM <= 4500) {
-        // Distance is too short fall back 
-        updateRPM(ShooterConstants.HUB_TARGET_RPM);
-        return;
+    /**
+     * Compute a target RPM from a polynomial regression based on distance and
+     * update the internal target RPM. Falls back to a safe RPM if the
+     * regression suggests an unrealistically low value.
+     *
+     * @param distance distance in meters
+     */
+    public void runShooterRegression(double distance) {
+        double shooterRegressionRPM =
+            (Math.pow(distance, 3) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_3)
+                + (Math.pow(distance, 2) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_2)
+                + (Math.pow(distance, 1) * Constants.ShooterConstants.REGRESSION_COEFFICIENT_1)
+                + (Constants.ShooterConstants.REGRESSION_COEFFICIENT_0);
+        if (shooterRegressionRPM <= 4500) {
+            // Distance is too short; fall back
+            updateRPM(ShooterConstants.HUB_TARGET_RPM);
+            return;
         }
-    updateRPM(shooterRegressionRPM); 
+        updateRPM(shooterRegressionRPM);
     }
 
+    /**
+     * Compute required wheel RPM from kinematic projectile motion equations and
+     * update the target RPM. Falls back for invalid geometry.
+     *
+     * @param distanceMeters horizontal distance to target in meters
+     */
     public void runShooterKinematics(double distanceMeters) {
-    double theta = ShooterConstants.LAUNCH_ANGLE_RAD;
-    double deltaH = ShooterConstants.HEIGHT_DIFF_METERS;
-    double r = ShooterConstants.WHEEL_RADIUS_METERS;
-    double eta = ShooterConstants.LAUNCH_EFFICIENCY;
-    double gravityConstant = 9.81;
+        double theta = ShooterConstants.LAUNCH_ANGLE_RAD;
+        double deltaH = ShooterConstants.HEIGHT_DIFF_METERS;
+        double r = ShooterConstants.WHEEL_RADIUS_METERS;
+        double eta = ShooterConstants.LAUNCH_EFFICIENCY;
+        double gravityConstant = 9.81;
 
-    double tanTheta = Math.tan(theta);
-    double cosTheta = Math.cos(theta);
-    double denom = 2.0 * cosTheta * cosTheta * (distanceMeters * tanTheta - deltaH);
+        double tanTheta = Math.tan(theta);
+        double cosTheta = Math.cos(theta);
+        double denom = 2.0 * cosTheta * cosTheta * (distanceMeters * tanTheta - deltaH);
 
-    if (denom <= 0) {
-        // Distance is too short for this angle/height combo 
-        // Fall back to a safe minimum RPM or log a warning
-        updateRPM(ShooterConstants.HUB_TARGET_RPM);
-        return;
+        if (denom <= 0) {
+            // Distance is too short for this angle/height combo
+            updateRPM(ShooterConstants.HUB_TARGET_RPM);
+            return;
+        }
+
+        double v0 = Math.sqrt((gravityConstant * distanceMeters * distanceMeters) / denom);
+
+        // Surface speed of wheel = v0 / eta, convert to RPM
+        shooterKinematicsRPM = (v0 / (eta * r)) * (60.0 / (2.0 * Math.PI));
+
+        updateRPM(shooterKinematicsRPM);
     }
 
-    double v0 = Math.sqrt((gravityConstant * distanceMeters * distanceMeters) / denom);
-
-    // Surface speed of wheel = eta * v0, convert to RPM
-     shooterKinematicsRPM = (v0 / (eta * r)) * (60.0 / (2.0 * Math.PI));
-
-    updateRPM(shooterKinematicsRPM);
-    }
-
-    public double getShooterKinematicsRPM(double kinematicsRPM){
+    /**
+     * Return the most recently computed kinematics RPM.
+     *
+     * @return last computed kinematics RPM
+     */
+    public double getShooterKinematicsRPM() {
         return shooterKinematicsRPM;
     }
-    
 
-    //manual mode 
-    public void runShooterPower(double motorPower){
+    /**
+     * Directly set shooter motor power (open-loop).
+     *
+     * @param motorPower motor power in range [-1.0, 1.0]
+     */
+    public void runShooterPower(double motorPower) {
         mShooterLeader.set(motorPower);
         mShooterFollower.set(motorPower);
     }
 
+    /**
+     * Stop shooter motors and kicker.
+     */
     public void stopShooterKicker() {
-            runShooterPower(0);
-            runKicker(0);
-        }
+        runShooterPower(0);
+        runKicker(0);
+    }
 
-    public void runKicker(double speed){
-            mKickerLeader.set(speed);
-            mKickerFollower.set(-1 * speed);
-        }
+    /**
+     * Run kicker (feeder) motors. Follower is inverted relative to leader.
+     *
+     * @param speed motor speed in range [-1.0, 1.0]
+     */
+    public void runKicker(double speed) {
+        mKickerLeader.set(speed);
+        mKickerFollower.set(-1 * speed);
+    }
 
-
-
-    // gets the average velocity of the two motors 
+    /**
+     * Get the average velocity of both shooter encoders (RPM).
+     *
+     * @return average RPM
+     */
     public double getAverageVelocity() {
         double sum = mShooterLeaderEncoder.getVelocity() + mShooterFollowerEncoder.getVelocity();
         double average = sum / 2;
         return average;
     }
+
+    /**
+     * Return the motor output computed by the PID+feedforward controller without
+     * applying it.
+     *
+     * @param setRPM desired RPM
+     * @param RPMOffset offset to add to desired RPM
+     * @return clipped motor output in [0,1]
+     */
     public double getShooterPIDF(double setRPM, double RPMOffset) {
         double mCurrentRPM = mShooterLeaderEncoder.getVelocity();
         double pidOutput = mShooterPID.calculate(mCurrentRPM, setRPM + RPMOffset);
-        double ffOutput = tempFF.calculate(setRPM + RPMOffset); 
+        double ffOutput = tempFF.calculate(setRPM + RPMOffset);
         double motorPower = MathUtil.clamp(pidOutput + ffOutput, 0.0, 1.0);
-        return motorPower; 
+        return motorPower;
     }
 
-    //offsets and updates 
-    private void changeShootingRPMOffset(double amount){
-      ShooterRPMOffset += amount;
-    } 
-    
-    public void updateRPM(double newRPM){
-        mTargetRPM = newRPM; 
+    // Offsets and updates
+    /**
+     * Change the shooter RPM tuning offset.
+     *
+     * @param amount amount to change the offset by
+     */
+    private void changeShootingRPMOffset(double amount) {
+        ShooterRPMOffset += amount;
     }
-    
 
-    public void incrementRPM() { mTargetRPM += ShooterConstants.RPM_INCREMENT; }
-    public void decrementRPM() { mTargetRPM -= ShooterConstants.RPM_INCREMENT; }
+    /**
+     * Update the internal target RPM.
+     *
+     * @param newRPM new target RPM
+     */
+    public void updateRPM(double newRPM) {
+        mTargetRPM = newRPM;
+    }
+
+    /** Increase target RPM by configured increment */
+    public void incrementRPM() {
+        mTargetRPM += ShooterConstants.RPM_INCREMENT;
+    }
+
+    /** Decrease target RPM by configured increment */
+    public void decrementRPM() {
+        mTargetRPM -= ShooterConstants.RPM_INCREMENT;
+    }
 
    
 
@@ -363,27 +421,28 @@ public Command setAutoShotCommand() {
 
     @Override
     public void periodic() {
-        if(mDistanceEstimation == true){        
-        runShooterRegression(DriveSubsystem.hubDistance);
-        } else{
-        updateRPM(mTargetRPM);
-        }
-
-        if (mShooterEnabled == true) {
-        setShooterSpeeds(mTargetRPM, ShooterRPMOffset);
+        if (mDistanceEstimation) {
+            runShooterRegression(DriveSubsystem.hubDistance);
         } else {
-        runShooterPower(0);
+            updateRPM(mTargetRPM);
         }
 
-        SmartDashboard.putNumber("Shooter/Target RPM", mTargetRPM +ShooterRPMOffset);
+        if (mShooterEnabled) {
+            setShooterSpeeds(mTargetRPM, ShooterRPMOffset);
+        } else {
+            runShooterPower(0);
+        }
+
+        SmartDashboard.putNumber("Shooter/Target RPM", mTargetRPM + ShooterRPMOffset);
         SmartDashboard.putNumber("Shooter/Actual RPM", mShooterLeaderEncoder.getVelocity());
         SmartDashboard.putNumber("Shooter/RPM Offset", ShooterRPMOffset);
         SmartDashboard.putString("Shooter/Shot Type", shotType);
-        boolean atSpeed = Math.abs(mShooterLeaderEncoder.getVelocity() - mTargetRPM + ShooterRPMOffset) < ShooterConstants.VELOCITY_TOLERANCE;
+    boolean atSpeed = Math.abs(mShooterLeaderEncoder.getVelocity() - (mTargetRPM + ShooterRPMOffset))
+        < ShooterConstants.VELOCITY_TOLERANCE;
         SmartDashboard.putBoolean("Shooter/Shooter Ready", atSpeed);
         SmartDashboard.putBoolean("Shooter/Shooter Toggled", mShooterEnabled);
         SmartDashboard.putBoolean("Shooter/Regression Toggled", mDistanceEstimation);
-        SmartDashboard.putNumber("Shooter/Kinematics RPM", getShooterKinematicsRPM(shooterKinematicsRPM));
+        SmartDashboard.putNumber("Shooter/Kinematics RPM", getShooterKinematicsRPM());
     }
 
 

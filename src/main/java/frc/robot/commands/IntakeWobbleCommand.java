@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
 
 
 /** A complex auto command that drives forward, releases a hatch, and then drives backward. */
