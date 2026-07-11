@@ -32,28 +32,28 @@
     },
     {
       "anchor": {
-        "x": 2.7,
+        "x": 3.514361236626076,
         "y": 0.7
       },
       "prevControl": {
-        "x": 3.345507351324784,
-        "y": 0.7000000000000028
+        "x": 4.122341172639857,
+        "y": 0.4992686856778994
       },
       "nextControl": {
-        "x": 2.45,
-        "y": 0.7000000000000028
+        "x": 3.276965456931223,
+        "y": 0.7783788478039307
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.8,
-        "y": 1.0
+        "x": 2.879885379103649,
+        "y": 1.4176862523585498
       },
       "prevControl": {
-        "x": 2.8,
-        "y": 0.75
+        "x": 2.859560259371099,
+        "y": 1.1685138431558906
       },
       "nextControl": null,
       "isLocked": false,
@@ -92,8 +92,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.16,
-    "maxAcceleration": 5.0,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 1.0,
     "maxAngularVelocity": 200.0,
     "maxAngularAcceleration": 500.0,
     "nominalVoltage": 12.0,
@@ -101,7 +101,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 52.50000000000001
+    "rotation": 53.153770224056075
   },
   "reversed": false,
   "folder": "NEWAUTO",
