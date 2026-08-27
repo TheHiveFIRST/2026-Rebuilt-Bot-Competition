@@ -390,8 +390,7 @@ public class DriveSubsystem extends SubsystemBase {
     return getGyroRotation().getDegrees();
   }
 
-  public void incrementPalign() { autoAlignPID += ShooterConstants.KD_INCREMENT; }
-  public void decrementPalign() { autoAlignPID -= ShooterConstants.KD_INCREMENT; }
+  
 
 
   /**

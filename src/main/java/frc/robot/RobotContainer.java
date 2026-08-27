@@ -3,13 +3,13 @@ package frc.robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.VisionConstants;
 
-import frc.robot.commands.Autos;
+
+
 import frc.robot.commands.FullHopperIntakeWobbleCommand;
-import frc.robot.commands.IntakeTapCommand;
-import frc.robot.commands.IntakeUpAutoCommand;
-import frc.robot.commands.IntakeWobbleCommand;
+
+
+
 import frc.robot.commands.HalfHopperIntakeWobbleCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.math.MathUtil;
@@ -25,9 +25,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.Constants.OperatorConstants;
 
-import frc.robot.commands.UnjamKickerCommand;
-import frc.robot.commands.UnjamIntakeCommand;
-import frc.robot.commands.IntakeUpAutoCommand;
+
+
+
 
 import frc.robot.configs.DriveConfig;
 import frc.robot.subsystems.ArmSubsystem;
@@ -95,7 +95,6 @@ public class RobotContainer {
         NamedCommands.registerCommand("intakepivotup", mArmSubsystem.IntakeToPosition(0.55).withTimeout(8));
         NamedCommands.registerCommand("runintake", mIntakeSubsystem.runIntakeForwardCommand().withTimeout(5));
 
-    NamedCommands.registerCommand("intakepivotdown", new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem).withTimeout(2.93));
     
     NamedCommands.registerCommand("runkicker", mShooterSubsystem.runKickerCommand().withTimeout(3));                                             
    
@@ -105,7 +104,7 @@ public class RobotContainer {
     // new EventTrigger("shoot").onTrue(autoShoot());
     // new EventTrigger("stopshoot").onTrue(autoStopShoot());
    
-     new EventTrigger("intakepivotdown2").whileTrue(new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem));
+    
 
 
     autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`

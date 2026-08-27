@@ -171,30 +171,9 @@ public final class Constants {
     public static final double DRIVE_DEADBAND = 0.05; 
   }
 
-  public static final class AutoConstants {
-    //add constants here that are not in pathplanner/limelight if needed
-    public static final double X_TAG_ALIGNMENT_P = 0.01; 
-    public static final double Y_TAG_ALIGNMENT_P = 0.1; 
-    public static final double ROT_TAG_ALIGNMENT_P = 0.1; 
+  
 
-    public static final double ROT_SETPOINT_TAG_ALIGNMENT = 0;  //  RY Rotation
-    public static final double ROT_TOLERANCE_TAG_ALIGNMENT = 1;
-    
-    public static final double X_SETPOINT_TAG_ALIGNMENT = 9.79;  //tx Vertical pose and tolerance 
-    public static final double X_TOLERANCE_TAG_ALIGNMENT = 0.02;
-
-    public static final double Y_SETPOINT_TAG_ALIGNMENT = -0.19;  // tz Horizontal pose (- for diff sides of tag)
-    public static final double Y_TOLERANCE_TAG_ALIGNMENT = 0.02; 
-
-    public static final double DONT_SEE_TAG_WAIT_TIME = 1;
-    public static final double POSE_VALIDATION_TIME = 0.3;
-  }
-
-  public static final class VisionConstants{
-   public static final double LL_MOUNT_ANGLE_DEG = 0; //a1: degrees rotated up from vertical 
-   public static final double LL_LENS_HEIGHT_IN = 7.1; //h1: distance from lens to floor 
-   public static final double TARGET_HEIGHT_IN = 12.5;//44.25; //h2: height of target 
-  }
+  
 
   public static final class MotorConstants {
     public static final double FREE_SPEED_RPM = 5676;
@@ -222,45 +201,25 @@ public final class Constants {
         public static final double LEADER_FF_kV = 0.00012;
         public static final double LEADER_FF_kA = 0.0002;
 
-        public static final double TESTING_KP = 0.0006;
-        public static final double TESTING_KI = 0;
-        public static final double TESTING_KD = 0;
-        public static final double FF_KS = 0.0;
-        public static final double FF_KV = 0.0;
-        public static final double FF_KA = 0.0;
+        
     
         // Manual Control 
-        public static final double RPM_INCREMENT = 12.5;
-        public static final double KV_INCREMENT = 0.000001;
-        public static final double KP_INCREMENT = 0.001;
-        public static final double KI_INCREMENT = 0.0001;
-        public static final double KD_INCREMENT = 0.0001;
+        
 
         public static final double KICKER_SPEED = 1.0
         ;
         public static final double KICKERREVERSED_SPEED = -1.0;
-        public static final double SHOOTER_SPEED = 0.7; 
+        
 
         public static final double VELOCITY_TOLERANCE =  30; 
-        public static final double AUTORPM = 5700;
+        
 
         public static final double HUB_TARGET_RPM = 4500; //TUNED //not 4440
-        public static final double TRENCH_TARGET_RPM = 6800; 
-        public static final double LADDER_TARGET_RPM = 6300;
-
-        public static final double PASSING_TARGET_RPM = 8000;
-        public static final double DEFENCE_TARGET_RPM = 5200; 
-
-        public static final double AUTO_TARGET_RPM = 5400; 
+        
 
         public static final double RPMOFFSET_INCREMENT = 200; 
 
-        //Untested Regression coefficients 
-        public static final double REGRESSION_COEFFICIENT_4 = 0; 
-        public static final double REGRESSION_COEFFICIENT_3 = 0;
-        public static final double REGRESSION_COEFFICIENT_2 = -0;
-        public static final double REGRESSION_COEFFICIENT_1 = 670;
-        public static final double REGRESSION_COEFFICIENT_0 = 3520;
+        
 
     }
     //intake.retract(7s);;; [
