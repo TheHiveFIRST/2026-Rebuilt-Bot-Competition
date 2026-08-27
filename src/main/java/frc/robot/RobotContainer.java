@@ -96,17 +96,15 @@ public class RobotContainer {
         NamedCommands.registerCommand("runintake", mIntakeSubsystem.runIntakeForwardCommand().withTimeout(5));
 
     NamedCommands.registerCommand("intakepivotdown", new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem).withTimeout(2.93));
-    NamedCommands.registerCommand("shoot", mShooterSubsystem.setHubShotCommand().andThen(
-                                                mShooterSubsystem.toggleAutoShooterCommand().andThen(
-                                                autoWobbleShoot())));
+    
     NamedCommands.registerCommand("runkicker", mShooterSubsystem.runKickerCommand().withTimeout(3));                                             
-    NamedCommands.registerCommand("setshot", mShooterSubsystem.toggleAutoShooterCommand().withTimeout(8));
+   
     NamedCommands.registerCommand("stopshoot", autoStopKicker());
    
 
     // new EventTrigger("shoot").onTrue(autoShoot());
     // new EventTrigger("stopshoot").onTrue(autoStopShoot());
-     new EventTrigger("setshot").onTrue(mShooterSubsystem.toggleAutoShooterCommand().withTimeout(3));
+   
      new EventTrigger("intakepivotdown2").whileTrue(new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem));
 
 
@@ -179,21 +177,7 @@ public class RobotContainer {
     }
     private void configureBindings() {
       
-        //OPERATOR CONTROLS
-        mOperatorController.y().whileTrue(mShooterSubsystem.toggleShooterCommand());
-        mOperatorController.rightTrigger().onTrue(mShooterSubsystem.setLadderShotCommand());
-        //mOperatorController.leftTrigger().onTrue(mShooterSubsystem.setPassingShotCommand());
-         mOperatorController.b().onTrue(mShooterSubsystem.setHubShotCommand());
-         mOperatorController.a().onTrue(mShooterSubsystem.setTrenchShotCommand());
-        //mOperatorController.b().whileTrue(mDriveSubsystem.alignOriginalDrive(mDriverController, () -> DriveConstants.getHubPose().toPose2d()));
-        //mOperatorController.a().whileTrue(mDriveSubsystem.alignV1Drive(mDriverController, () -> DriveConstants.getHubPose().toPose2d()));
-        //mOperatorController.leftTrigger().whileTrue(mDriveSubsystem.alignV2Drive(mDriverController, () -> DriveConstants.getHubPose().toPose2d()));
-        mOperatorController.x().onTrue(mShooterSubsystem.toggleDistanceEstimationCommand());
-        mOperatorController.rightBumper().onTrue(mShooterSubsystem.increaseShootingRPMOffsetCommand());
-        mOperatorController.leftBumper().onTrue(mShooterSubsystem.decreaseShootingRPMOffsetCommand());
-        //mOperatorController.povLeft().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::incrementRPM));
-        //mOperatorController.povRight().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::decrementRPM));
-        //mOperatorController.leftStick().whileTrue(mDriveSubsystem.defensePosition());
+        
 
 
          //DRIVER CONTROLS
