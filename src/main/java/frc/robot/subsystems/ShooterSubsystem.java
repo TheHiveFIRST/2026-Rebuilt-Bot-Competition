@@ -36,7 +36,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private double mTargetRPM = ShooterConstants.HUB_TARGET_RPM;
 
     private double ShooterRPMOffset = 0; 
-    private boolean mDistanceEstimation = true;
+    private boolean mDistanceEstimation = false;
     private boolean mShooterEnabled = false;
 
     private String shotType = "HUB_SHOT";

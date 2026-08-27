@@ -48,7 +48,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.LimelightHelpers;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.configs.DriveConfig;
@@ -170,7 +170,7 @@ public class DriveSubsystem extends SubsystemBase {
             mBackRight.getPosition()
         });
 
-    updateVisionOdometry();
+    
 
     //adding field map to smart dashboard 
     field2d.setRobotPose(mPoseEstimator.getEstimatedPosition());
@@ -403,74 +403,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
     /** Updates the field relative position of the robot. */
-  public void updateVisionOdometry() {
-    mPoseEstimator.update(
-          getGyroRotation(),
-        new SwerveModulePosition[] {
-          mFrontLeft.getPosition(),
-          mFrontRight.getPosition(),
-          mBackLeft.getPosition(),
-          mBackRight.getPosition()
-        });
 
-
-    boolean useMegaTag2 = true; //set to false to use MegaTag1
-    boolean doRejectUpdate = false;
-    if(useMegaTag2 == false)
-    {
- 
-      LimelightHelpers.PoseEstimate mt1 = VisionSubsystem.getBotPoseEstimateBlue(); 
-       // }
-      
-      if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
-      {
-        if(mt1.rawFiducials[0].ambiguity > .7)
-        {
-          doRejectUpdate = true;
-        }
-        if(mt1.rawFiducials[0].distToCamera > 7)
-        {
-          doRejectUpdate = true;
-        }
-      }
-      if(mt1.tagCount == 0)
-      {
-        doRejectUpdate = true;
-      }
-
-      if(!doRejectUpdate)
-      {
-        mPoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(DriveConstants.VISION_STD_MTG1_N1, 
-        DriveConstants.VISION_STD_MTG1_N2, Units.degreesToRadians(5)));
-        mPoseEstimator.addVisionMeasurement(
-            mt1.pose,
-            mt1.timestampSeconds);
-      }
-    }
-    else if (useMegaTag2 == true)
-    //mPoseEstimator.getEstimatedPosition().getRotation().getDegrees()
-    //TOADO: checkif using gyro angle works 
-    {
-      LimelightHelpers.SetRobotOrientation("limelight", mPoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-      LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
-         
-      if(Math.abs(mGyro.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
-      {
-        doRejectUpdate = true;
-      }
-      if(mt2.tagCount == 0) 
-      {
-        doRejectUpdate = true;
-      }
-      if(!doRejectUpdate)
-      {
-        mPoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(DriveConstants.VISION_STD_MTG2_N1, DriveConstants.VISION_STD_MTG2_N2, Units.degreesToRadians(5)));
-        mPoseEstimator.addVisionMeasurement(
-            mt2.pose,
-            mt2.timestampSeconds);
-      }
-    }
-  }
   
   public double getFerryDistance() {
       return getShotDistance(DriveConstants.getFerryPose(getVisionPose().getTranslation()).toPose2d().getTranslation());

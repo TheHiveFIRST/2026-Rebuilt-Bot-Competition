@@ -4,8 +4,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.commands.AutoAlignToTagCommand;
-import frc.robot.commands.AutonAlignCommand;
+
 import frc.robot.commands.Autos;
 import frc.robot.commands.FullHopperIntakeWobbleCommand;
 import frc.robot.commands.IntakeTapCommand;
@@ -33,7 +32,7 @@ import frc.robot.commands.IntakeUpAutoCommand;
 import frc.robot.configs.DriveConfig;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
+
 import frc.robot.subsystems.IntakeSubsystem;
 
 
@@ -61,7 +60,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final VisionSubsystem mVisionSubsystem = new VisionSubsystem(); 
+  
   private final DriveSubsystem mDriveSubsystem = new DriveSubsystem(); 
   private final ArmSubsystem mArmSubsystem = new ArmSubsystem(); 
   private final ShooterSubsystem mShooterSubsystem = new ShooterSubsystem(); 
@@ -103,7 +102,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("runkicker", mShooterSubsystem.runKickerCommand().withTimeout(3));                                             
     NamedCommands.registerCommand("setshot", mShooterSubsystem.toggleAutoShooterCommand().withTimeout(8));
     NamedCommands.registerCommand("stopshoot", autoStopKicker());
-    NamedCommands.registerCommand("autoalign", new AutonAlignCommand(mDriveSubsystem));
+   
 
     // new EventTrigger("shoot").onTrue(autoShoot());
     // new EventTrigger("stopshoot").onTrue(autoStopShoot());
@@ -188,7 +187,7 @@ public class RobotContainer {
          mOperatorController.a().onTrue(mShooterSubsystem.setTrenchShotCommand());
         //mOperatorController.b().whileTrue(mDriveSubsystem.alignOriginalDrive(mDriverController, () -> DriveConstants.getHubPose().toPose2d()));
         //mOperatorController.a().whileTrue(mDriveSubsystem.alignV1Drive(mDriverController, () -> DriveConstants.getHubPose().toPose2d()));
-        mOperatorController.leftTrigger().whileTrue(mDriveSubsystem.alignV2Drive(mDriverController, () -> DriveConstants.getHubPose().toPose2d()));
+        //mOperatorController.leftTrigger().whileTrue(mDriveSubsystem.alignV2Drive(mDriverController, () -> DriveConstants.getHubPose().toPose2d()));
         mOperatorController.x().onTrue(mShooterSubsystem.toggleDistanceEstimationCommand());
         mOperatorController.rightBumper().onTrue(mShooterSubsystem.increaseShootingRPMOffsetCommand());
         mOperatorController.leftBumper().onTrue(mShooterSubsystem.decreaseShootingRPMOffsetCommand());
@@ -218,12 +217,7 @@ public class RobotContainer {
         //mDriverController.povDown().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::decrementRPM));
 
 
-         mDriverController.a().whileTrue(new RunCommand(
-         () -> mDriveSubsystem.driveJoystick(
-           MathUtil.applyDeadband(-mDriverController.getLeftY(), OperatorConstants.DRIVE_DEADBAND),
-           MathUtil.applyDeadband(-mDriverController.getLeftX(), OperatorConstants.DRIVE_DEADBAND),
-          -mVisionSubsystem.autoAlignRotationSpeed(), 
-          true), mDriveSubsystem));
+        
     
 
        
