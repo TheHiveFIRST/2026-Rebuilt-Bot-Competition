@@ -79,14 +79,21 @@ public class DriveSubsystem extends SubsystemBase {
 
   //mGyro sensor/IMU (usb input type to roborio)
   private final AHRS mGyro = new AHRS(NavXComType.kUSB1); 
-  public static boolean useInvertedGyro = false;
+  public static boolean useInvertedGyro = true;
   
   private final Field2d field2d = new Field2d();
 
   public static double autoAlignPID = 0.05; 
 
   public static double hubDistance = 0; 
+
+  public static double gyrooffset = 0;
+  public double autoAlignRotationalRate = 10; 
+  public double targetx = 0;
+  public double targety = 0;
+  public double targetangle = 0;
   
+  public Rotation2d desiredAngle;
   private final SwerveDrivePoseEstimator mPoseEstimator =
       new SwerveDrivePoseEstimator(
           DriveConstants.DriveKinematics,
@@ -97,9 +104,9 @@ public class DriveSubsystem extends SubsystemBase {
             mBackLeft.getPosition(),
             mBackRight.getPosition()
           },
-          new Pose2d(),
-          VecBuilder.fill(DriveConstants.POSE_ESTIMATOR_N1,DriveConstants.POSE_ESTIMATOR_N2, Units.degreesToRadians(5)),
-          VecBuilder.fill(DriveConstants.POSE_ESTIMATOR_2_N1, DriveConstants.POSE_ESTIMATOR_2_N1, Units.degreesToRadians(30)));
+          new Pose2d());
+          //VecBuilder.fill(DriveConstants.POSE_ESTIMATOR_N1,DriveConstants.POSE_ESTIMATOR_N2, Units.degreesToRadians(5)),
+          //VecBuilder.fill(DriveConstants.POSE_ESTIMATOR_2_N1, DriveConstants.POSE_ESTIMATOR_2_N1, Units.degreesToRadians(30)));
 
   //Odometry class for tracking robot pose 
   SwerveDriveOdometry Odometry = new SwerveDriveOdometry(
@@ -130,8 +137,8 @@ public class DriveSubsystem extends SubsystemBase {
                 this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
                 new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                        new PIDConstants(10, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(15.2, 0, 0.0) // Rotation PID constants
+                        new PIDConstants(15, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(12, 0, 0.0) // Rotation PID constants
                 ),
                 config, // The robot configuration
                 () -> {
@@ -170,20 +177,26 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putData(field2d);
 
     hubDistance = getHubDistance();
-
     SmartDashboard.putNumber("Driving/hub distance", getHubDistance());
-    SmartDashboard.putNumber("Driving/gyro", mGyro.getAngle());
+    SmartDashboard.putNumber("Position", mBackRight.getPosition().angle.getRadians());
+    SmartDashboard.putNumber("Driving/gyro", -mGyro.getAngle());
+    SmartDashboard.putNumber("Driving/poseestimatorgyro", mPoseEstimator.getEstimatedPosition().getRotation().getDegrees());
     SmartDashboard.putNumber("Driving/heading", getHeading());
     SmartDashboard.putNumber("Driving/Pose X", getVisionPose().getX());
     SmartDashboard.putNumber("Driving/Pose Y", getVisionPose().getY());
-    SmartDashboard.putString("Driving/Alliance", Constants.getCurrentAlliance().toString());
+    //SmartDashboard.putString("Driving/Alliance", Constants.getCurrentAlliance().toString());
     SmartDashboard.putNumber("Driving/HubPoseX", DriveConstants.getHubPose().getX());
     SmartDashboard.putNumber("Driving/HubPoseY", DriveConstants.getHubPose().getY());
-    SmartDashboard.putNumber("Driving/kp", DriveConstants.ROTATION_KP);
+    //SmartDashboard.putNumber("Driving/kp", DriveConstants.ROTATION_KP);
+
     SmartDashboard.putNumber("ODOM X", Odometry.getPoseMeters().getX());
     SmartDashboard.putNumber("VISION X", mPoseEstimator.getEstimatedPosition().getX());
+    SmartDashboard.putNumber("Driving/x", targetx);
+    SmartDashboard.putNumber("Driving/y", targety);
+    SmartDashboard.putNumber("Driving/angle", targetangle*180/Math.PI);
 
-    SmartDashboard.putNumber("Driving/autoalignP", autoAlignPID);
+    //SmartDashboard.putNumber("Driving/autoalignP", autoAlignPID);
+   // SmartDashboard.putNumber("Driving/AUTOALIGNROTATIONRATE", autoAlignRotationalRate);
   }
 
   /**
@@ -199,6 +212,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param pose The pose to which to set the Odometry.
    */
   public void resetPose(Pose2d pose) {
+    
     mPoseEstimator.resetPosition(
     getGyroRotation(),
     new SwerveModulePosition[] {
@@ -363,9 +377,9 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public Rotation2d getGyroRotation(){
-    double angle = mGyro.getAngle(); 
-    return Rotation2d.fromDegrees(
-      useInvertedGyro ? -angle : angle
+    double angle = mGyro.getAngle() - gyrooffset; 
+    return Rotation2d.fromDegrees(-angle
+      /*useInvertedGyro ? -angle : angle*/
     );
   }
   /**
@@ -385,7 +399,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return The turn rate of the robot, in degrees per second
    */
   public double getTurnRate() {
-    return mGyro.getRate() * (DriveConstants.GYRO_REVERSED ? -1.0 : 1.0);
+    return mGyro.getRate() * (useInvertedGyro ? -1.0 : 1.0);
   }
 
     /** Updates the field relative position of the robot. */
@@ -405,7 +419,7 @@ public class DriveSubsystem extends SubsystemBase {
     if(useMegaTag2 == false)
     {
  
-      LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight"); 
+      LimelightHelpers.PoseEstimate mt1 = VisionSubsystem.getBotPoseEstimateBlue(); 
        // }
       
       if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
@@ -435,7 +449,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
     else if (useMegaTag2 == true)
     //mPoseEstimator.getEstimatedPosition().getRotation().getDegrees()
-    //TODO: checkif using gyro angle works 
+    //TOADO: checkif using gyro angle works 
     {
       LimelightHelpers.SetRobotOrientation("limelight", mPoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
       LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
@@ -476,11 +490,11 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
  
-  public Command alignDrive(CommandXboxController controller, Supplier<Pose2d> targetPoseSupplier) {
+  public Command alignOriginalDrive(CommandXboxController controller, Supplier<Pose2d> targetPoseSupplier) {
 
     return run( ()-> {
-        double controllerVelX = MathUtil.applyDeadband(controller.getLeftY(),OperatorConstants.DRIVE_DEADBAND);
-        double controllerVelY = MathUtil.applyDeadband(controller.getLeftX(),OperatorConstants.DRIVE_DEADBAND);
+        double controllerVelX = -MathUtil.applyDeadband(controller.getLeftY(),OperatorConstants.DRIVE_DEADBAND);
+        double controllerVelY = -MathUtil.applyDeadband(controller.getLeftX(),OperatorConstants.DRIVE_DEADBAND);
 
         Pose2d drivePose = getVisionPose();
         Pose2d targetPose = targetPoseSupplier.get();
@@ -500,18 +514,18 @@ public class DriveSubsystem extends SubsystemBase {
             && Math.hypot(controllerVelX, controllerVelY) < OperatorConstants.DRIVE_DEADBAND) {
                driveJoystick(controllerVelX, controllerVelY, 0, true); //TODO:IDK HOW FIELD RELATIVE WILL WOKR 
             } else {
-            double rotationalRate = DriveConstants.rotationController.calculate(currentAngle.getRadians(), desiredAngle.getRadians());
-              driveJoystick(controllerVelX, controllerVelY, rotationalRate, true);
+            autoAlignRotationalRate = DriveConstants.rotationController.calculate(currentAngle.getRadians(), desiredAngle.getRadians());
+              driveJoystick(controllerVelX, controllerVelY, autoAlignRotationalRate, true);
         }
       });
   }
 
-  public Command alignTestDrive(CommandXboxController controller, Supplier<Pose2d> targetPoseSupplier) {
+  public Command alignV1Drive(CommandXboxController controller, Supplier<Pose2d> targetPoseSupplier) {
 
     return run(() -> {
 
-        double controllerVelX =MathUtil.applyDeadband( controller.getLeftY(), OperatorConstants.DRIVE_DEADBAND);
-        double controllerVelY = MathUtil.applyDeadband(controller.getLeftX(),OperatorConstants.DRIVE_DEADBAND);
+        double controllerVelX =-MathUtil.applyDeadband( controller.getLeftY(), OperatorConstants.DRIVE_DEADBAND);
+        double controllerVelY = -MathUtil.applyDeadband(controller.getLeftX(),OperatorConstants.DRIVE_DEADBAND);
 
 
         Pose2d drivePose = getVisionPose();
@@ -525,14 +539,46 @@ public class DriveSubsystem extends SubsystemBase {
         if (
                 (Math.abs(deltaAngleDegrees) < DriveConstants.epsilonAngleToGoal.in(Degrees)) // if facing goal already
                 && Math.hypot(controllerVelX, controllerVelY) < OperatorConstants.DRIVE_DEADBAND) {
-                  driveJoystick(controllerVelX, controllerVelY, 0, true); //TODO:IDK HOW FIELD RELATIVE WILL WOKR 
+                  driveJoystick(controllerVelX, controllerVelY, 0, true); 
                 } else {
-                double rotationalRate = DriveConstants.rotationController.calculate(currentAngle.getRadians(), desiredAngle.getRadians());
-                  driveJoystick(controllerVelX, controllerVelY, rotationalRate, true);
+                autoAlignRotationalRate = DriveConstants.rotationController.calculate(currentAngle.getRadians(), desiredAngle.getRadians());
+                  driveJoystick(controllerVelX, controllerVelY, autoAlignRotationalRate, true);
             }
           });
   }
 
+  public Command alignV2Drive(CommandXboxController controller, Supplier<Pose2d> targetPoseSupplier) {
+
+    return run(() -> {
+
+        double controllerVelX =-MathUtil.applyDeadband( controller.getLeftY(), OperatorConstants.DRIVE_DEADBAND);
+        double controllerVelY = -MathUtil.applyDeadband(controller.getLeftX(),OperatorConstants.DRIVE_DEADBAND);
+        Pose2d drivePose = getVisionPose();
+        Pose2d targetPose = targetPoseSupplier.get();
+        targetx = -(drivePose.getX() - targetPose.getX());
+        targety = -(drivePose.getY() - targetPose.getY());
+        if (targety > 0) {
+        targetangle = Math.atan2(targety, targetx) - Math.PI;
+        } else if (targety < 0) {
+        targetangle = Math.PI + Math.atan2(targety, targetx);
+        }else if (targety == 0) {
+        targetangle = 0;
+        }
+        Translation2d robotToTarget = targetPose.getTranslation().minus(drivePose.getTranslation());
+        desiredAngle = robotToTarget.getAngle();
+        Rotation2d currentAngle = drivePose.getRotation(); 
+        double current = MathUtil.inputModulus(mGyro.getAngle()/180*Math.PI, -Math.PI, Math.PI);
+        Rotation2d deltaAngle = currentAngle.minus(desiredAngle);
+        double deltaAngleDegrees = deltaAngle.getDegrees();
+        double wrappedAngleDeg = MathUtil.inputModulus(deltaAngle.getDegrees(), -180.0, 180.0);
+
+        double autoalignp = 20;
+        autoAlignRotationalRate = (targetangle + current) * 2;
+        driveJoystick(controllerVelX, controllerVelY, autoAlignRotationalRate, true);
+   
+      });
+  }
+  
   public void incrementKP(){ DriveConstants.ROTATION_KP += DriveConstants.KP_INCREMENT;};
 
   public void decrementKP(){ DriveConstants.ROTATION_KP -= DriveConstants.KP_INCREMENT;};

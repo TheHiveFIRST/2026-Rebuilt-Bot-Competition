@@ -7,7 +7,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.2
+            "waitTime": 0.1
           }
         },
         {
@@ -17,7 +17,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Depot to Middle"
+                  "pathName": "NEWNEWAUTOINTAKE"
                 }
               },
               {
@@ -32,13 +32,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.2
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Middle Turn"
+            "waitTime": 0.1
           }
         },
         {
@@ -46,15 +40,15 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "setshot"
+                  "pathName": "NEWNEWAUTOSHOOT"
                 }
               },
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "Back to shoot depot"
+                  "name": "setshot"
                 }
               }
             ]
@@ -63,13 +57,38 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.2
+            "waitTime": 0.1
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "runkicker"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "runkicker"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakepivotup"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "runintake"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 3.0
+                }
+              }
+            ]
           }
         }
       ]

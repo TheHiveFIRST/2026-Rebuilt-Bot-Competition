@@ -15,7 +15,7 @@ public class AutoAlignToTagCommand extends Command {
         new RunCommand( () -> mDriveSubsystem.driveJoystick(
             MathUtil.applyDeadband(controller.getLeftY(), OperatorConstants.DRIVE_DEADBAND),
             MathUtil.applyDeadband(controller.getLeftX(), OperatorConstants.DRIVE_DEADBAND),
-            LimelightHelpers.getTX("limelight")* -DriveConstants.AUTO_ALIGN_PID, 
+            LimelightHelpers.getTX("limelight")* DriveConstants.AUTO_ALIGN_PID, 
             true), mDriveSubsystem);
     }
   

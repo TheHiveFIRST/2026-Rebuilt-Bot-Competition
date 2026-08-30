@@ -11,6 +11,12 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -27,25 +33,38 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "rampupshoot"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "shoot"
+                        "name": "setshot"
                       }
                     },
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 4.0
+                        "waitTime": 2.0
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "parallel",
                       "data": {
-                        "name": "stopshoot"
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "runkicker"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "runintake"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 5.0
                       }
                     }
                   ]

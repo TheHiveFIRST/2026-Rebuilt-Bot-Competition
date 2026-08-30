@@ -3,12 +3,15 @@ package frc.robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.AutoAlignToTagCommand;
 import frc.robot.commands.AutonAlignCommand;
 import frc.robot.commands.Autos;
+import frc.robot.commands.FullHopperIntakeWobbleCommand;
 import frc.robot.commands.IntakeTapCommand;
 import frc.robot.commands.IntakeUpAutoCommand;
 import frc.robot.commands.IntakeWobbleCommand;
+import frc.robot.commands.HalfHopperIntakeWobbleCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,9 +28,12 @@ import frc.robot.Constants.OperatorConstants;
 
 import frc.robot.commands.UnjamKickerCommand;
 import frc.robot.commands.UnjamIntakeCommand;
+import frc.robot.commands.IntakeUpAutoCommand;
+
 import frc.robot.configs.DriveConfig;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
 
@@ -55,6 +61,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+  private final VisionSubsystem mVisionSubsystem = new VisionSubsystem(); 
   private final DriveSubsystem mDriveSubsystem = new DriveSubsystem(); 
   private final ArmSubsystem mArmSubsystem = new ArmSubsystem(); 
   private final ShooterSubsystem mShooterSubsystem = new ShooterSubsystem(); 
@@ -68,36 +75,41 @@ public class RobotContainer {
   boolean slowMode = false;
 
 
-  public Pose2d getAllianceStartingPose() {
-    if (Constants.getCurrentAlliance() == Alliance.Blue) {
-        return new Pose2d(
-            new Translation2d(2.7432, 3.2512),   // TODO: change this 
-            Rotation2d.fromDegrees(0)
-        );
-    } else {
-        return new Pose2d(
-            new Translation2d(16.0, 4.0),  // TODO: change this to acc 
-            Rotation2d.fromDegrees(180)
-        );
-    }
-} 
+//   public Pose2d getAllianceStartingPose() {
+//     if (Constants.getCurrentAlliance() == Alliance.Blue) {
+//         return new Pose2d(
+//             new Translation2d(2.7432, 3.2512),  
+//             Rotation2d.fromDegrees(0)
+//         );
+//     } else {
+//         return new Pose2d(
+//             new Translation2d(16.0, 4.0),  
+//             Rotation2d.fromDegrees(180)
+//         );
+//     }
+// } 
 
 
   public RobotContainer() {
     // Register named commands
-    //NamedCommands.registerCommand("intakepivotdefault", mArmSubsystem.IntakePivotDefault());
-    NamedCommands.registerCommand("intakepivotup", mArmSubsystem.runIntakePivotUp());
-    NamedCommands.registerCommand("intakepivotdown", new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem).withTimeout(4.63));
-    NamedCommands.registerCommand("runkicker", mShooterSubsystem.setAutoShotCommand().andThen(
+    NamedCommands.registerCommand("intakepivotslightlyup", mArmSubsystem.IntakeSlightlyUp().withTimeout(1.80));
+        NamedCommands.registerCommand("intakepivotup", mArmSubsystem.IntakeToPosition(0.55).withTimeout(8));
+        NamedCommands.registerCommand("runintake", mIntakeSubsystem.runIntakeForwardCommand().withTimeout(5));
+
+    NamedCommands.registerCommand("intakepivotdown", new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem).withTimeout(2.93));
+    NamedCommands.registerCommand("shoot", mShooterSubsystem.setHubShotCommand().andThen(
                                                 mShooterSubsystem.toggleAutoShooterCommand().andThen(
                                                 autoWobbleShoot())));
+    NamedCommands.registerCommand("runkicker", mShooterSubsystem.runKickerCommand().withTimeout(3));                                             
     NamedCommands.registerCommand("setshot", mShooterSubsystem.toggleAutoShooterCommand().withTimeout(8));
-    NamedCommands.registerCommand("stopshoot", autoStopShoot());
+    NamedCommands.registerCommand("stopshoot", autoStopKicker());
     NamedCommands.registerCommand("autoalign", new AutonAlignCommand(mDriveSubsystem));
 
     // new EventTrigger("shoot").onTrue(autoShoot());
     // new EventTrigger("stopshoot").onTrue(autoStopShoot());
      new EventTrigger("setshot").onTrue(mShooterSubsystem.toggleAutoShooterCommand().withTimeout(3));
+     new EventTrigger("intakepivotdown2").whileTrue(new IntakeTapCommand(mIntakeSubsystem, mArmSubsystem));
+
 
     autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
     Shuffleboard.getTab("Autonomous").add("Auto Mode", autoChooser).withSize(2, 1);
@@ -109,9 +121,9 @@ public class RobotContainer {
             () -> {
             double currentDriveSpeed = slowMode ? DriveConstants.DRIVE_SPEED * DriveConstants.SLOW_MODE_MULTIPLIER : DriveConstants.DRIVE_SPEED;
             mDriveSubsystem.driveJoystick(
-                MathUtil.applyDeadband(mDriverController.getLeftY()*currentDriveSpeed, OperatorConstants.DRIVE_DEADBAND),
-                MathUtil.applyDeadband(mDriverController.getLeftX()*currentDriveSpeed, OperatorConstants.DRIVE_DEADBAND),
-                MathUtil.applyDeadband(mDriverController.getRightX()*currentDriveSpeed, OperatorConstants.DRIVE_DEADBAND),
+                MathUtil.applyDeadband(-mDriverController.getLeftY()*currentDriveSpeed, OperatorConstants.DRIVE_DEADBAND),
+                MathUtil.applyDeadband(-mDriverController.getLeftX()*currentDriveSpeed, OperatorConstants.DRIVE_DEADBAND),
+                MathUtil.applyDeadband(-mDriverController.getRightX()*currentDriveSpeed, OperatorConstants.DRIVE_DEADBAND),
                 true);},
             mDriveSubsystem));
 
@@ -123,31 +135,75 @@ public class RobotContainer {
        //SmartDashboard.putData("setShooterSpeeds", new InstantCommand(() -> mShooterSubsystem.setSpeedsSmartDashboard()));
 
      }
-
+    public void configureJoysticks(String pickedAuto) {
+      switch (pickedAuto) {
+        case "DOUBLE_SWIPE_HUMAN_PLAYER":
+        case "SINGLE_SWIPE_HUMAN_PLAYER":
+          DriveSubsystem.gyrooffset = -90;
+          mDriveSubsystem.setDefaultCommand(
+          new RunCommand(() -> {
+              double currentDriveSpeed = slowMode ? DriveConstants.DRIVE_SPEED * DriveConstants.SLOW_MODE_MULTIPLIER : DriveConstants.DRIVE_SPEED;
+              mDriveSubsystem.driveJoystick(
+                  MathUtil.applyDeadband(-mDriverController.getLeftX()*currentDriveSpeed, OperatorConstants.DRIVE_DEADBAND),
+                  MathUtil.applyDeadband(mDriverController.getLeftY()*currentDriveSpeed, OperatorConstants.DRIVE_DEADBAND),
+                  MathUtil.applyDeadband(-mDriverController.getRightX()*currentDriveSpeed, OperatorConstants.DRIVE_DEADBAND),
+                  true);},
+              mDriveSubsystem));
+          
+          break;
+        case "DOUBLE_SWIPE_DEPOT":
+        case "SINGLE_SWIPE_DEPOT":
+          DriveSubsystem.gyrooffset = 90;
+          mDriveSubsystem.setDefaultCommand(
+          new RunCommand(() -> {
+              double currentDriveSpeed = slowMode ? DriveConstants.DRIVE_SPEED * DriveConstants.SLOW_MODE_MULTIPLIER : DriveConstants.DRIVE_SPEED;
+              mDriveSubsystem.driveJoystick(
+                  MathUtil.applyDeadband(-mDriverController.getLeftX()*currentDriveSpeed, OperatorConstants.DRIVE_DEADBAND),
+                  MathUtil.applyDeadband(-mDriverController.getLeftY()*currentDriveSpeed, OperatorConstants.DRIVE_DEADBAND),
+                  MathUtil.applyDeadband(-mDriverController.getRightX()*currentDriveSpeed, OperatorConstants.DRIVE_DEADBAND),
+                  true);},
+              mDriveSubsystem));
+          break;
+        default: // started in front of the hub
+          DriveSubsystem.gyrooffset = 0;
+          mDriveSubsystem.setDefaultCommand(  
+            new RunCommand(() -> {
+              double currentDriveSpeed = slowMode ? DriveConstants.DRIVE_SPEED * DriveConstants.SLOW_MODE_MULTIPLIER : DriveConstants.DRIVE_SPEED;
+              mDriveSubsystem.driveJoystick(
+                  MathUtil.applyDeadband(-mDriverController.getLeftY()*currentDriveSpeed, OperatorConstants.DRIVE_DEADBAND),
+                  MathUtil.applyDeadband(-mDriverController.getLeftX()*currentDriveSpeed, OperatorConstants.DRIVE_DEADBAND),
+                  MathUtil.applyDeadband(-mDriverController.getRightX()*currentDriveSpeed, OperatorConstants.DRIVE_DEADBAND),
+                  true);},
+              mDriveSubsystem));
+          break;
+      }
+    }
     private void configureBindings() {
       
         //OPERATOR CONTROLS
         mOperatorController.y().whileTrue(mShooterSubsystem.toggleShooterCommand());
-        mOperatorController.leftTrigger().onTrue(mShooterSubsystem.setLadderShotCommand());
-        mOperatorController.rightTrigger().onTrue(mShooterSubsystem.setPassingShotCommand());
-        mOperatorController.b().onTrue(mShooterSubsystem.setHubShotCommand());
-        mOperatorController.a().onTrue(mShooterSubsystem.setTrenchShotCommand());
-        mOperatorController.x().whileTrue(mShooterSubsystem.toggleDistanceEstimationCommand());
+        mOperatorController.rightTrigger().onTrue(mShooterSubsystem.setLadderShotCommand());
+        //mOperatorController.leftTrigger().onTrue(mShooterSubsystem.setPassingShotCommand());
+         mOperatorController.b().onTrue(mShooterSubsystem.setHubShotCommand());
+         mOperatorController.a().onTrue(mShooterSubsystem.setTrenchShotCommand());
+        //mOperatorController.b().whileTrue(mDriveSubsystem.alignOriginalDrive(mDriverController, () -> DriveConstants.getHubPose().toPose2d()));
+        //mOperatorController.a().whileTrue(mDriveSubsystem.alignV1Drive(mDriverController, () -> DriveConstants.getHubPose().toPose2d()));
+        mOperatorController.leftTrigger().whileTrue(mDriveSubsystem.alignV2Drive(mDriverController, () -> DriveConstants.getHubPose().toPose2d()));
+        mOperatorController.x().onTrue(mShooterSubsystem.toggleDistanceEstimationCommand());
         mOperatorController.rightBumper().onTrue(mShooterSubsystem.increaseShootingRPMOffsetCommand());
         mOperatorController.leftBumper().onTrue(mShooterSubsystem.decreaseShootingRPMOffsetCommand());
         //mOperatorController.povLeft().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::incrementRPM));
         //mOperatorController.povRight().onTrue(mShooterSubsystem.runOnce(mShooterSubsystem::decrementRPM));
-        mOperatorController.leftStick().whileTrue(mDriveSubsystem.defensePosition());
+        //mOperatorController.leftStick().whileTrue(mDriveSubsystem.defensePosition());
 
 
          //DRIVER CONTROLS
         mDriverController.y().whileTrue(mShooterSubsystem.toggleShooterCommand()); 
-        //mDriverController.a().whileTrue(new AutoAlignToTagCommand(mDriveSubsystem, mDriverController));
         mDriverController.x().whileTrue(mShooterSubsystem.runKickerBackwardCommand());
         mDriverController.b().onTrue(mIntakeSubsystem.runOuttakeCommand());
 
-        mDriverController.rightBumper().whileTrue(mShooterSubsystem.runKickerCommand());
-        mDriverController.rightTrigger().whileTrue(shootWithAgitation());
+        mDriverController.rightBumper().whileTrue(shootHalfHopper());
+        mDriverController.rightTrigger().whileTrue(shootFullHopper());
         mDriverController.leftBumper().whileTrue(mArmSubsystem.runIntakePivotUp());
         mDriverController.leftTrigger(0.2).whileTrue(mIntakeSubsystem.runIntakeForwardCommand());
         
@@ -164,28 +220,11 @@ public class RobotContainer {
 
          mDriverController.a().whileTrue(new RunCommand(
          () -> mDriveSubsystem.driveJoystick(
-           MathUtil.applyDeadband(mDriverController.getLeftY(), OperatorConstants.DRIVE_DEADBAND),
-           MathUtil.applyDeadband(mDriverController.getLeftX(), OperatorConstants.DRIVE_DEADBAND),
-          LimelightHelpers.getTX("limelight")* DriveConstants.AUTO_ALIGN_PID, 
+           MathUtil.applyDeadband(-mDriverController.getLeftY(), OperatorConstants.DRIVE_DEADBAND),
+           MathUtil.applyDeadband(-mDriverController.getLeftX(), OperatorConstants.DRIVE_DEADBAND),
+          -mVisionSubsystem.autoAlignRotationSpeed(), 
           true), mDriveSubsystem));
-        //intake forward align 
-        // //TODO: test if this \works 
-        // mDriverController.leftTrigger().whileTrue(
-        //     new RunCommand(
-        //        () -> mDriveSubsystem.driveIntakeAlign(
-        //          mDriverController.getLeftY(), 
-        //          mDriverController.getLeftX(),
-        //       true), mDriveSubsystem));
-
-        //diagonal bump align 
-        //TODO: test if this works 
-        // mDriverController.rightTrigger().whileTrue(
-        //     new RunCommand(
-        //        () -> mDriveSubsystem.driveDiagonalBumpAlign(
-        //          mDriverController.getLeftY(), 
-        //          mDriverController.getLeftX(),
-        //         true, 
-        //         135), mDriveSubsystem));
+    
 
        
         //PID TUNING
@@ -221,16 +260,26 @@ public class RobotContainer {
       mDriveSubsystem.zeroHeading();
     }
 
-    public void resetVisionPose(){
-      mDriveSubsystem.resetPoseEstimator(getAllianceStartingPose());
-    }
+    // public void resetVisionPose(){
+    //   mDriveSubsystem.resetPoseEstimator(getAllianceStartingPose());
+    // }
 
     
-    public Command shootWithAgitation(){
+    public Command shootFullHopper(){
       return Commands.parallel(           
-      new IntakeWobbleCommand(mArmSubsystem),
-      mShooterSubsystem.runKickerCommand());
+      new FullHopperIntakeWobbleCommand(mArmSubsystem, mIntakeSubsystem),
+      mDriveSubsystem.defensePosition(),
       
+      mShooterSubsystem.runKickerCommand());
+  
+    }
+    public Command shootHalfHopper(){
+      return Commands.parallel(           
+      new HalfHopperIntakeWobbleCommand(mArmSubsystem, mIntakeSubsystem),
+      mDriveSubsystem.defensePosition(),
+      
+      mShooterSubsystem.runKickerCommand());
+  
     }
     public Command toggleSlowMode(){
         return new InstantCommand(() -> slowMode = !slowMode);
@@ -247,24 +296,22 @@ public class RobotContainer {
   }
 
   
-  public Command autoStopShoot(){
-    return Commands.parallel(           
-    new RunCommand(() -> mShooterSubsystem.runKicker(0)),
-    new RunCommand(() -> mShooterSubsystem.runShooterPower(0)));
-    
+  public Command autoStopKicker (){
+    return new InstantCommand(() -> mShooterSubsystem.runKicker(0));
   }
 
     
   public Command autoShoot(){
     return Commands.parallel(           
-    new RunCommand(() -> mShooterSubsystem.runKicker(-ShooterConstants.KICKER_SPEED)),
-    new RunCommand(() -> mShooterSubsystem.toggleAutoShooterCommand()));
+    mShooterSubsystem.runKickerCommand(),
+    new FullHopperIntakeWobbleCommand(mArmSubsystem, mIntakeSubsystem)
+    );
   }
 
-  public Command autoWobbleShoot(){
-    return Commands.parallel(           
-    mShooterSubsystem.runKickerCommand(), 
-    new IntakeUpAutoCommand(mArmSubsystem));
+   public Command autoWobbleShoot(){
+   return Commands.parallel(   
+    //new IntakeUpAutoCommand(mArmSubsystem, mIntakeSubsystem).repeatedly(),        
+    mShooterSubsystem.runKickerCommand());
   }
 }
 
